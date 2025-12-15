@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import type { Banner } from "../types";
 
 interface BannerSliderTableProps {
@@ -34,7 +35,7 @@ export function BannerSliderTable({
               <TableHead className="w-12">Order</TableHead>
               <TableHead>Title (EN / KA)</TableHead>
               <TableHead>Description (EN / KA)</TableHead>
-              <TableHead>Image URL</TableHead>
+              <TableHead className="w-32">Image</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -93,8 +94,16 @@ export function BannerSliderTable({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="max-w-xs truncate">
-                    {banner.imageUrl}
+                  <TableCell>
+                    <div className="relative w-24 h-16 border rounded-md overflow-hidden bg-muted">
+                      <Image
+                        src={banner.imageUrl}
+                        alt={banner.title.en || "Banner image"}
+                        fill
+                        className="object-cover"
+                        sizes="96px"
+                      />
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">

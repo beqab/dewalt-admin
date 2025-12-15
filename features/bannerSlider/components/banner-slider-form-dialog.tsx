@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,6 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import UploadImage from "@/components/uploadImage";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import type { Banner, CreateBannerDto, UpdateBannerDto } from "../types";
 
 interface BannerSliderFormDialogProps {
@@ -53,6 +55,10 @@ export function BannerSliderFormDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.imageUrl) {
+      toast.error("Please upload an image");
+      return;
+    }
     onSubmit(formData as CreateBannerDto | UpdateBannerDto);
   };
 
@@ -166,14 +172,13 @@ export function BannerSliderFormDialog({
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="imageUrl">Image URL</Label>
-              <Input
-                id="imageUrl"
-                value={formData.imageUrl}
-                onChange={(e) =>
-                  setFormData({ ...formData, imageUrl: e.target.value })
+              <UploadImage
+                onImageChange={(url) =>
+                  setFormData({ ...formData, imageUrl: url })
                 }
-                required
+                imageUrl={formData.imageUrl}
+                defaultImageUrl={banner?.imageUrl}
+                label="Image"
               />
             </div>
           </div>
