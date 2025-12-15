@@ -1,59 +1,123 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import { BannerSliderTable } from "@/features/bannerSlider/components/banner-slider-table"
-import { BannerSliderFormDialog } from "@/features/bannerSlider/components/banner-slider-form-dialog"
+import { useState, useMemo, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Loader2, Plus, Save } from "lucide-react";
+import { BannerSliderTable } from "@/features/bannerSlider/components/banner-slider-table";
+import { BannerSliderFormDialog } from "@/features/bannerSlider/components/banner-slider-form-dialog";
 import type {
-  BannerSlide,
-  CreateBannerSlideDto,
-  UpdateBannerSlideDto,
-} from "@/features/bannerSlider/types"
-import { dummyBannerSlides } from "@/features/bannerSlider/data/dummy-banner-slides"
+  Banner,
+  CreateBannerDto,
+  UpdateBannerDto,
+} from "@/features/bannerSlider/types";
+import {
+  useGetBannerSlider,
+  useCreateBanner,
+  useUpdateBanner,
+  useDeleteBanner,
+  useReorderBanners,
+} from "@/features/bannerSlider";
 
 export default function BannerSliderPage() {
-  const [slides, setSlides] = useState<BannerSlide[]>(dummyBannerSlides)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingSlide, setEditingSlide] = useState<BannerSlide | undefined>()
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingBanner, setEditingBanner] = useState<Banner | undefined>();
+
+  const { data, isLoading, error } = useGetBannerSlider();
+  const createBanner = useCreateBanner();
+  const updateBanner = useUpdateBanner();
+  const deleteBanner = useDeleteBanner();
+  const reorderBanners = useReorderBanners();
+
+  const banners = data?.banners || [];
 
   const handleCreate = () => {
-    setEditingSlide(undefined)
-    setIsDialogOpen(true)
-  }
+    setEditingBanner(undefined);
+    setIsDialogOpen(true);
+  };
 
-  const handleEdit = (slide: BannerSlide) => {
-    setEditingSlide(slide)
-    setIsDialogOpen(true)
-  }
+  const handleEdit = (banner: Banner) => {
+    setEditingBanner(banner);
+    setIsDialogOpen(true);
+  };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this banner slide?")) {
-      // TODO: Implement API call
-      setSlides(slides.filter((s) => s.id !== id))
-    }
-  }
-
-  const handleSubmit = async (
-    data: CreateBannerSlideDto | UpdateBannerSlideDto
-  ) => {
-    // TODO: Implement API call
-    if (editingSlide) {
-      setSlides(
-        slides.map((s) =>
-          s.id === editingSlide.id ? { ...s, ...data } : s
-        )
-      )
+  const handleSubmit = async (data: CreateBannerDto | UpdateBannerDto) => {
+    if (editingBanner) {
+      updateBanner.mutate(
+        { order: editingBanner.order, data: data as UpdateBannerDto },
+        {
+          onSuccess: () => {
+            setIsDialogOpen(false);
+            // Reset local banners to refetch from server
+          },
+        }
+      );
     } else {
-      const newSlide: BannerSlide = {
-        id: Date.now().toString(),
-        ...(data as CreateBannerSlideDto),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-      setSlides([...slides, newSlide])
+      createBanner.mutate(data as CreateBannerDto, {
+        onSuccess: () => {
+          setIsDialogOpen(false);
+          // Reset local banners to refetch from server
+        },
+      });
     }
-    setIsDialogOpen(false)
+  };
+
+  const handleReorder = (index: number, direction: "up" | "down") => {
+    if (
+      (direction === "up" && index === 0) ||
+      (direction === "down" && index === banners.length - 1)
+    ) {
+      return;
+    }
+
+    const newBanners = [...banners];
+    if (direction === "up") {
+      [newBanners[index - 1], newBanners[index]] = [
+        newBanners[index],
+        newBanners[index - 1],
+      ];
+    } else {
+      [newBanners[index], newBanners[index + 1]] = [
+        newBanners[index + 1],
+        newBanners[index],
+      ];
+    }
+
+    // Update order based on new position
+    const updatedBanners = newBanners.map((banner, idx) => ({
+      ...banner,
+      order: idx,
+    }));
+
+    // Remove order from banners (backend will assign based on array position)
+    const bannersWithoutOrder = updatedBanners.map(
+      ({ order, ...banner }) => banner
+    );
+    reorderBanners.mutate({ banners: bannersWithoutOrder });
+  };
+
+  const handleDelete = async (order: number) => {
+    if (confirm("Are you sure you want to delete this banner?")) {
+      deleteBanner.mutate(order);
+    }
+  };
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-destructive">
+          Error loading banners:{" "}
+          {error instanceof Error ? error.message : "Unknown error"}
+        </p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="animate-spin" /> იტვირტბა...
+      </div>
+    );
   }
 
   return (
@@ -61,27 +125,33 @@ export default function BannerSliderPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold sm:text-3xl">Banner Slider</h1>
-          <p className="text-sm text-muted-foreground sm:text-base">Manage banner slider slides</p>
+          <p className="text-sm text-muted-foreground sm:text-base">
+            Manage banner slider
+          </p>
         </div>
-        <Button onClick={handleCreate} className="w-full sm:w-auto">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Slide
-        </Button>
+        <div>
+          <Button onClick={handleCreate} className="w-full sm:w-auto">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Banner
+          </Button>
+        </div>
       </div>
 
-      <BannerSliderTable
-        slides={slides}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <div className="relative">
+        <BannerSliderTable
+          banners={banners}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          reorderBanners={handleReorder}
+        />
+      </div>
 
       <BannerSliderFormDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        slide={editingSlide}
+        banner={editingBanner}
         onSubmit={handleSubmit}
       />
     </div>
-  )
+  );
 }
-

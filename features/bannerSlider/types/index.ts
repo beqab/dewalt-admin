@@ -1,30 +1,40 @@
-export interface BannerSlide {
-  id: string
-  title: string
-  description?: string
-  image: string
-  link?: string
-  order: number
-  isActive: boolean
-  createdAt: string
-  updatedAt: string
+// Localized text type matching backend structure
+export interface LocalizedText {
+  ka: string;
+  en: string;
 }
 
-export interface CreateBannerSlideDto {
-  title: string
-  description?: string
-  image: string
-  link?: string
-  order: number
-  isActive: boolean
+// Banner type matching backend structure
+export interface Banner {
+  imageUrl: string;
+  title: LocalizedText;
+  description: LocalizedText;
+  order: number;
 }
 
-export interface UpdateBannerSlideDto {
-  title?: string
-  description?: string
-  image?: string
-  link?: string
-  order?: number
-  isActive?: boolean
+// Banner Slider Response matching backend DTO
+export interface BannerSliderResponse {
+  _id: string;
+  banners: Banner[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// DTOs for creating and updating banners
+export interface CreateBannerDto {
+  imageUrl: string;
+  title: LocalizedText;
+  description: LocalizedText;
+}
+
+export interface UpdateBannerDto {
+  imageUrl?: string;
+  title?: LocalizedText;
+  description?: LocalizedText;
+}
+
+// DTO for reordering banners (array of banners)
+export interface ReorderBannersDto {
+  banners: CreateBannerDto[];
 }
 

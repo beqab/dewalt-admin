@@ -1,14 +1,31 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Newspaper, Image, SlidersHorizontal, Package } from "lucide-react"
-import { dummyUsers } from "@/features/users/data/dummy-users"
-import { dummyProducts } from "@/features/products/data/dummy-products"
-import { dummyNews } from "@/features/news/data/dummy-news"
-import { dummyAds } from "@/features/ads/data/dummy-ads"
-import { dummyBannerSlides } from "@/features/bannerSlider/data/dummy-banner-slides"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Users,
+  Newspaper,
+  Image,
+  SlidersHorizontal,
+  Package,
+  Loader2,
+} from "lucide-react";
+import { dummyUsers } from "@/features/users/data/dummy-users";
+import { dummyProducts } from "@/features/products/data/dummy-products";
+import { dummyNews } from "@/features/news/data/dummy-news";
+import { dummyAds } from "@/features/ads/data/dummy-ads";
+import { useGetBannerSlider } from "@/features/bannerSlider";
 
 export default function DashboardPage() {
+  const { data: bannerSliderData, isLoading: isBannerSliderLoading } =
+    useGetBannerSlider();
+  const bannerCount = bannerSliderData?.banners?.length || 0;
+
   const stats = [
     {
       title: "Users",
@@ -33,30 +50,36 @@ export default function DashboardPage() {
     },
     {
       title: "Ads",
-      value: dummyAds.filter(ad => ad.isActive).length.toString(),
+      value: dummyAds.filter((ad) => ad.isActive).length.toString(),
       description: "Active ads",
       icon: Image,
       href: "/dashboard/ads",
     },
     {
       title: "Banner Sliders",
-      value: dummyBannerSlides.filter(slide => slide.isActive).length.toString(),
-      description: "Active banner slides",
+      value: isBannerSliderLoading ? (
+        <Loader2 className="animate-spin w-6 h-6" />
+      ) : (
+        bannerCount.toString()
+      ),
+      description: "Total banners",
       icon: SlidersHorizontal,
       href: "/dashboard/banner-slider",
     },
-  ]
+  ];
 
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
         <h1 className="text-2xl font-bold sm:text-3xl">Dashboard</h1>
-        <p className="text-sm text-muted-foreground sm:text-base">Welcome to Dewalt Admin Panel</p>
+        <p className="text-sm text-muted-foreground sm:text-base">
+          Welcome to Dewalt Admin Panel
+        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => {
-          const Icon = stat.icon
+          const Icon = stat.icon;
           return (
             <Card key={stat.title}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -72,10 +95,9 @@ export default function DashboardPage() {
                 </p>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
-

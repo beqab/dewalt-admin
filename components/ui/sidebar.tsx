@@ -1,10 +1,12 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cn } from "@/lib/utils";
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
 
 const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
   ({ className, ...props }, ref) => {
@@ -17,10 +19,10 @@ const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
         )}
         {...props}
       />
-    )
+    );
   }
-)
-Sidebar.displayName = "Sidebar"
+);
+Sidebar.displayName = "Sidebar";
 
 const SidebarHeader = React.forwardRef<
   HTMLDivElement,
@@ -32,9 +34,9 @@ const SidebarHeader = React.forwardRef<
       className={cn("flex h-16 items-center border-b px-6", className)}
       {...props}
     />
-  )
-})
-SidebarHeader.displayName = "SidebarHeader"
+  );
+});
+SidebarHeader.displayName = "SidebarHeader";
 
 const SidebarContent = React.forwardRef<
   HTMLDivElement,
@@ -46,46 +48,34 @@ const SidebarContent = React.forwardRef<
       className={cn("flex-1 overflow-auto p-4", className)}
       {...props}
     />
-  )
-})
-SidebarContent.displayName = "SidebarContent"
+  );
+});
+SidebarContent.displayName = "SidebarContent";
 
 const SidebarFooter = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  return (
-    <div
-      ref={ref}
-      className={cn("border-t p-4", className)}
-      {...props}
-    />
-  )
-})
-SidebarFooter.displayName = "SidebarFooter"
+  return <div ref={ref} className={cn("border-t p-4", className)} {...props} />;
+});
+SidebarFooter.displayName = "SidebarFooter";
 
 const SidebarNav = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  return (
-    <nav
-      ref={ref}
-      className={cn("space-y-1", className)}
-      {...props}
-    />
-  )
-})
-SidebarNav.displayName = "SidebarNav"
+  return <nav ref={ref} className={cn("space-y-1", className)} {...props} />;
+});
+SidebarNav.displayName = "SidebarNav";
 
 const SidebarNavItem = React.forwardRef<
   HTMLAnchorElement,
   React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-    active?: boolean
-    asChild?: boolean
+    active?: boolean;
+    asChild?: boolean;
   }
 >(({ className, active, asChild = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : "a"
+  const Comp = asChild ? Slot : "a";
   return (
     <Comp
       ref={ref}
@@ -98,9 +88,9 @@ const SidebarNavItem = React.forwardRef<
       )}
       {...props}
     />
-  )
-})
-SidebarNavItem.displayName = "SidebarNavItem"
+  );
+});
+SidebarNavItem.displayName = "SidebarNavItem";
 
 export {
   Sidebar,
@@ -109,5 +99,4 @@ export {
   SidebarFooter,
   SidebarNav,
   SidebarNavItem,
-}
-
+};
