@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import UploadImage from "@/components/uploadImage";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -29,7 +30,6 @@ export default function EditNewsPage() {
     imageUrl: "",
   });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (news && !isNew) {
       setFormData({
@@ -39,6 +39,7 @@ export default function EditNewsPage() {
         imageUrl: news.imageUrl,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [news, isNew]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -202,17 +203,16 @@ export default function EditNewsPage() {
                 >
                   Georgian (ქართული)
                 </Label>
-                <Textarea
+                <RichTextEditor
                   id="content-ka"
-                  value={formData?.content?.ka}
-                  onChange={(e) =>
+                  value={formData?.content?.ka || ""}
+                  onChange={(value) =>
                     setFormData({
                       ...formData,
-                      content: { ...formData.content, ka: e.target.value },
+                      content: { ...formData.content, ka: value },
                     })
                   }
-                  required
-                  rows={8}
+                  placeholder="Enter content in Georgian..."
                 />
               </div>
               <div className="grid gap-2">
@@ -222,17 +222,16 @@ export default function EditNewsPage() {
                 >
                   English
                 </Label>
-                <Textarea
+                <RichTextEditor
                   id="content-en"
-                  value={formData?.content?.en}
-                  onChange={(e) =>
+                  value={formData?.content?.en || ""}
+                  onChange={(value) =>
                     setFormData({
                       ...formData,
-                      content: { ...formData.content, en: e.target.value },
+                      content: { ...formData.content, en: value },
                     })
                   }
-                  required
-                  rows={8}
+                  placeholder="Enter content in English..."
                 />
               </div>
             </div>

@@ -97,12 +97,14 @@ export default function PreviewNewsPage() {
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">Content</h3>
           <div className="space-y-3">
-            <div className="text-base leading-relaxed whitespace-pre-wrap">
-              {news.content.en}
-            </div>
-            <div className="text-base leading-relaxed text-muted-foreground whitespace-pre-wrap">
-              {news.content.ka}
-            </div>
+            <div
+              className="text-base leading-relaxed prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: news.content.en }}
+            />
+            <div
+              className="text-base leading-relaxed text-muted-foreground prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: news.content.ka }}
+            />
           </div>
         </div>
 
