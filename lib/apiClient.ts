@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { getSession, signOut } from "next-auth/react";
-import { toast } from "sonner";
 
 export interface ErrorResponse<T> {
   data: T;
@@ -39,6 +38,7 @@ export const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // Send cookies with requests
 });
 
 export const authHeader = "authorization";
@@ -226,9 +226,10 @@ class APIClient<TResponse = unknown> {
 
   // Error handling helper
   private handleApiError(error: IApiError): ApiErrorResponse {
+    console.log(error.response?.data.statusCode, "rrr");
+    console.log(error.response, "message");
     if (error.response?.data.statusCode === 401) {
       signOut();
-      toast.error(error.response?.data.message || "Unauthorized");
       return error.response.data;
     }
 

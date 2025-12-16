@@ -26,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { authService } from "@/features/auth/services/authService";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -142,6 +143,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     try {
       setIsLoggingOut(true);
       setMobileMenuOpen(false);
+
+      await authService.logout.post({});
+
       await signOut({ redirect: true, callbackUrl: "/login" });
     } catch (error) {
       console.error("Logout error:", error);

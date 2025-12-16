@@ -35,32 +35,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           console.log("✅ Credentials validated successfully");
 
-          // Call your authentication service
-          const response = await createApiClient(API_ROUTES.LOGIN).post<{
-            token: string;
-            refreshToken: string;
-            tokenExpiresAt: Date;
-            admin: {
-              _id: string;
+          // Call authentication service
+
+          const response = await createApiClient(API_ROUTES.LOGIN).post<
+            {
               username: string;
-            };
-          }>({
+              password: string;
+            },
+            {
+              token: string;
+              refreshToken: string;
+              tokenExpiresAt: Date;
+              admin: {
+                _id: string;
+                username: string;
+              };
+            }
+          >({
             username: email,
             password: password,
           });
 
           console.log("📡 API Response:", response ? "Success" : "No response");
 
-          if (response) {
-            const cookieStore = await cookies();
-            cookieStore.set("refresh_token", response.refreshToken, {
-              httpOnly: true, // Cannot be accessed by JavaScript
-              secure: process.env.NODE_ENV === "production", // HTTPS only in production
-              sameSite: "lax", // CSRF protection
-              maxAge: 60 * 60 * 24 * 7, // 7 days
-              path: "/",
-            });
+          const cookieStore = await cookies();
+          cookieStore.set("refresh_token", response.refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            path: "/",
+          });
 
+          if (response) {
             const user = {
               id: response.admin._id,
               email: response.admin.username,
@@ -68,6 +75,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               tokenExpiresAt: new Date(response.tokenExpiresAt).toISOString(),
               _id: response.admin._id,
               token: response.token,
+              refreshToken: response.refreshToken, // Store in JWT for server-side refresh
             };
             console.log("👤 User object created:", {
               ...user,
@@ -103,6 +111,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           name: user.name,
           expiresAt: new Date(user.tokenExpiresAt).getTime(),
+          refreshToken: user.refreshToken || token.refreshToken, // Store refresh token in JWT
         };
         return jwtToken;
       }
@@ -121,37 +130,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Check if access token is expired
       if (Date.now() > new Date(token.tokenExpiresAt).getTime()) {
         try {
-          const cookieStore = await cookies();
-          const refreshToken = cookieStore.get("refresh_token")?.value;
+          let refreshToken = token.refreshToken;
 
           if (!refreshToken) {
-            console.error("❌ No refresh token found in cookie");
+            const cookieStore = await cookies();
+            const refreshTokenCookie = cookieStore.get("refresh_token");
+            refreshToken = refreshTokenCookie?.value;
+          }
+
+          console.log(
+            "🔄 Refresh token source:",
+            refreshToken ? "Found in JWT/Cookie" : "Not found"
+          );
+
+          if (!refreshToken) {
+            console.error("❌ No refresh token available");
             return null;
           }
 
-          const response = await createApiClient(
-            API_ROUTES.REFRESH_TOKEN
-          ).post<{
-            token: string;
-            message: string;
-            refreshToken: string;
-            tokenExpiresAt: Date;
-            admin: {
-              _id: string;
-              username: string;
-              facilityId: string | null;
-            };
-          }>({
-            refreshToken: refreshToken,
-          });
+          // Forward refresh token in Cookie header for server-side request
+          const response = await createApiClient(API_ROUTES.REFRESH_TOKEN).post<
+            Record<string, never>,
+            {
+              token: string;
+              message: string;
+              refreshToken: string;
+              tokenExpiresAt: Date;
+              admin: {
+                _id: string;
+                username: string;
+                facilityId: string | null;
+              };
+            }
+          >(
+            {},
+            {
+              headers: {
+                Cookie: `refresh_token=${refreshToken}`,
+              },
+            }
+          );
 
-          cookieStore.set("refresh_token", response.refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 60 * 60 * 24 * 7, // 7 days
-            path: "/",
-          });
           console.log("🔄 response from refresh token", response);
 
           const refreshedToken = {
@@ -159,13 +178,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             accessToken: response.token,
             tokenExpiresAt: new Date(response.tokenExpiresAt).toISOString(),
             expiresAt: new Date(response.tokenExpiresAt).getTime(),
+            refreshToken: response.refreshToken, // Update refresh token in JWT from response
           };
           return refreshedToken;
         } catch (error) {
           console.error("❌ Refresh token error:", error);
-          // SECURITY: Clear the refresh token cookie on error
-          const cookieStore = await cookies();
-          cookieStore.delete("refresh_token");
           return null;
         }
       }
@@ -177,7 +194,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.accessToken = token.accessToken;
         session.user._id = token._id;
         session.user.id = token._id;
-        // Ensure email/name are set if available in token
+
         if (token.email) {
           session.user.email = token.email as string;
         }
@@ -188,13 +205,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  events: {
-    // Clear refresh token cookie on signout
-    async signOut() {
-      const cookieStore = await cookies();
-      cookieStore.delete("refresh_token");
-    },
-  },
+  events: {},
   pages: {
     signIn: "/login",
   },
