@@ -7,4 +7,7 @@ export const API_ROUTES = {
   // Banner Slider
   BANNER_SLIDER: "/banner-slider",
   BANNER_SLIDER_REORDER: "/banner-slider/reorder",
+
+  // News
+  NEWS: "/news",
 };

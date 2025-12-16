@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Pencil, Trash2 } from "lucide-react"
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,80 +8,121 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import type { News } from "../types"
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import type { News } from "../types";
+import { useRouter } from "next/navigation";
 
 interface NewsTableProps {
-  news: News[]
-  onEdit: (news: News) => void
-  onDelete: (id: string) => void
+  news: News[];
+  onDelete: (id: string) => void;
 }
 
-export function NewsTable({ news, onEdit, onDelete }: NewsTableProps) {
+export function NewsTable({ news, onDelete }: NewsTableProps) {
+  const router = useRouter();
+
+  const handleEdit = (id: string) => {
+    router.push(`/dashboard/news/${id}/edit`);
+  };
+
+  const handlePreview = (id: string) => {
+    router.push(`/dashboard/news/${id}/preview`);
+  };
+
   return (
     <div className="rounded-md border">
       <div className="overflow-x-auto">
         <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Published At</TableHead>
-            <TableHead>Created At</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {news.length === 0 ? (
+          <TableHeader>
             <TableRow>
-              <TableCell colSpan={5} className="h-24 text-center">
-                No news articles found.
-              </TableCell>
+              <TableHead className="w-32">Image</TableHead>
+              <TableHead>Title (EN / KA)</TableHead>
+              <TableHead>Summary (EN / KA)</TableHead>
+              <TableHead className="w-32">Created</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
-          ) : (
-            news.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.title}</TableCell>
-                <TableCell>
-                  <Badge variant={item.status === "published" ? "default" : "outline"}>
-                    {item.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  {item.publishedAt
-                    ? new Date(item.publishedAt).toLocaleDateString()
-                    : "-"}
-                </TableCell>
-                <TableCell>
-                  {new Date(item.createdAt).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onEdit(item)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onDelete(item.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
+          </TableHeader>
+          <TableBody>
+            {news.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="h-24 text-center">
+                  No news articles found.
                 </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+            ) : (
+              news.map((article) => (
+                <TableRow key={article._id}>
+                  <TableCell>
+                    <div className="relative w-24 h-16 border rounded-md overflow-hidden bg-muted">
+                      <Image
+                        src={article.imageUrl}
+                        alt={article.title.en || "News image"}
+                        fill
+                        className="object-cover"
+                        sizes="96px"
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-1">
+                      <div className="font-medium text-sm">
+                        {article.title.en}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {article.title.ka}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="max-w-xs">
+                    <div className="space-y-1">
+                      <div className="text-sm truncate">
+                        {article.summary.en}
+                      </div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {article.summary.ka}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-xs text-muted-foreground">
+                      {new Date(article.createdAt).toLocaleDateString()}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handlePreview(article._id)}
+                        title="Preview"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEdit(article._id)}
+                        title="Edit"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onDelete(article._id)}
+                        title="Delete"
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
-  )
+  );
 }
-
