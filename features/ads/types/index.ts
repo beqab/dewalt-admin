@@ -1,33 +1,32 @@
-export interface Ad {
-  id: string
-  title: string
-  image: string
-  link?: string
-  position: string
-  startDate?: string
-  endDate?: string
-  isActive: boolean
-  createdAt: string
-  updatedAt: string
+// Ad Position enum matching backend
+export enum AdPosition {
+  MAIN_PAGE = "main_page",
+  ASIDE = "aside",
+  FOOTER = "footer",
 }
 
+// Ad type matching backend structure
+export interface Ad {
+  _id: string;
+  imageUrl: string;
+  urlLink?: string;
+  position: AdPosition;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// DTOs for creating and updating ads
 export interface CreateAdDto {
-  title: string
-  image: string
-  link?: string
-  position: string
-  startDate?: string
-  endDate?: string
-  isActive: boolean
+  imageUrl: string;
+  urlLink?: string;
+  position: AdPosition;
 }
 
 export interface UpdateAdDto {
-  title?: string
-  image?: string
-  link?: string
-  position?: string
-  startDate?: string
-  endDate?: string
-  isActive?: boolean
+  imageUrl?: string;
+  urlLink?: string;
+  position?: AdPosition;
 }
 
+// Ad Response
+export type AdResponse = Ad;

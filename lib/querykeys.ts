@@ -10,6 +10,11 @@ const QUERY_KEYS = {
         : ["news"],
     BY_ID: (id: string) => ["news", id],
   },
+  ADS: {
+    ALL: ["ads"],
+    BY_ID: (id: string) => ["ads", id],
+    BY_POSITION: (position: string) => ["ads", "position", position],
+  },
 };
 
 export default QUERY_KEYS;

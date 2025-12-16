@@ -10,4 +10,7 @@ export const API_ROUTES = {
 
   // News
   NEWS: "/news",
+
+  // Ads
+  ADS: "/ads",
 };
