@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Users,
@@ -13,6 +15,10 @@ import {
   Package,
   LogOut,
   Menu,
+  Tags,
+  ChevronDown,
+  ChevronRight,
+  Tag,
 } from "lucide-react";
 
 import {
@@ -80,6 +86,16 @@ function NavContent({
 }: NavContentProps) {
   const { data: session } = useSession();
   const user = session?.user;
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+
+  const isCategoriesActive = pathname?.startsWith("/dashboard/categories");
+
+  // Auto-expand categories menu if on a categories page
+  React.useEffect(() => {
+    if (isCategoriesActive) {
+      setIsCategoriesOpen(true);
+    }
+  }, [isCategoriesActive]);
 
   return (
     <>
@@ -106,6 +122,70 @@ function NavContent({
               </SidebarNavItem>
             );
           })}
+
+          {/* Categories Collapsible Menu */}
+          <div className="space-y-1">
+            <button
+              onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+              className={cn(
+                "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                isCategoriesActive
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              )}
+            >
+              <Tags className="h-4 w-4" />
+              <span className="flex-1 text-left">Categories</span>
+              {isCategoriesOpen ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </button>
+            {isCategoriesOpen && (
+              <div className="ml-7 space-y-1 border-l pl-2">
+                <SidebarNavItem
+                  href="/dashboard/categories/brands"
+                  active={pathname === "/dashboard/categories/brands"}
+                  asChild
+                >
+                  <Link
+                    href="/dashboard/categories/brands"
+                    onClick={onMobileMenuClose}
+                  >
+                    <Tag className="h-3.5 w-3.5" />
+                    Brands
+                  </Link>
+                </SidebarNavItem>
+                <SidebarNavItem
+                  href="/dashboard/categories/categories"
+                  active={pathname === "/dashboard/categories/categories"}
+                  asChild
+                >
+                  <Link
+                    href="/dashboard/categories/categories"
+                    onClick={onMobileMenuClose}
+                  >
+                    <Tag className="h-3.5 w-3.5" />
+                    Categories
+                  </Link>
+                </SidebarNavItem>
+                <SidebarNavItem
+                  href="/dashboard/categories/child-categories"
+                  active={pathname === "/dashboard/categories/child-categories"}
+                  asChild
+                >
+                  <Link
+                    href="/dashboard/categories/child-categories"
+                    onClick={onMobileMenuClose}
+                  >
+                    <Tag className="h-3.5 w-3.5" />
+                    Child Categories
+                  </Link>
+                </SidebarNavItem>
+              </div>
+            )}
+          </div>
         </SidebarNav>
       </SidebarContent>
       <SidebarFooter>

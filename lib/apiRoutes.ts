@@ -13,4 +13,7 @@ export const API_ROUTES = {
 
   // Ads
   ADS: "/ads",
+
+  // Categories
+  CATEGORIES: "/categories",
 };

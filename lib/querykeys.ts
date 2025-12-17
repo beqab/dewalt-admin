@@ -15,6 +15,32 @@ const QUERY_KEYS = {
     BY_ID: (id: string) => ["ads", id],
     BY_POSITION: (position: string) => ["ads", "position", position],
   },
+  CATEGORIES: {
+    BRANDS: {
+      ALL: ["categories", "brands"],
+      BY_ID: (id: string) => ["categories", "brands", id],
+    },
+    CATEGORIES: {
+      ALL: ["categories", "categories"],
+      BY_ID: (id: string) => ["categories", "categories", id],
+      BY_BRAND: (brandId: string) => [
+        "categories",
+        "categories",
+        "brand",
+        brandId,
+      ],
+    },
+    CHILD_CATEGORIES: {
+      ALL: ["categories", "child-categories"],
+      BY_ID: (id: string) => ["categories", "child-categories", id],
+      BY_CATEGORY: (categoryId: string) => [
+        "categories",
+        "child-categories",
+        "category",
+        categoryId,
+      ],
+    },
+  },
 };
 
 export default QUERY_KEYS;
