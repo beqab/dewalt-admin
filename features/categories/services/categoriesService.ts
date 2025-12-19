@@ -71,10 +71,12 @@ export const categoriesService = {
 
   // Child Categories
   getChildCategories: {
-    get: (categoryId?: string) => {
-      const params = categoryId ? { categoryId } : undefined;
+    get: (brandId?: string, categoryId?: string) => {
+      const params: Record<string, string> = {};
+      if (brandId) params.brandId = brandId;
+      if (categoryId) params.categoryId = categoryId;
       return categoriesClient.get<ChildCategoryResponse[]>(
-        params,
+        Object.keys(params).length > 0 ? params : undefined,
         "child-categories"
       );
     },

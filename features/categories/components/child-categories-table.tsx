@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Users } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -10,62 +10,51 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import type { ChildCategory, Category } from "../types";
+import type { ChildCategory } from "../types";
 
 interface ChildCategoriesTableProps {
   childCategories: ChildCategory[];
-  category: Category;
   onEdit: (childCategory: ChildCategory) => void;
   onDelete: (id: string) => void;
-  onAddChildCategory: (categoryId: string) => void;
+  onAssignBrands: (childCategory: ChildCategory) => void;
 }
 
 export function ChildCategoriesTable({
   childCategories,
-  category,
   onEdit,
   onDelete,
-  onAddChildCategory,
+  onAssignBrands,
 }: ChildCategoriesTableProps) {
-  const categoryName =
-    typeof category === "string" ? "" : category.name.en;
-
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">
-          Child Categories for {categoryName}
-        </h3>
-        <Button
-          onClick={() =>
-            onAddChildCategory(typeof category === "string" ? category : category._id)
-          }
-          size="sm"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Child Category
-        </Button>
-      </div>
-      <div className="rounded-md border">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
+    <div className="rounded-md border">
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name (EN / KA)</TableHead>
+              <TableHead>Slug</TableHead>
+              <TableHead>Brand</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead className="w-32">Created</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {childCategories.length === 0 ? (
               <TableRow>
-                <TableHead>Name (EN / KA)</TableHead>
-                <TableHead>Slug</TableHead>
-                <TableHead className="w-32">Created</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableCell colSpan={6} className="h-24 text-center">
+                  No child categories found.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {childCategories.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="h-24 text-center">
-                    No child categories found.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                childCategories.map((childCategory) => (
+            ) : (
+              childCategories.map((childCategory) => {
+                const category =
+                  childCategory.categoryId &&
+                  typeof childCategory.categoryId === "object"
+                    ? childCategory.categoryId
+                    : null;
+
+                return (
                   <TableRow key={childCategory._id}>
                     <TableCell>
                       <div className="space-y-1">
@@ -83,12 +72,54 @@ export function ChildCategoriesTable({
                       </div>
                     </TableCell>
                     <TableCell>
+                      {Array.isArray(childCategory.brandIds) &&
+                      childCategory.brandIds.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {childCategory.brandIds.map((brand) => {
+                            const brandData =
+                              typeof brand === "string" ? null : brand;
+                            return brandData ? (
+                              <span
+                                key={brandData._id}
+                                className="text-xs px-2 py-1 rounded bg-muted"
+                              >
+                                {brandData.name.en}
+                              </span>
+                            ) : null;
+                          })}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          Not assigned
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {category ? (
+                        <span className="text-xs px-2 py-1 rounded bg-muted">
+                          {category.name.en}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          Not assigned
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
                       <div className="text-xs text-muted-foreground">
                         {new Date(childCategory.createdAt).toLocaleDateString()}
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onAssignBrands(childCategory)}
+                          title="Assign Brands"
+                        >
+                          <Users className="h-4 w-4" />
+                        </Button>
                         <Button
                           variant="ghost"
                           size="icon"
@@ -108,13 +139,12 @@ export function ChildCategoriesTable({
                       </div>
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
 }
-

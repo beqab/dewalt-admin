@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, Save } from "lucide-react";
 import { CategoriesTable } from "@/features/categories/components/categories-table";
 import {
   useGetBrands,
@@ -15,7 +15,6 @@ import type {
   Category,
   CreateCategoryDto,
   UpdateCategoryDto,
-  Brand,
 } from "@/features/categories/types";
 import {
   Dialog,
@@ -34,28 +33,28 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function CategoriesListPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const brandIdFromQuery = searchParams.get("brandId");
-
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<
     Category | undefined
   >();
-  const [selectedBrandId, setSelectedBrandId] = useState<string>(
-    brandIdFromQuery || ""
-  );
+  const [selectedBrandForAssign, setSelectedBrandForAssign] =
+    useState<string>("");
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
 
   const { data: brands } = useGetBrands();
-  const {
-    data: categories,
-    isLoading,
-    error,
-  } = useGetCategories(selectedBrandId || undefined);
+  const { data: categories, isLoading, error } = useGetCategories(); // Get all categories without brand filter
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const deleteCategory = useDeleteCategory();
@@ -63,46 +62,22 @@ export default function CategoriesListPage() {
   const [formData, setFormData] = useState({
     name: { ka: "", en: "" },
     slug: "",
-    brandId: brandIdFromQuery || "",
   });
 
-  useEffect(() => {
-    if (brandIdFromQuery) {
-      setSelectedBrandId(brandIdFromQuery);
-      setFormData((prev) => ({ ...prev, brandId: brandIdFromQuery }));
-    }
-  }, [brandIdFromQuery]);
-
-  useEffect(() => {
-    if (selectedBrandId) {
-      setFormData((prev) => ({ ...prev, brandId: selectedBrandId }));
-    }
-  }, [selectedBrandId]);
-
   const handleCreate = () => {
-    if (!selectedBrandId) {
-      toast.error("Please select a brand first");
-      return;
-    }
     setEditingCategory(undefined);
     setFormData({
       name: { ka: "", en: "" },
       slug: "",
-      brandId: selectedBrandId,
     });
     setIsDialogOpen(true);
   };
 
   const handleEdit = (category: Category) => {
     setEditingCategory(category);
-    const brandId =
-      typeof category.brandId === "string"
-        ? category.brandId
-        : category.brandId._id;
     setFormData({
       name: category.name,
       slug: category.slug,
-      brandId,
     });
     setIsDialogOpen(true);
   };
@@ -113,10 +88,9 @@ export default function CategoriesListPage() {
     }
   };
 
-  const handleManageChildCategories = (categoryId: string) => {
-    router.push(
-      `/dashboard/categories/child-categories?categoryId=${categoryId}`
-    );
+  const handleManageChildCategories = (category: Category) => {
+    // Navigate to child categories page
+    window.location.href = `/dashboard/categories/child-categories?categoryId=${category._id}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -129,14 +103,12 @@ export default function CategoriesListPage() {
       toast.error("Please enter a slug");
       return;
     }
-    if (!formData.brandId) {
-      toast.error("Please select a brand");
-      return;
-    }
 
     if (editingCategory) {
+      // For update, only update name and slug, not brandIds
+      const { brandIds, ...updateData } = formData;
       updateCategory.mutate(
-        { id: editingCategory._id, data: formData as UpdateCategoryDto },
+        { id: editingCategory._id, data: updateData as UpdateCategoryDto },
         {
           onSuccess: () => {
             setIsDialogOpen(false);
@@ -144,11 +116,137 @@ export default function CategoriesListPage() {
         }
       );
     } else {
+      // For create, brandIds is optional
       createCategory.mutate(formData as CreateCategoryDto, {
         onSuccess: () => {
           setIsDialogOpen(false);
         },
       });
+    }
+  };
+
+  const handleOpenAssignDialog = () => {
+    if (!selectedBrandForAssign) {
+      toast.error("Please select a brand first");
+      return;
+    }
+    // Pre-select categories that are already assigned to this brand
+    const preSelectedCategories =
+      categories
+        ?.filter((cat) => {
+          const brandIds = Array.isArray(cat.brandIds)
+            ? cat.brandIds.map((b) => (typeof b === "string" ? b : b._id))
+            : [];
+          return brandIds.includes(selectedBrandForAssign);
+        })
+        .map((cat) => cat._id) || [];
+    setSelectedCategoryIds(preSelectedCategories);
+    setIsAssignDialogOpen(true);
+  };
+
+  const handleToggleCategory = (categoryId: string) => {
+    setSelectedCategoryIds((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId]
+    );
+  };
+
+  const handleAssignBrands = async () => {
+    if (!selectedBrandForAssign) {
+      toast.error("Please select a brand");
+      return;
+    }
+
+    // Get all categories (both selected and previously assigned)
+    const allCategories = categories || [];
+    const previouslyAssignedCategoryIds = allCategories
+      .filter((cat) => {
+        const brandIds = Array.isArray(cat.brandIds)
+          ? cat.brandIds.map((b) => (typeof b === "string" ? b : b._id))
+          : [];
+        return brandIds.includes(selectedBrandForAssign);
+      })
+      .map((cat) => cat._id);
+
+    // Categories to add brand to
+    const categoriesToAdd = selectedCategoryIds.filter(
+      (id) => !previouslyAssignedCategoryIds.includes(id)
+    );
+
+    // Categories to remove brand from
+    const categoriesToRemove = previouslyAssignedCategoryIds.filter(
+      (id) => !selectedCategoryIds.includes(id)
+    );
+
+    const updatePromises: Promise<any>[] = [];
+
+    // Add brand to new categories
+    categoriesToAdd.forEach((categoryId) => {
+      const category = categories?.find((c) => c._id === categoryId);
+      if (!category) return;
+
+      const currentBrandIds = Array.isArray(category.brandIds)
+        ? category.brandIds.map((b) => (typeof b === "string" ? b : b._id))
+        : [];
+
+      const newBrandIds = currentBrandIds.includes(selectedBrandForAssign)
+        ? currentBrandIds
+        : [...currentBrandIds, selectedBrandForAssign];
+
+      updatePromises.push(
+        updateCategory.mutateAsync({
+          id: categoryId,
+          data: { brandIds: newBrandIds } as UpdateCategoryDto,
+        })
+      );
+    });
+
+    // Remove brand from unselected categories
+    categoriesToRemove.forEach((categoryId) => {
+      const category = categories?.find((c) => c._id === categoryId);
+      if (!category) return;
+
+      const currentBrandIds = Array.isArray(category.brandIds)
+        ? category.brandIds.map((b) => (typeof b === "string" ? b : b._id))
+        : [];
+
+      const newBrandIds = currentBrandIds.filter(
+        (id) => id !== selectedBrandForAssign
+      );
+
+      updatePromises.push(
+        updateCategory.mutateAsync({
+          id: categoryId,
+          data: { brandIds: newBrandIds } as UpdateCategoryDto,
+        })
+      );
+    });
+
+    if (updatePromises.length === 0) {
+      toast.info("No changes to apply");
+      setIsAssignDialogOpen(false);
+      return;
+    }
+
+    try {
+      await Promise.all(updatePromises);
+      const addCount = categoriesToAdd.length;
+      const removeCount = categoriesToRemove.length;
+      const message = [];
+      if (addCount > 0)
+        message.push(`Added ${addCount} categor${addCount > 1 ? "ies" : "y"}`);
+      if (removeCount > 0)
+        message.push(
+          `Removed ${removeCount} categor${removeCount > 1 ? "ies" : "y"}`
+        );
+      toast.success(`Successfully updated: ${message.join(", ")}`);
+      setIsAssignDialogOpen(false);
+      setSelectedCategoryIds([]);
+      setSelectedBrandForAssign("");
+    } catch (error) {
+      toast.error("Failed to update category assignments");
+      console.error("Error:", error);
     }
   };
 
@@ -163,68 +261,76 @@ export default function CategoriesListPage() {
     );
   }
 
-  const selectedBrand = brands?.find((b) => b._id === selectedBrandId);
-
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold sm:text-3xl">Categories</h1>
           <p className="text-sm text-muted-foreground sm:text-base">
-            Manage categories for brands
+            Manage categories and assign them to brands
           </p>
         </div>
-        <Button
-          onClick={handleCreate}
-          className="w-full sm:w-auto"
-          disabled={!selectedBrandId}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Category
-        </Button>
-      </div>
-
-      <div className="space-y-4">
-        <div className="max-w-xs">
-          <Label htmlFor="brand-select">Filter by Brand</Label>
-          <Select value={selectedBrandId} onValueChange={setSelectedBrandId}>
-            <SelectTrigger id="brand-select">
-              <SelectValue placeholder="Select a brand" />
-            </SelectTrigger>
-            <SelectContent>
-              {brands?.map((brand) => (
-                <SelectItem key={brand._id} value={brand._id}>
-                  {brand.name.en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleOpenAssignDialog}
+            variant="outline"
+            className="w-full sm:w-auto"
+            disabled={!selectedBrandForAssign}
+          >
+            <Save className="mr-2 h-4 w-4" />
+            Assign to Brand
+          </Button>
+          <Button onClick={handleCreate} className="w-full sm:w-auto">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Category
+          </Button>
         </div>
-
-        {selectedBrandId ? (
-          isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <Loader2 className="animate-spin" /> Loading categories...
-            </div>
-          ) : (
-            <CategoriesTable
-              categories={categories || []}
-              brand={selectedBrand!}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onAddCategory={handleCreate}
-              onManageChildCategories={handleManageChildCategories}
-            />
-          )
-        ) : (
-          <div className="flex items-center justify-center h-64 border rounded-md">
-            <p className="text-muted-foreground">
-              Please select a brand to view categories
-            </p>
-          </div>
-        )}
       </div>
 
+      {/* Brand Selection for Assignment */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Assign Categories to Brand</CardTitle>
+          <CardDescription>
+            Select a brand to assign categories to it
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="max-w-xs">
+            <Label htmlFor="brand-select-assign">Select Brand</Label>
+            <Select
+              value={selectedBrandForAssign}
+              onValueChange={setSelectedBrandForAssign}
+            >
+              <SelectTrigger id="brand-select-assign">
+                <SelectValue placeholder="Select a brand" />
+              </SelectTrigger>
+              <SelectContent>
+                {brands?.map((brand) => (
+                  <SelectItem key={brand._id} value={brand._id}>
+                    {brand.name.en}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {isLoading ? (
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="animate-spin" /> Loading categories...
+        </div>
+      ) : (
+        <CategoriesTable
+          categories={categories || []}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onManageChildCategories={handleManageChildCategories}
+        />
+      )}
+
+      {/* Create/Edit Category Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <form onSubmit={handleSubmit}>
@@ -235,32 +341,10 @@ export default function CategoriesListPage() {
               <DialogDescription>
                 {editingCategory
                   ? "Update category information."
-                  : "Add a new category."}
+                  : "Add a new category. You can assign it to brands later."}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="category-brand">Brand</Label>
-                <Select
-                  value={formData.brandId}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, brandId: value })
-                  }
-                  disabled={!!editingCategory}
-                >
-                  <SelectTrigger id="category-brand">
-                    <SelectValue placeholder="Select a brand" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {brands?.map((brand) => (
-                      <SelectItem key={brand._id} value={brand._id}>
-                        {brand.name.en}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
               <div className="space-y-2">
                 <Label>Name</Label>
                 <div className="grid gap-3">
@@ -316,6 +400,9 @@ export default function CategoriesListPage() {
                   placeholder="power-tools"
                   required
                 />
+                <p className="text-xs text-muted-foreground">
+                  URL-friendly identifier (must be unique)
+                </p>
               </div>
             </div>
             <DialogFooter>
@@ -343,6 +430,97 @@ export default function CategoriesListPage() {
               </Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Assign Categories to Brand Dialog */}
+      <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Assign Categories to Brand</DialogTitle>
+            <DialogDescription>
+              Select categories to assign to{" "}
+              {brands?.find((b) => b._id === selectedBrandForAssign)?.name.en ||
+                "selected brand"}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 py-4">
+            {categories?.map((category) => {
+              const categoryBrandIds = Array.isArray(category.brandIds)
+                ? category.brandIds.map((b) =>
+                    typeof b === "string" ? b : b._id
+                  )
+                : [];
+              const isAssigned = categoryBrandIds.includes(
+                selectedBrandForAssign
+              );
+              const isSelected = selectedCategoryIds.includes(category._id);
+
+              return (
+                <div
+                  key={category._id}
+                  className="flex items-center space-x-2 p-2 border rounded"
+                >
+                  <Checkbox
+                    id={`category-${category._id}`}
+                    checked={isSelected}
+                    onCheckedChange={() => handleToggleCategory(category._id)}
+                  />
+                  <Label
+                    htmlFor={`category-${category._id}`}
+                    className="flex-1 cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">{category.name.en}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {category.name.ka}
+                        </div>
+                      </div>
+                      {isAssigned && (
+                        <span className="text-xs text-muted-foreground">
+                          Already assigned
+                        </span>
+                      )}
+                    </div>
+                  </Label>
+                </div>
+              );
+            })}
+            {categories?.length === 0 && (
+              <p className="text-center text-muted-foreground py-8">
+                No categories available
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsAssignDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleAssignBrands}
+              disabled={
+                selectedCategoryIds.length === 0 || updateCategory.isPending
+              }
+            >
+              {updateCategory.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Assigning...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Assign Selected ({selectedCategoryIds.length})
+                </>
+              )}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

@@ -18,7 +18,7 @@ export interface Category {
   _id: string;
   name: LocalizedText;
   slug: string;
-  brandId: string | Brand;
+  brandIds: string[] | Brand[];
   createdAt: string;
   updatedAt: string;
 }
@@ -28,7 +28,8 @@ export interface ChildCategory {
   _id: string;
   name: LocalizedText;
   slug: string;
-  categoryId: string | Category;
+  brandIds?: string[] | Brand[];
+  categoryId?: string | Category;
   createdAt: string;
   updatedAt: string;
 }
@@ -47,24 +48,26 @@ export interface UpdateBrandDto {
 export interface CreateCategoryDto {
   name: LocalizedText;
   slug: string;
-  brandId: string;
+  brandIds?: string[];
 }
 
 export interface UpdateCategoryDto {
   name?: LocalizedText;
   slug?: string;
-  brandId?: string;
+  brandIds?: string[];
 }
 
 export interface CreateChildCategoryDto {
   name: LocalizedText;
   slug: string;
-  categoryId: string;
+  brandIds?: string[];
+  categoryId?: string;
 }
 
 export interface UpdateChildCategoryDto {
   name?: LocalizedText;
   slug?: string;
+  brandIds?: string[];
   categoryId?: string;
 }
 
