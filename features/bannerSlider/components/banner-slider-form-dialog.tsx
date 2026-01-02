@@ -34,6 +34,7 @@ export function BannerSliderFormDialog({
     title: { ka: "", en: "" },
     description: { ka: "", en: "" },
     imageUrl: "",
+    buttonLink: "",
   });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -43,12 +44,14 @@ export function BannerSliderFormDialog({
         title: banner.title,
         description: banner.description,
         imageUrl: banner.imageUrl,
+        buttonLink: banner.buttonLink || "",
       });
     } else {
       setFormData({
         title: { ka: "", en: "" },
         description: { ka: "", en: "" },
         imageUrl: "",
+        buttonLink: "",
       });
     }
   }, [banner, open]);
@@ -179,6 +182,18 @@ export function BannerSliderFormDialog({
                 imageUrl={formData.imageUrl}
                 defaultImageUrl={banner?.imageUrl}
                 label="Image"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="buttonLink">Button Link</Label>
+              <Input
+                id="buttonLink"
+                type="url"
+                value={formData.buttonLink}
+                onChange={(e) =>
+                  setFormData({ ...formData, buttonLink: e.target.value })
+                }
+                placeholder="https://example.com/products"
               />
             </div>
           </div>

@@ -10,6 +10,7 @@ export interface Banner {
   title: LocalizedText;
   description: LocalizedText;
   order: number;
+  buttonLink?: string;
 }
 
 // Banner Slider Response matching backend DTO
@@ -25,16 +26,17 @@ export interface CreateBannerDto {
   imageUrl: string;
   title: LocalizedText;
   description: LocalizedText;
+  buttonLink?: string;
 }
 
 export interface UpdateBannerDto {
   imageUrl?: string;
   title?: LocalizedText;
   description?: LocalizedText;
+  buttonLink?: string;
 }
 
 // DTO for reordering banners (array of banners)
 export interface ReorderBannersDto {
   banners: CreateBannerDto[];
 }
-
