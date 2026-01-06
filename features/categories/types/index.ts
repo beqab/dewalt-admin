@@ -18,7 +18,8 @@ export interface Category {
   _id: string;
   name: LocalizedText;
   slug: string;
-  brandIds: string[] | Brand[];
+  brandIds: Brand[];
+  brandId: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -75,4 +76,3 @@ export interface UpdateChildCategoryDto {
 export type BrandResponse = Brand;
 export type CategoryResponse = Category;
 export type ChildCategoryResponse = ChildCategory;
-

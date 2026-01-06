@@ -3,6 +3,7 @@ import { categoriesService } from "../services/categoriesService";
 import { UpdateCategoryDto } from "../types";
 import QUERY_KEYS from "@/lib/querykeys";
 import { toast } from "sonner";
+import { ApiErrorResponse } from "@/lib/apiClient";
 
 export const useUpdateCategory = () => {
   const queryClient = useQueryClient();
@@ -10,19 +11,18 @@ export const useUpdateCategory = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateCategoryDto }) =>
       categoriesService.updateCategory.patch(id, data),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.CATEGORIES.CATEGORIES.ALL });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.CATEGORIES.CATEGORIES.ALL,
+      });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.CATEGORIES.CATEGORIES.BY_ID(variables.id),
       });
       toast.success("Category updated successfully!");
     },
-    onError: (error: unknown) => {
+    onError: (error: ApiErrorResponse) => {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Failed to update category. Please try again."
+        error.message || "Failed to update category. Please try again."
       );
     },
   });
 };
-

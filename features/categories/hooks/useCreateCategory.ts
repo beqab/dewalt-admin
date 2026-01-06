@@ -3,6 +3,7 @@ import { categoriesService } from "../services/categoriesService";
 import { CreateCategoryDto } from "../types";
 import QUERY_KEYS from "@/lib/querykeys";
 import { toast } from "sonner";
+import { ApiErrorResponse } from "@/lib/apiClient";
 
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
@@ -10,20 +11,22 @@ export const useCreateCategory = () => {
     mutationFn: (data: CreateCategoryDto) =>
       categoriesService.createCategory.post(data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.CATEGORIES.CATEGORIES.ALL });
-      const brandId = typeof data.brandId === "string" ? data.brandId : data.brandId._id;
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.CATEGORIES.CATEGORIES.ALL,
+      });
+      const brandId = data.brandIds?.reduce(
+        (acc: string, brand) => acc + brand._id,
+        ""
+      );
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.CATEGORIES.CATEGORIES.BY_BRAND(brandId),
       });
       toast.success("Category created successfully!");
     },
-    onError: (error: unknown) => {
+    onError: (error: ApiErrorResponse) => {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Failed to create category. Please try again."
+        error.message || "Failed to create category. Please try again."
       );
     },
   });
 };
-

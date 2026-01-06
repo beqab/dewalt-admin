@@ -13,6 +13,7 @@ import {
 } from "@/features/categories";
 import type {
   Category,
+  CategoryResponse,
   CreateCategoryDto,
   UpdateCategoryDto,
 } from "@/features/categories/types";
@@ -106,7 +107,7 @@ export default function CategoriesListPage() {
 
     if (editingCategory) {
       // For update, only update name and slug, not brandIds
-      const { brandIds, ...updateData } = formData;
+      const { ...updateData } = formData;
       updateCategory.mutate(
         { id: editingCategory._id, data: updateData as UpdateCategoryDto },
         {
@@ -179,7 +180,7 @@ export default function CategoriesListPage() {
       (id) => !selectedCategoryIds.includes(id)
     );
 
-    const updatePromises: Promise<any>[] = [];
+    const updatePromises: Promise<CategoryResponse>[] = [];
 
     // Add brand to new categories
     categoriesToAdd.forEach((categoryId) => {
