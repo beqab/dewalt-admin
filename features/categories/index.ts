@@ -8,6 +8,11 @@ export { categoriesService } from "./services/categoriesService";
 export { BrandsTable } from "./components/brands-table";
 export { CategoriesTable } from "./components/categories-table";
 export { ChildCategoriesTable } from "./components/child-categories-table";
+export { CategoryForm } from "./components/category-form";
+export { ChildCategoryForm } from "./components/child-category-form";
+export { AssignToBrandDialog } from "./components/assign-to-brand-dialog";
+export { AssignToBrandCategoryDialog } from "./components/assign-to-brand-category-dialog";
+export { BrandSelector } from "./components/brand-selector";
 
 // Hooks - Brands
 export { useGetBrands } from "./hooks/useGetBrands";
