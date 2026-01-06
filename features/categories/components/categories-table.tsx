@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Trash2, ListTree } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -16,14 +16,12 @@ interface CategoriesTableProps {
   categories: Category[];
   onEdit: (category: Category) => void;
   onDelete: (id: string) => void;
-  onManageChildCategories: (category: Category) => void;
 }
 
 export function CategoriesTable({
   categories,
   onEdit,
   onDelete,
-  onManageChildCategories,
 }: CategoriesTableProps) {
   return (
     <div className="rounded-md border">
@@ -34,7 +32,7 @@ export function CategoriesTable({
               <TableHead>Name (EN / KA)</TableHead>
               <TableHead>Slug</TableHead>
               <TableHead>Brands</TableHead>
-              <TableHead className="w-32">Created</TableHead>
+
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -74,21 +72,12 @@ export function CategoriesTable({
                         {brands.length > 0 ? (
                           <div className="flex flex-wrap gap-1">
                             {brandIds?.map((brand) => {
-                              const brandData =
-                                typeof brand === "string" ? null : brand;
-                              return brandData ? (
+                              return (
                                 <span
-                                  key={brandData._id}
+                                  key={brand._id}
                                   className="inline-flex items-center px-2 py-1 rounded bg-muted text-xs"
                                 >
-                                  {brandData.name.en}
-                                </span>
-                              ) : (
-                                <span
-                                  key={brand as string}
-                                  className="inline-flex items-center px-2 py-1 rounded bg-muted text-xs"
-                                >
-                                  {brand as string}
+                                  {brand.name.en}
                                 </span>
                               );
                             })}
@@ -100,21 +89,9 @@ export function CategoriesTable({
                         )}
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(category.createdAt).toLocaleDateString()}
-                      </div>
-                    </TableCell>
+
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onManageChildCategories(category)}
-                          title="Manage Child Categories"
-                        >
-                          <ListTree className="h-4 w-4" />
-                        </Button>
                         <Button
                           variant="ghost"
                           size="icon"

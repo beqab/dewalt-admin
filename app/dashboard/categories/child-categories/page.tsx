@@ -48,11 +48,6 @@ export default function ChildCategoriesPage() {
     }
   };
 
-  const handleAssignBrands = (childCategory: ChildCategory) => {
-    // This functionality can be handled in the edit form now
-    handleEdit(childCategory);
-  };
-
   const handleCreateChildCategory = async (data: CreateChildCategoryDto) => {
     await createChildCategory.mutateAsync(data);
   };
@@ -110,7 +105,6 @@ export default function ChildCategoriesPage() {
           childCategories={childCategories || []}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          onAssignBrands={handleAssignBrands}
         />
       )}
 

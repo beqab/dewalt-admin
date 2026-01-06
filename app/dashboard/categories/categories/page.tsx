@@ -36,10 +36,7 @@ export default function CategoriesListPage() {
   const [editingCategory, setEditingCategory] = useState<
     Category | undefined
   >();
-  const [selectedBrandForAssign, setSelectedBrandForAssign] =
-    useState<string>("");
 
-  const { data: brands } = useGetBrands();
   const { data: categories, isLoading, error } = useGetCategories();
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
@@ -61,15 +58,7 @@ export default function CategoriesListPage() {
     }
   };
 
-  const handleManageChildCategories = (category: Category) => {
-    window.location.href = `/dashboard/categories/child-categories?categoryId=${category._id}`;
-  };
-
   const handleOpenAssignDialog = () => {
-    if (!selectedBrandForAssign) {
-      toast.error("Please select a brand first");
-      return;
-    }
     setIsAssignDialogOpen(true);
   };
 
@@ -80,8 +69,6 @@ export default function CategoriesListPage() {
   const handleUpdateCategory = async (id: string, data: UpdateCategoryDto) => {
     await updateCategory.mutateAsync({ id, data });
   };
-
-  const selectedBrand = brands?.find((b) => b._id === selectedBrandForAssign);
 
   if (error) {
     return (
@@ -108,7 +95,6 @@ export default function CategoriesListPage() {
             onClick={handleOpenAssignDialog}
             variant="outline"
             className="w-full sm:w-auto"
-            disabled={!selectedBrandForAssign}
           >
             <Save className="mr-2 h-4 w-4" />
             Assign to Brand
@@ -121,7 +107,7 @@ export default function CategoriesListPage() {
       </div>
 
       {/* Brand Selection for Assignment */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Assign Categories to Brand</CardTitle>
           <CardDescription>
@@ -138,7 +124,7 @@ export default function CategoriesListPage() {
             />
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {isLoading ? (
         <div className="flex items-center justify-center h-64">
@@ -149,7 +135,6 @@ export default function CategoriesListPage() {
           categories={categories || []}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          onManageChildCategories={handleManageChildCategories}
         />
       )}
 
@@ -165,15 +150,12 @@ export default function CategoriesListPage() {
       />
 
       {/* Assign Categories to Brand Dialog */}
-      {selectedBrand && (
-        <AssignToBrandDialog
-          isOpen={isAssignDialogOpen}
-          onClose={() => setIsAssignDialogOpen(false)}
-          brandId={selectedBrandForAssign}
-          brandName={selectedBrand.name.en}
-          categories={categories || []}
-        />
-      )}
+
+      <AssignToBrandDialog
+        isOpen={isAssignDialogOpen}
+        onClose={() => setIsAssignDialogOpen(false)}
+        categories={categories || []}
+      />
     </div>
   );
 }

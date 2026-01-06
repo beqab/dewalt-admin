@@ -29,7 +29,7 @@ export interface ChildCategory {
   _id: string;
   name: LocalizedText;
   slug: string;
-  brandIds?: string[] | Brand[];
+  brandIds?: Brand[];
   categoryId?: string | Category;
   createdAt: string;
   updatedAt: string;

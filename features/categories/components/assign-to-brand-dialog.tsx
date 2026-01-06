@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Save } from "lucide-react";
 import {
@@ -15,13 +15,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import type { Category, UpdateCategoryDto } from "../types";
-import { useUpdateCategory } from "@/features/categories";
+import {
+  BrandSelector,
+  useGetBrands,
+  useUpdateCategory,
+} from "@/features/categories";
 
 interface AssignToBrandDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  brandId: string;
-  brandName: string;
   categories: Category[];
   onSuccess?: () => void;
 }
@@ -29,29 +31,51 @@ interface AssignToBrandDialogProps {
 export function AssignToBrandDialog({
   isOpen,
   onClose,
-  brandId,
-  brandName,
+
   categories,
   onSuccess,
 }: AssignToBrandDialogProps) {
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const updateCategory = useUpdateCategory();
+  const [selectedBrandForAssign, setSelectedBrandForAssign] =
+    useState<string>("");
+  const { data: brands } = useGetBrands();
+  const selectedBrand = brands?.find((b) => b._id === selectedBrandForAssign);
+  const brandName = selectedBrand?.name.en;
+  const brandId = selectedBrand?._id;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
+  // Compute initial selected categories based on brandId
+
+  const initialSelectedCategoryIds = useMemo(() => {
     if (isOpen && brandId) {
-      // Pre-select categories that are already assigned to this brand
-      const preSelectedCategories = categories
+      return categories
         .filter((cat) => {
-          const brandIds = Array.isArray(cat.brandIds)
-            ? cat.brandIds.map((b) => (typeof b === "string" ? b : b._id))
-            : [];
+          const brandIds = cat.brandIds.map((b) => b._id);
           return brandIds.includes(brandId);
         })
         .map((cat) => cat._id);
-      setSelectedCategoryIds(preSelectedCategories);
     }
+    return [];
   }, [isOpen, brandId, categories]);
+
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+
+  // Reset selected categories when dialog opens or brandId changes
+  useEffect(() => {
+    if (isOpen) {
+      // Use setTimeout to avoid synchronous setState in effect
+      const timer = setTimeout(() => {
+        setSelectedCategoryIds(initialSelectedCategoryIds);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+    // Reset when dialog closes
+    if (!isOpen) {
+      const timer = setTimeout(() => {
+        setSelectedCategoryIds([]);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, initialSelectedCategoryIds]);
 
   const handleToggleCategory = (categoryId: string) => {
     setSelectedCategoryIds((prev) =>
@@ -164,14 +188,22 @@ export function AssignToBrandDialog({
             Select categories to assign to {brandName}
           </DialogDescription>
         </DialogHeader>
+
         <div className="space-y-2 py-4">
+          <BrandSelector
+            brands={brands}
+            value={selectedBrandForAssign}
+            onValueChange={setSelectedBrandForAssign}
+            id="brand-select-assign"
+          />
+          <br />
           {categories.map((category) => {
             const categoryBrandIds = Array.isArray(category.brandIds)
               ? category.brandIds.map((b) =>
                   typeof b === "string" ? b : b._id
                 )
               : [];
-            const isAssigned = categoryBrandIds.includes(brandId);
+            const isAssigned = categoryBrandIds.includes(brandId ?? "");
             const isSelected = selectedCategoryIds.includes(category._id);
 
             return (
@@ -218,7 +250,7 @@ export function AssignToBrandDialog({
           <Button
             type="button"
             onClick={handleAssign}
-            disabled={updateCategory.isPending}
+            disabled={updateCategory.isPending || !selectedBrandForAssign}
           >
             {updateCategory.isPending ? (
               <>

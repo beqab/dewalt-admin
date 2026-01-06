@@ -134,9 +134,6 @@ export default function BrandsPage() {
         brands={brands || []}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onManageCategories={(brand) => {
-          router.push(`/dashboard/categories/categories?brandId=${brand._id}`);
-        }}
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

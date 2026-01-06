@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Save } from "lucide-react";
 import {
@@ -21,7 +21,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import type { ChildCategory, UpdateChildCategoryDto, Category } from "../types";
+import type { ChildCategory, UpdateChildCategoryDto } from "../types";
 import {
   useUpdateChildCategory,
   useGetBrands,
@@ -55,23 +55,25 @@ export function AssignToBrandCategoryDialog({
   >([]);
 
   // Filter categories by selected brand
-  const categoriesForBrand = selectedBrandForAssign
-    ? categories?.filter((cat) => {
-        const brandIds = Array.isArray(cat.brandIds)
-          ? cat.brandIds.map((b) => (typeof b === "string" ? b : b._id))
-          : [];
-        return brandIds.includes(selectedBrandForAssign);
-      })
-    : categories;
+  const categoriesForBrand = useMemo(() => {
+    return selectedBrandForAssign
+      ? categories?.filter((cat) => {
+          const brandIds = Array.isArray(cat.brandIds)
+            ? cat.brandIds.map((b) => (typeof b === "string" ? b : b._id))
+            : [];
+          return brandIds.includes(selectedBrandForAssign);
+        })
+      : categories;
+  }, [selectedBrandForAssign, categories]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
+  // Compute initial selected child categories
+  const initialSelectedChildCategoryIds = useMemo(() => {
     if (
       selectedBrandForAssign &&
       selectedCategoryForAssign &&
       childCategories
     ) {
-      const preSelectedChildCategories = childCategories
+      return childCategories
         .filter((childCat) => {
           const childCategoryBrandIds = Array.isArray(childCat.brandIds)
             ? childCat.brandIds.map((b) => (typeof b === "string" ? b : b._id))
@@ -86,19 +88,29 @@ export function AssignToBrandCategoryDialog({
           );
         })
         .map((childCat) => childCat._id);
-      setSelectedChildCategoryIds(preSelectedChildCategories);
-    } else {
-      setSelectedChildCategoryIds([]);
     }
+    return [];
   }, [selectedBrandForAssign, selectedCategoryForAssign, childCategories]);
 
+  // Reset selected child categories when dependencies change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSelectedChildCategoryIds(initialSelectedChildCategoryIds);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [initialSelectedChildCategoryIds]);
+
+  // Validate selected category when brand changes
   useEffect(() => {
     if (selectedBrandForAssign && selectedCategoryForAssign) {
       const category = categoriesForBrand?.find(
         (c) => c._id === selectedCategoryForAssign
       );
       if (!category) {
-        setSelectedCategoryForAssign("");
+        const timer = setTimeout(() => {
+          setSelectedCategoryForAssign("");
+        }, 0);
+        return () => clearTimeout(timer);
       }
     }
   }, [selectedBrandForAssign, categoriesForBrand, selectedCategoryForAssign]);

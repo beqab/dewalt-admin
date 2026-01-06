@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import {
@@ -13,8 +15,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import type { Category, CreateCategoryDto, UpdateCategoryDto } from "../types";
+
+const categorySchema = yup.object({
+  name: yup.object({
+    ka: yup.string().required("Georgian name is required"),
+    en: yup.string().required("English name is required"),
+  }),
+  slug: yup.string().required("Slug is required"),
+});
+
+type CategoryFormValues = yup.InferType<typeof categorySchema>;
 
 interface CategoryFormProps {
   isOpen: boolean;
@@ -35,53 +46,47 @@ export function CategoryForm({
   isCreating = false,
   isUpdating = false,
 }: CategoryFormProps) {
-  const [formData, setFormData] = useState({
-    name: { ka: "", en: "" },
-    slug: "",
+  const formik = useFormik<CategoryFormValues>({
+    initialValues: {
+      name: { ka: "", en: "" },
+      slug: "",
+    },
+    validationSchema: categorySchema,
+    onSubmit: async (values) => {
+      try {
+        if (category) {
+          await onUpdate(category._id, values);
+        } else {
+          await onCreate(values);
+        }
+        formik.resetForm();
+        onClose();
+      } catch {
+        // Error handling is done in the mutation
+      }
+    },
+    enableReinitialize: true,
   });
 
-  //eslint-disable-next-line react-hooks/exhaustive-deps
+  // Reset form when dialog opens/closes or category changes
   useEffect(() => {
-    if (category) {
-      setFormData({
-        name: category.name,
-        slug: category.slug,
-      });
-    } else {
-      setFormData({
-        name: { ka: "", en: "" },
-        slug: "",
-      });
-    }
-  }, [category, isOpen]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name.ka || !formData.name.en) {
-      toast.error("Please fill in both Georgian and English names");
-      return;
-    }
-    if (!formData.slug) {
-      toast.error("Please enter a slug");
-      return;
-    }
-
-    try {
+    if (isOpen) {
       if (category) {
-        await onUpdate(category._id, formData);
+        formik.setValues({
+          name: category.name,
+          slug: category.slug,
+        });
       } else {
-        await onCreate(formData);
+        formik.resetForm();
       }
-      onClose();
-    } catch (error) {
-      // Error handling is done in the mutation
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, category]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <DialogHeader>
             <DialogTitle>
               {category ? "Edit Category" : "Create Category"}
@@ -105,15 +110,19 @@ export function CategoryForm({
                   </Label>
                   <Input
                     id="category-name-ka"
-                    value={formData.name.ka}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        name: { ...formData.name, ka: e.target.value },
-                      })
-                    }
-                    required
+                    name="name.ka"
+                    placeholder="კატეგორია"
+                    value={formik.values.name.ka}
+                    onChange={(e) => {
+                      formik.setFieldValue("name.ka", e.target.value);
+                    }}
+                    onBlur={formik.handleBlur}
                   />
+                  {formik.touched.name?.ka && formik.errors.name?.ka && (
+                    <p className="text-sm font-medium text-destructive">
+                      {formik.errors.name.ka}
+                    </p>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label
@@ -124,15 +133,19 @@ export function CategoryForm({
                   </Label>
                   <Input
                     id="category-name-en"
-                    value={formData.name.en}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        name: { ...formData.name, en: e.target.value },
-                      })
-                    }
-                    required
+                    name="name.en"
+                    placeholder="Category"
+                    value={formik.values.name.en}
+                    onChange={(e) => {
+                      formik.setFieldValue("name.en", e.target.value);
+                    }}
+                    onBlur={formik.handleBlur}
                   />
+                  {formik.touched.name?.en && formik.errors.name?.en && (
+                    <p className="text-sm font-medium text-destructive">
+                      {formik.errors.name.en}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -141,16 +154,20 @@ export function CategoryForm({
               <Label htmlFor="category-slug">Slug</Label>
               <Input
                 id="category-slug"
-                value={formData.slug}
-                onChange={(e) =>
-                  setFormData({ ...formData, slug: e.target.value })
-                }
+                name="slug"
                 placeholder="power-tools"
-                required
+                value={formik.values.slug}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               <p className="text-xs text-muted-foreground">
                 URL-friendly identifier (must be unique)
               </p>
+              {formik.touched.slug && formik.errors.slug && (
+                <p className="text-sm font-medium text-destructive">
+                  {formik.errors.slug}
+                </p>
+              )}
             </div>
           </div>
           <DialogFooter>

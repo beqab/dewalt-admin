@@ -13,6 +13,8 @@ export { ChildCategoryForm } from "./components/child-category-form";
 export { AssignToBrandDialog } from "./components/assign-to-brand-dialog";
 export { AssignToBrandCategoryDialog } from "./components/assign-to-brand-category-dialog";
 export { BrandSelector } from "./components/brand-selector";
+export { BrandMultiSelector } from "./components/brand-multi-selector";
+export { CategorySelector } from "./components/category-selector";
 
 // Hooks - Brands
 export { useGetBrands } from "./hooks/useGetBrands";

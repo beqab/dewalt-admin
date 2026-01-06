@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import {
@@ -11,22 +13,36 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import type {
   ChildCategory,
   CreateChildCategoryDto,
   UpdateChildCategoryDto,
 } from "../types";
 import { useGetBrands, useGetCategories } from "@/features/categories";
+import { BrandMultiSelector } from "./brand-multi-selector";
+import { CategorySelector } from "./category-selector";
+
+const childCategorySchema = yup.object({
+  name: yup.object({
+    ka: yup.string().required("Georgian name is required"),
+    en: yup.string().required("English name is required"),
+  }),
+  slug: yup.string().required("Slug is required"),
+  brandIds: yup.array().of(yup.string()).default([]),
+  categoryId: yup.string().optional(),
+});
+
+type ChildCategoryFormValues = {
+  name: {
+    ka: string;
+    en: string;
+  };
+  slug: string;
+  brandIds: string[];
+  categoryId?: string;
+};
 
 interface ChildCategoryFormProps {
   isOpen: boolean;
@@ -50,84 +66,81 @@ export function ChildCategoryForm({
   const { data: brands } = useGetBrands();
   const { data: categories } = useGetCategories();
 
-  const [formData, setFormData] = useState({
-    name: { ka: "", en: "" },
-    slug: "",
-    brandIds: [] as string[],
-    categoryId: undefined as string | undefined,
-  });
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
+  // Compute initial form data based on childCategory prop
+  const initialFormData = useMemo(() => {
     if (childCategory) {
       const brandIds = Array.isArray(childCategory.brandIds)
-        ? childCategory.brandIds.map((b) => (typeof b === "string" ? b : b._id))
+        ? childCategory.brandIds.map((b) => b._id)
         : [];
       const categoryId =
         typeof childCategory.categoryId === "string"
           ? childCategory.categoryId
           : childCategory.categoryId?._id || undefined;
-      setFormData({
+      return {
         name: childCategory.name,
         slug: childCategory.slug,
         brandIds,
         categoryId,
-      });
-    } else {
-      setFormData({
-        name: { ka: "", en: "" },
-        slug: "",
-        brandIds: [],
-        categoryId: undefined,
-      });
+      };
     }
+    return {
+      name: { ka: "", en: "" },
+      slug: "",
+      brandIds: [] as string[],
+      categoryId: undefined as string | undefined,
+    };
   }, [childCategory]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name.ka || !formData.name.en) {
-      toast.error("Please fill in both Georgian and English names");
-      return;
-    }
-    if (!formData.slug) {
-      toast.error("Please enter a slug");
-      return;
-    }
-
-    try {
-      if (childCategory) {
-        const updateData: UpdateChildCategoryDto = {
-          name: formData.name,
-          slug: formData.slug,
-          brandIds: formData.brandIds,
-          categoryId: formData.categoryId || undefined,
-        };
-        await onUpdate(childCategory._id, updateData);
-      } else {
-        await onCreate(formData);
+  const formik = useFormik<ChildCategoryFormValues>({
+    initialValues: initialFormData,
+    validationSchema: childCategorySchema,
+    onSubmit: async (values) => {
+      try {
+        if (childCategory) {
+          const updateData: UpdateChildCategoryDto = {
+            name: values.name,
+            slug: values.slug,
+            brandIds: values.brandIds || [],
+            categoryId: values.categoryId || undefined,
+          };
+          await onUpdate(childCategory._id, updateData);
+        } else {
+          await onCreate(values);
+        }
+        formik.resetForm();
+        onClose();
+      } catch {
+        // Error handling is done in the mutation
       }
-      onClose();
-    } catch (error) {
-      // Error handling is done in the mutation
-    }
-  };
-
-  const availableCategories = categories?.filter((category) => {
-    if (formData.brandIds.length > 0) {
-      const categoryBrandIds = Array.isArray(category.brandIds)
-        ? category.brandIds.map((b) => (typeof b === "string" ? b : b._id))
-        : [];
-      return formData.brandIds.some((brandId) =>
-        categoryBrandIds.includes(brandId)
-      );
-    }
-    return true;
+    },
+    enableReinitialize: true,
   });
+
+  // Reset form when dialog opens/closes or category changes
+  useEffect(() => {
+    if (isOpen) {
+      formik.setValues(initialFormData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, initialFormData]);
+
+  const availableCategories = useMemo(() => {
+    const brandIds = formik.values.brandIds || [];
+    return categories?.filter((category) => {
+      if (brandIds.length > 0) {
+        const categoryBrandIds = Array.isArray(category.brandIds)
+          ? category.brandIds.map((b) => b._id)
+          : [];
+        return brandIds.some((brandId) => categoryBrandIds.includes(brandId));
+      }
+      return true;
+    });
+  }, [categories, formik.values.brandIds]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <DialogHeader>
             <DialogTitle>
               {childCategory ? "Edit Child Category" : "Create Child Category"}
@@ -151,15 +164,19 @@ export function ChildCategoryForm({
                   </Label>
                   <Input
                     id="child-category-name-ka"
-                    value={formData.name.ka}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        name: { ...formData.name, ka: e.target.value },
-                      })
-                    }
-                    required
+                    name="name.ka"
+                    placeholder="შვილი კატეგორია"
+                    value={formik.values.name.ka}
+                    onChange={(e) => {
+                      formik.setFieldValue("name.ka", e.target.value);
+                    }}
+                    onBlur={formik.handleBlur}
                   />
+                  {formik.touched.name?.ka && formik.errors.name?.ka && (
+                    <p className="text-sm font-medium text-destructive">
+                      {formik.errors.name.ka}
+                    </p>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label
@@ -170,15 +187,19 @@ export function ChildCategoryForm({
                   </Label>
                   <Input
                     id="child-category-name-en"
-                    value={formData.name.en}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        name: { ...formData.name, en: e.target.value },
-                      })
-                    }
-                    required
+                    name="name.en"
+                    placeholder="Child Category"
+                    value={formik.values.name.en}
+                    onChange={(e) => {
+                      formik.setFieldValue("name.en", e.target.value);
+                    }}
+                    onBlur={formik.handleBlur}
                   />
+                  {formik.touched.name?.en && formik.errors.name?.en && (
+                    <p className="text-sm font-medium text-destructive">
+                      {formik.errors.name.en}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -187,150 +208,140 @@ export function ChildCategoryForm({
               <Label htmlFor="child-category-slug">Slug</Label>
               <Input
                 id="child-category-slug"
-                value={formData.slug}
-                onChange={(e) =>
-                  setFormData({ ...formData, slug: e.target.value })
-                }
+                name="slug"
                 placeholder="drills"
-                required
+                value={formik.values.slug}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               <p className="text-xs text-muted-foreground">
                 URL-friendly identifier (must be unique)
               </p>
+              {formik.touched.slug && formik.errors.slug && (
+                <p className="text-sm font-medium text-destructive">
+                  {formik.errors.slug}
+                </p>
+              )}
             </div>
 
-            {/* Current Brands - Show and allow removal */}
-            {childCategory && formData.brandIds.length > 0 && (
+            {/* Brands Selection */}
+            {childCategory ? (
               <div className="space-y-2">
-                <Label>Current Brands</Label>
-                <div className="space-y-2">
-                  {formData.brandIds.map((brandId) => {
-                    const brand = brands?.find((b) => b._id === brandId);
-                    if (!brand) return null;
-                    return (
-                      <div
-                        key={brandId}
-                        className="flex items-center justify-between p-2 border rounded bg-muted/50"
-                      >
-                        <span className="text-sm font-medium">
-                          {brand.name.en}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setFormData({
-                              ...formData,
-                              brandIds: formData.brandIds.filter(
-                                (id) => id !== brandId
-                              ),
-                            });
-                          }}
-                          className="h-6 w-6 p-0 text-destructive hover:text-destructive"
-                        >
-                          ×
-                        </Button>
-                      </div>
+                <BrandMultiSelector
+                  brands={brands}
+                  selectedBrandIds={formik.values.brandIds || []}
+                  onSelectionChange={(brandIds) => {
+                    formik.setFieldValue("brandIds", brandIds);
+                  }}
+                  showCurrentBrands={true}
+                  onRemoveBrand={(brandId) => {
+                    formik.setFieldValue(
+                      "brandIds",
+                      (formik.values.brandIds || []).filter(
+                        (id) => id !== brandId
+                      )
                     );
-                  })}
-                </div>
+                  }}
+                />
+                {formik.touched.brandIds && formik.errors.brandIds && (
+                  <p className="text-sm font-medium text-destructive">
+                    {typeof formik.errors.brandIds === "string"
+                      ? formik.errors.brandIds
+                      : "Invalid brand selection"}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <BrandMultiSelector
+                  brands={brands}
+                  selectedBrandIds={formik.values.brandIds || []}
+                  onSelectionChange={(brandIds) => {
+                    formik.setFieldValue("brandIds", brandIds);
+                  }}
+                />
+                {formik.touched.brandIds && formik.errors.brandIds && (
+                  <p className="text-sm font-medium text-destructive">
+                    {typeof formik.errors.brandIds === "string"
+                      ? formik.errors.brandIds
+                      : "Invalid brand selection"}
+                  </p>
+                )}
               </div>
             )}
 
-            {/* Add Brands */}
-            {childCategory && (
-              <div className="space-y-2">
-                <Label>Add Brands</Label>
-                <div className="space-y-2 max-h-40 overflow-y-auto border rounded p-2">
-                  {brands
-                    ?.filter((brand) => !formData.brandIds.includes(brand._id))
-                    .map((brand) => (
+            {/* Category Selection */}
+            {childCategory ? (
+              <>
+                {formik.values.categoryId && (
+                  <div className="space-y-2">
+                    <Label>Current Category</Label>
+                    <div className="flex items-center justify-between p-2 border rounded bg-muted/50">
+                      <span className="text-sm font-medium">
+                        {categories?.find(
+                          (c) => c._id === formik.values.categoryId
+                        )?.name.en || "Unknown"}
+                      </span>
                       <Button
-                        key={brand._id}
                         type="button"
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         onClick={() => {
-                          setFormData({
-                            ...formData,
-                            brandIds: [...formData.brandIds, brand._id],
-                          });
+                          formik.setFieldValue("categoryId", undefined);
                         }}
-                        className="w-full justify-start"
+                        className="h-6 w-6 p-0 text-destructive hover:text-destructive"
                       >
-                        + {brand.name.en}
+                        ×
                       </Button>
-                    ))}
-                  {brands?.filter(
-                    (brand) => !formData.brandIds.includes(brand._id)
-                  ).length === 0 && (
-                    <p className="text-xs text-muted-foreground text-center py-2">
-                      All brands are assigned
+                    </div>
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <CategorySelector
+                    categories={availableCategories}
+                    value={formik.values.categoryId}
+                    onValueChange={(value) => {
+                      formik.setFieldValue("categoryId", value);
+                    }}
+                    label={
+                      formik.values.categoryId
+                        ? "Change Category"
+                        : "Add Category"
+                    }
+                    filterByBrandIds={formik.values.brandIds || []}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {(formik.values.brandIds || []).length > 0
+                      ? "Only categories for selected brands are shown."
+                      : "Select a parent category."}
+                  </p>
+                  {formik.touched.categoryId && formik.errors.categoryId && (
+                    <p className="text-sm font-medium text-destructive">
+                      {formik.errors.categoryId}
                     </p>
                   )}
                 </div>
-              </div>
-            )}
-
-            {/* Current Category - Show and allow removal */}
-            {childCategory && formData.categoryId && (
+              </>
+            ) : (
               <div className="space-y-2">
-                <Label>Current Category</Label>
-                <div className="flex items-center justify-between p-2 border rounded bg-muted/50">
-                  <span className="text-sm font-medium">
-                    {categories?.find((c) => c._id === formData.categoryId)
-                      ?.name.en || "Unknown"}
-                  </span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setFormData({
-                        ...formData,
-                        categoryId: undefined,
-                      });
-                    }}
-                    className="h-6 w-6 p-0 text-destructive hover:text-destructive"
-                  >
-                    ×
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Add Category */}
-            {childCategory && (
-              <div className="space-y-2">
-                <Label htmlFor="child-category-category">
-                  {formData.categoryId ? "Change Category" : "Add Category"}
-                </Label>
-                <Select
-                  value={formData.categoryId || ""}
+                <CategorySelector
+                  categories={availableCategories}
+                  value={formik.values.categoryId}
                   onValueChange={(value) => {
-                    setFormData({
-                      ...formData,
-                      categoryId: value || undefined,
-                    });
+                    formik.setFieldValue("categoryId", value);
                   }}
-                >
-                  <SelectTrigger id="child-category-category">
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableCategories?.map((category) => (
-                      <SelectItem key={category._id} value={category._id}>
-                        {category.name.en}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  filterByBrandIds={formik.values.brandIds || []}
+                />
                 <p className="text-xs text-muted-foreground">
-                  {formData.brandIds.length > 0
+                  {(formik.values.brandIds || []).length > 0
                     ? "Only categories for selected brands are shown."
-                    : "Select a parent category."}
+                    : "Select a parent category (optional)."}
                 </p>
+                {formik.touched.categoryId && formik.errors.categoryId && (
+                  <p className="text-sm font-medium text-destructive">
+                    {formik.errors.categoryId}
+                  </p>
+                )}
               </div>
             )}
           </div>

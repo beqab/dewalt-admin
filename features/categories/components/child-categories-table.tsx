@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Trash2, Users } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -16,14 +16,12 @@ interface ChildCategoriesTableProps {
   childCategories: ChildCategory[];
   onEdit: (childCategory: ChildCategory) => void;
   onDelete: (id: string) => void;
-  onAssignBrands: (childCategory: ChildCategory) => void;
 }
 
 export function ChildCategoriesTable({
   childCategories,
   onEdit,
   onDelete,
-  onAssignBrands,
 }: ChildCategoriesTableProps) {
   return (
     <div className="rounded-md border">
@@ -35,7 +33,7 @@ export function ChildCategoriesTable({
               <TableHead>Slug</TableHead>
               <TableHead>Brand</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead className="w-32">Created</TableHead>
+
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -76,16 +74,14 @@ export function ChildCategoriesTable({
                       childCategory.brandIds.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
                           {childCategory.brandIds.map((brand) => {
-                            const brandData =
-                              typeof brand === "string" ? null : brand;
-                            return brandData ? (
+                            return (
                               <span
-                                key={brandData._id}
+                                key={brand._id}
                                 className="text-xs px-2 py-1 rounded bg-muted"
                               >
-                                {brandData.name.en}
+                                {brand.name.en}
                               </span>
-                            ) : null;
+                            );
                           })}
                         </div>
                       ) : (
@@ -105,21 +101,8 @@ export function ChildCategoriesTable({
                         </span>
                       )}
                     </TableCell>
-                    <TableCell>
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(childCategory.createdAt).toLocaleDateString()}
-                      </div>
-                    </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onAssignBrands(childCategory)}
-                          title="Assign Brands"
-                        >
-                          <Users className="h-4 w-4" />
-                        </Button>
                         <Button
                           variant="ghost"
                           size="icon"

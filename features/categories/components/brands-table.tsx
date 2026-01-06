@@ -16,15 +16,9 @@ interface BrandsTableProps {
   brands: Brand[];
   onEdit: (brand: Brand) => void;
   onDelete: (id: string) => void;
-  onManageCategories?: (brand: Brand) => void;
 }
 
-export function BrandsTable({
-  brands,
-  onEdit,
-  onDelete,
-  onManageCategories,
-}: BrandsTableProps) {
+export function BrandsTable({ brands, onEdit, onDelete }: BrandsTableProps) {
   return (
     <div className="rounded-md border">
       <div className="overflow-x-auto">
@@ -65,15 +59,6 @@ export function BrandsTable({
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      {onManageCategories && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onManageCategories(brand)}
-                        >
-                          Manage Categories
-                        </Button>
-                      )}
                       <Button
                         variant="ghost"
                         size="icon"
