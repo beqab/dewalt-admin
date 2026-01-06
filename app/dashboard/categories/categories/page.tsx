@@ -505,9 +505,7 @@ export default function CategoriesListPage() {
             <Button
               type="button"
               onClick={handleAssignBrands}
-              disabled={
-                selectedCategoryIds.length === 0 || updateCategory.isPending
-              }
+              disabled={updateCategory.isPending}
             >
               {updateCategory.isPending ? (
                 <>

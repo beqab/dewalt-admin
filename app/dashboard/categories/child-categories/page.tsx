@@ -82,6 +82,8 @@ export default function ChildCategoriesPage() {
   const [formData, setFormData] = useState({
     name: { ka: "", en: "" },
     slug: "",
+    brandIds: [] as string[],
+    categoryId: undefined as string | undefined,
   });
 
   // Filter categories by selected brand
@@ -110,15 +112,26 @@ export default function ChildCategoriesPage() {
     setFormData({
       name: { ka: "", en: "" },
       slug: "",
+      brandIds: [],
+      categoryId: undefined,
     });
     setIsDialogOpen(true);
   };
 
   const handleEdit = (childCategory: ChildCategory) => {
     setEditingChildCategory(childCategory);
+    const brandIds = Array.isArray(childCategory.brandIds)
+      ? childCategory.brandIds.map((b) => (typeof b === "string" ? b : b._id))
+      : [];
+    const categoryId =
+      typeof childCategory.categoryId === "string"
+        ? childCategory.categoryId
+        : childCategory.categoryId?._id || undefined;
     setFormData({
       name: childCategory.name,
       slug: childCategory.slug,
+      brandIds,
+      categoryId,
     });
     setIsDialogOpen(true);
   };
@@ -199,11 +212,17 @@ export default function ChildCategoriesPage() {
     }
 
     if (editingChildCategory) {
-      // For update, only update name and slug
+      // For update, include brandIds and categoryId
+      const updateData: UpdateChildCategoryDto = {
+        name: formData.name,
+        slug: formData.slug,
+        brandIds: formData.brandIds,
+        categoryId: formData.categoryId || undefined,
+      };
       updateChildCategory.mutate(
         {
           id: editingChildCategory._id,
-          data: formData as UpdateChildCategoryDto,
+          data: updateData,
         },
         {
           onSuccess: () => {
@@ -212,7 +231,7 @@ export default function ChildCategoriesPage() {
         }
       );
     } else {
-      // For create, child category is created independently (no brandIds or categoryId)
+      // For create, include brandIds and categoryId if provided
       createChildCategory.mutate(formData as CreateChildCategoryDto, {
         onSuccess: () => {
           setIsDialogOpen(false);
@@ -508,6 +527,157 @@ export default function ChildCategoriesPage() {
                   URL-friendly identifier (must be unique)
                 </p>
               </div>
+
+              {/* Current Brands - Show and allow removal */}
+              {editingChildCategory && formData.brandIds.length > 0 && (
+                <div className="space-y-2">
+                  <Label>Current Brands</Label>
+                  <div className="space-y-2">
+                    {formData.brandIds.map((brandId) => {
+                      const brand = brands?.find((b) => b._id === brandId);
+                      if (!brand) return null;
+                      return (
+                        <div
+                          key={brandId}
+                          className="flex items-center justify-between p-2 border rounded bg-muted/50"
+                        >
+                          <span className="text-sm font-medium">
+                            {brand.name.en}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setFormData({
+                                ...formData,
+                                brandIds: formData.brandIds.filter(
+                                  (id) => id !== brandId
+                                ),
+                              });
+                            }}
+                            className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Add Brands */}
+              {editingChildCategory && (
+                <div className="space-y-2">
+                  <Label>Add Brands</Label>
+                  <div className="space-y-2 max-h-40 overflow-y-auto border rounded p-2">
+                    {brands
+                      ?.filter((brand) => !formData.brandIds.includes(brand._id))
+                      .map((brand) => (
+                        <Button
+                          key={brand._id}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setFormData({
+                              ...formData,
+                              brandIds: [...formData.brandIds, brand._id],
+                            });
+                          }}
+                          className="w-full justify-start"
+                        >
+                          + {brand.name.en}
+                        </Button>
+                      ))}
+                    {brands?.filter((brand) => !formData.brandIds.includes(brand._id)).length === 0 && (
+                      <p className="text-xs text-muted-foreground text-center py-2">
+                        All brands are assigned
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Current Category - Show and allow removal */}
+              {editingChildCategory && formData.categoryId && (
+                <div className="space-y-2">
+                  <Label>Current Category</Label>
+                  <div className="flex items-center justify-between p-2 border rounded bg-muted/50">
+                    <span className="text-sm font-medium">
+                      {categories?.find((c) => c._id === formData.categoryId)
+                        ?.name.en || "Unknown"}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          categoryId: undefined,
+                        });
+                      }}
+                      className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                    >
+                      ×
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Add Category */}
+              {editingChildCategory && (
+                <div className="space-y-2">
+                  <Label htmlFor="child-category-category">
+                    {formData.categoryId ? "Change Category" : "Add Category"}
+                  </Label>
+                  <Select
+                    value={formData.categoryId || ""}
+                    onValueChange={(value) => {
+                      setFormData({
+                        ...formData,
+                        categoryId: value || undefined,
+                      });
+                    }}
+                  >
+                    <SelectTrigger id="child-category-category">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories
+                        ?.filter((category) => {
+                          // If brands are selected, only show categories that belong to at least one of the selected brands
+                          if (formData.brandIds.length > 0) {
+                            const categoryBrandIds = Array.isArray(
+                              category.brandIds
+                            )
+                              ? category.brandIds.map((b) =>
+                                  typeof b === "string" ? b : b._id
+                                )
+                              : [];
+                            return formData.brandIds.some((brandId) =>
+                              categoryBrandIds.includes(brandId)
+                            );
+                          }
+                          // If no brands selected, show all categories
+                          return true;
+                        })
+                        .map((category) => (
+                          <SelectItem key={category._id} value={category._id}>
+                            {category.name.en}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    {formData.brandIds.length > 0
+                      ? "Only categories for selected brands are shown."
+                      : "Select a parent category."}
+                  </p>
+                </div>
+              )}
             </div>
             <DialogFooter>
               <Button
