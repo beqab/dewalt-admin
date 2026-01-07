@@ -199,6 +199,7 @@ export function ChildCategoryForm({
                     id="child-category-name-en"
                     name="name.en"
                     placeholder="Child Category"
+                    onBlurCapture={onBlurCapture}
                     value={formik.values.name.en}
                     onChange={(e) => {
                       formik.setFieldValue("name.en", e.target.value);
@@ -220,8 +221,6 @@ export function ChildCategoryForm({
                 id="child-category-slug"
                 name="slug"
                 placeholder="drills"
-                defaultValue={createSlug(formik.values.name.en)}
-                onBlurCapture={onBlurCapture}
                 value={formik.values.slug}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
