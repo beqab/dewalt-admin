@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { Category, CreateCategoryDto, UpdateCategoryDto } from "../types";
+import { createSlug } from "@/lib/slugify";
 
 const categorySchema = yup.object({
   name: yup.object({
@@ -83,6 +84,15 @@ export function CategoryForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, category]);
 
+  const onBlurCapture = () => {
+    if (formik.values.name.en) {
+      formik.setValues({
+        ...formik.values,
+        slug: createSlug(formik.values.name.en || ""),
+      });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -112,7 +122,7 @@ export function CategoryForm({
                     id="category-name-ka"
                     name="name.ka"
                     placeholder="კატეგორია"
-                    value={formik.values.name.ka}
+                    value={formik?.values?.name?.ka || ""}
                     onChange={(e) => {
                       formik.setFieldValue("name.ka", e.target.value);
                     }}
@@ -136,6 +146,7 @@ export function CategoryForm({
                     name="name.en"
                     placeholder="Category"
                     value={formik.values.name.en}
+                    onBlurCapture={onBlurCapture}
                     onChange={(e) => {
                       formik.setFieldValue("name.en", e.target.value);
                     }}

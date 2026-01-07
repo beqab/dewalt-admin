@@ -26,10 +26,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { createSlug } from "@/lib/slugify";
 
 export default function BrandsPage() {
-  const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingBrand, setEditingBrand] = useState<Brand | undefined>();
 
@@ -94,6 +93,13 @@ export default function BrandsPage() {
         },
       });
     }
+  };
+
+  const onBlurCapture = () => {
+    setFormData({
+      ...formData,
+      slug: createSlug(formData.name.en || ""),
+    });
   };
 
   if (error) {
@@ -199,6 +205,9 @@ export default function BrandsPage() {
                 <Input
                   id="slug"
                   value={formData.slug}
+                  // todo: add default value slug use slagify library to convert name to slug
+
+                  onBlurCapture={onBlurCapture}
                   onChange={(e) =>
                     setFormData({ ...formData, slug: e.target.value })
                   }

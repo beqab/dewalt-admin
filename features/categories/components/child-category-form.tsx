@@ -23,6 +23,7 @@ import type {
 import { useGetBrands, useGetCategories } from "@/features/categories";
 import { BrandMultiSelector } from "./brand-multi-selector";
 import { CategorySelector } from "./category-selector";
+import { createSlug } from "@/lib/slugify";
 
 const childCategorySchema = yup.object({
   name: yup.object({
@@ -137,6 +138,15 @@ export function ChildCategoryForm({
     });
   }, [categories, formik.values.brandIds]);
 
+  const onBlurCapture = () => {
+    if (formik.values.name.en) {
+      formik.setValues({
+        ...formik.values,
+        slug: createSlug(formik.values.name.en || ""),
+      });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
@@ -210,6 +220,8 @@ export function ChildCategoryForm({
                 id="child-category-slug"
                 name="slug"
                 placeholder="drills"
+                defaultValue={createSlug(formik.values.name.en)}
+                onBlurCapture={onBlurCapture}
                 value={formik.values.slug}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
