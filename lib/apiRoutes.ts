@@ -16,4 +16,7 @@ export const API_ROUTES = {
 
   // Categories
   CATEGORIES: "/categories",
+
+  // Products
+  PRODUCTS: "/products",
 };

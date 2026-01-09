@@ -1,39 +1,69 @@
+import type { LocalizedText } from "@/features/categories/types";
+
+export interface ProductSpec {
+  label: LocalizedText;
+  value: string | number;
+  unit?: string;
+}
+
 export interface Product {
-  id: string
-  name: string
-  slug: string
-  description: string
-  price: number
-  image: string
-  brand?: string
-  category?: string
-  inStock: boolean
-  stock?: number
-  createdAt: string
-  updatedAt: string
+  _id: string;
+  name: LocalizedText;
+  code: string;
+  description: LocalizedText;
+  image: string;
+  images?: string[];
+  price: number;
+  originalPrice?: number;
+  discount?: number;
+  inStock: boolean;
+  rating: number;
+  reviewCount: number;
+  slug: string;
+  brandId: string | { _id: string; name: LocalizedText; slug: string };
+  categoryId: string | { _id: string; name: LocalizedText; slug: string };
+  childCategoryId?: string | { _id: string; name: LocalizedText; slug: string };
+  specs: ProductSpec[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateProductDto {
-  name: string
-  slug: string
-  description: string
-  price: number
-  image: string
-  brand?: string
-  category?: string
-  inStock: boolean
-  stock?: number
+  name: LocalizedText;
+  code: string;
+  description: LocalizedText;
+  image: string;
+  images?: string[];
+  price: number;
+  originalPrice?: number;
+  discount?: number;
+  inStock?: boolean;
+  rating?: number;
+  reviewCount?: number;
+  slug: string;
+  brandId: string;
+  categoryId: string;
+  childCategoryId?: string;
+  specs?: ProductSpec[];
 }
 
 export interface UpdateProductDto {
-  name?: string
-  slug?: string
-  description?: string
-  price?: number
-  image?: string
-  brand?: string
-  category?: string
-  inStock?: boolean
-  stock?: number
+  name?: LocalizedText;
+  code?: string;
+  description?: LocalizedText;
+  image?: string;
+  images?: string[];
+  price?: number;
+  originalPrice?: number;
+  discount?: number;
+  inStock?: boolean;
+  rating?: number;
+  reviewCount?: number;
+  slug?: string;
+  brandId?: string;
+  categoryId?: string;
+  childCategoryId?: string;
+  specs?: ProductSpec[];
 }
 
+export type ProductResponse = Product;

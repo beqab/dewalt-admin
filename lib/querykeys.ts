@@ -41,6 +41,15 @@ const QUERY_KEYS = {
       ],
     },
   },
+  PRODUCTS: {
+    ALL: ["products"],
+    BY_ID: (id: string) => ["products", id],
+    BY_SLUG: (slug: string) => ["products", "slug", slug],
+    LIST: (page?: number, limit?: number) =>
+      page !== undefined && limit !== undefined
+        ? ["products", "list", page, limit]
+        : ["products", "list"],
+  },
 };
 
 export default QUERY_KEYS;
