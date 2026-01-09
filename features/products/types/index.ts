@@ -2,8 +2,7 @@ import type { LocalizedText } from "@/features/categories/types";
 
 export interface ProductSpec {
   label: LocalizedText;
-  value: string | number;
-  unit?: string;
+  value: LocalizedText;
 }
 
 export interface Product {
@@ -17,6 +16,7 @@ export interface Product {
   originalPrice?: number;
   discount?: number;
   inStock: boolean;
+  quantity: number;
   rating: number;
   reviewCount: number;
   slug: string;
@@ -38,6 +38,7 @@ export interface CreateProductDto {
   originalPrice?: number;
   discount?: number;
   inStock?: boolean;
+  quantity?: number;
   rating?: number;
   reviewCount?: number;
   slug: string;
@@ -57,6 +58,7 @@ export interface UpdateProductDto {
   originalPrice?: number;
   discount?: number;
   inStock?: boolean;
+  quantity?: number;
   rating?: number;
   reviewCount?: number;
   slug?: string;

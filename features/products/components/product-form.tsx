@@ -86,6 +86,7 @@ export function ProductForm({
         originalPrice: product.originalPrice,
         discount: product.discount,
         inStock: product.inStock,
+        quantity: product.quantity,
         slug: product.slug,
         brandId,
         categoryId,
@@ -103,6 +104,7 @@ export function ProductForm({
       originalPrice: undefined,
       discount: undefined,
       inStock: true,
+      quantity: 0,
       slug: "",
       brandId: "",
       categoryId: "",
@@ -121,14 +123,6 @@ export function ProductForm({
             ...values,
             images: values.images?.filter((img): img is string => Boolean(img)),
             childCategoryId: values.childCategoryId || undefined,
-            specs: values.specs?.map((spec) => ({
-              label: spec.label,
-              value:
-                typeof spec.value === "string" || typeof spec.value === "number"
-                  ? spec.value
-                  : String(spec.value),
-              unit: spec.unit,
-            })),
           };
           await onUpdate(product._id, updateData);
         } else {
@@ -337,16 +331,26 @@ export function ProductForm({
                 </div>
               </div>
 
-              {/* Stock */}
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="inStock"
-                  checked={formik.values.inStock}
-                  onCheckedChange={(checked) =>
-                    formik.setFieldValue("inStock", checked === true)
-                  }
+              {/* Stock and Quantity */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="inStock"
+                    checked={formik.values.inStock}
+                    onCheckedChange={(checked) =>
+                      formik.setFieldValue("inStock", checked === true)
+                    }
+                  />
+                  <Label htmlFor="inStock">In Stock</Label>
+                </div>
+                <FormField
+                  name="quantity"
+                  label="Quantity"
+                  required
+                  type="number"
+                  min={0}
+                  step="1"
                 />
-                <Label htmlFor="inStock">In Stock</Label>
               </div>
 
               {/* Specs */}

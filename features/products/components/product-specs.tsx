@@ -16,8 +16,7 @@ export function ProductSpecs() {
   const addSpec = () => {
     const newSpec: ProductSpec = {
       label: { ka: "", en: "" },
-      value: "",
-      unit: "",
+      value: { ka: "", en: "" },
     };
     helpers.setValue([...specs, newSpec]);
   };
@@ -46,7 +45,7 @@ export function ProductSpecs() {
         </Button>
       </div>
       {specs.map((spec, index) => (
-        <div key={index} className="grid grid-cols-4 gap-2 p-2 border rounded">
+        <div key={index} className="grid grid-cols-5 gap-2 p-2 border rounded">
           <Input
             placeholder="Label (EN)"
             value={spec.label.en}
@@ -68,25 +67,33 @@ export function ProductSpecs() {
             }
           />
           <Input
-            placeholder="Value"
-            value={String(spec.value || "")}
-            onChange={(e) => updateSpec(index, "value", e.target.value)}
+            placeholder="Value (EN)"
+            value={spec.value.en}
+            onChange={(e) =>
+              updateSpec(index, "value", {
+                ...spec.value,
+                en: e.target.value,
+              })
+            }
           />
-          <div className="flex gap-2">
-            <Input
-              placeholder="Unit"
-              value={spec.unit || ""}
-              onChange={(e) => updateSpec(index, "unit", e.target.value)}
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => removeSpec(index)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
+          <Input
+            placeholder="Value (KA)"
+            value={spec.value.ka}
+            onChange={(e) =>
+              updateSpec(index, "value", {
+                ...spec.value,
+                ka: e.target.value,
+              })
+            }
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => removeSpec(index)}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
         </div>
       ))}
     </div>
