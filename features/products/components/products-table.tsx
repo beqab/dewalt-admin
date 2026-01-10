@@ -13,17 +13,20 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Product } from "../types";
 import Image from "next/image";
+import TableRowSkeleton from "./ProductTableRowSkeleton";
 
 interface ProductsTableProps {
   products: Product[];
   onEdit: (product: Product) => void;
   onDelete: (id: string) => void;
+  isLoading?: boolean;
 }
 
 export function ProductsTable({
   products,
   onEdit,
   onDelete,
+  isLoading = false,
 }: ProductsTableProps) {
   return (
     <div className="rounded-md border">
@@ -43,9 +46,11 @@ export function ProductsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.length === 0 ? (
+            {isLoading ? (
+              <TableRowSkeleton numberOfRows={10} />
+            ) : products.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="h-24 text-center">
+                <TableCell colSpan={9} className="h-24 text-center">
                   No products found.
                 </TableCell>
               </TableRow>

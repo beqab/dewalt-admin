@@ -62,19 +62,9 @@ export function ProductForm({
   // Compute initial form data based on product prop
   const initialFormData = useMemo(() => {
     if (product) {
-      const brandId =
-        typeof product.brandId === "string"
-          ? product.brandId
-          : product.brandId._id;
-      const categoryId =
-        typeof product.categoryId === "string"
-          ? product.categoryId
-          : product.categoryId._id;
-      const childCategoryId = product.childCategoryId
-        ? typeof product.childCategoryId === "string"
-          ? product.childCategoryId
-          : product.childCategoryId._id
-        : undefined;
+      const brandId = product.brandId._id;
+      const categoryId = product.categoryId._id;
+      const childCategoryId = product.childCategoryId?._id;
 
       return {
         name: product.name,

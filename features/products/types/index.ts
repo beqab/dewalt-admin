@@ -20,9 +20,9 @@ export interface Product {
   rating: number;
   reviewCount: number;
   slug: string;
-  brandId: string | { _id: string; name: LocalizedText; slug: string };
-  categoryId: string | { _id: string; name: LocalizedText; slug: string };
-  childCategoryId?: string | { _id: string; name: LocalizedText; slug: string };
+  brandId: { _id: string; name: LocalizedText; slug: string };
+  categoryId: { _id: string; name: LocalizedText; slug: string };
+  childCategoryId?: { _id: string; name: LocalizedText; slug: string };
   specs: ProductSpec[];
   createdAt: string;
   updatedAt: string;

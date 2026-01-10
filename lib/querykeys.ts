@@ -45,10 +45,26 @@ const QUERY_KEYS = {
     ALL: ["products"],
     BY_ID: (id: string) => ["products", id],
     BY_SLUG: (slug: string) => ["products", "slug", slug],
-    LIST: (page?: number, limit?: number) =>
-      page !== undefined && limit !== undefined
-        ? ["products", "list", page, limit]
-        : ["products", "list"],
+    LIST: (
+      page?: number,
+      limit?: number,
+      filters?: {
+        brandId?: string;
+        categoryId?: string;
+        childCategoryId?: string;
+        search?: string;
+      }
+    ) => {
+      const key: (string | number)[] = ["products", "list"];
+      if (page !== undefined) key.push("page", page);
+      if (limit !== undefined) key.push("limit", limit);
+      if (filters?.brandId) key.push("brand", filters.brandId);
+      if (filters?.categoryId) key.push("category", filters.categoryId);
+      if (filters?.childCategoryId)
+        key.push("childCategory", filters.childCategoryId);
+      if (filters?.search) key.push("search", filters.search);
+      return key;
+    },
   },
 };
 

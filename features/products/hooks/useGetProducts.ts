@@ -17,7 +17,12 @@ export const useGetProducts = (params?: {
   search?: string;
 }) => {
   return useQuery<ProductsListResponse>({
-    queryKey: QUERY_KEYS.PRODUCTS.LIST(params?.page, params?.limit),
+    queryKey: QUERY_KEYS.PRODUCTS.LIST(params?.page, params?.limit, {
+      brandId: params?.brandId,
+      categoryId: params?.categoryId,
+      childCategoryId: params?.childCategoryId,
+      search: params?.search,
+    }),
     queryFn: () => productsService.getProducts.get(params),
   });
 };
