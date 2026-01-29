@@ -18,7 +18,6 @@ import {
 import { dummyUsers } from "@/features/users/data/dummy-users";
 import { dummyProducts } from "@/features/products/data/dummy-products";
 import { dummyNews } from "@/features/news/data/dummy-news";
-import { dummyAds } from "@/features/ads/data/dummy-ads";
 import { useGetBannerSlider } from "@/features/bannerSlider";
 
 export default function DashboardPage() {
@@ -50,7 +49,7 @@ export default function DashboardPage() {
     },
     {
       title: "Ads",
-      value: dummyAds.filter((ad) => ad.isActive).length.toString(),
+      value: 5,
       description: "Active ads",
       icon: Image,
       href: "/dashboard/ads",
