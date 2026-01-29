@@ -13,13 +13,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import type { News, CreateNewsDto, UpdateNewsDto } from "../types"
 
 interface NewsFormDialogProps {
@@ -36,46 +29,34 @@ export function NewsFormDialog({
   onSubmit,
 }: NewsFormDialogProps) {
   const [formData, setFormData] = useState({
-    title: "",
-    slug: "",
-    description: "",
-    content: "",
-    image: "",
-    status: "draft" as "draft" | "published",
-    publishedAt: "",
+    title: { en: "", ka: "" },
+    summary: { en: "", ka: "" },
+    content: { en: "", ka: "" },
+    imageUrl: "",
   })
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (news) {
       setFormData({
         title: news.title,
-        slug: news.slug,
-        description: news.description,
         content: news.content,
-        image: news.image,
-        status: news.status,
-        publishedAt: news.publishedAt || "",
+        summary: news.summary,
+        imageUrl: news.imageUrl,
       })
     } else {
       setFormData({
-        title: "",
-        slug: "",
-        description: "",
-        content: "",
-        image: "",
-        status: "draft",
-        publishedAt: "",
+        title: { en: "", ka: "" },
+        summary: { en: "", ka: "" },
+        content: { en: "", ka: "" },
+        imageUrl: "",
       })
     }
   }, [news, open])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const submitData = {
-      ...formData,
-      publishedAt: formData.publishedAt || undefined,
-    }
-    onSubmit(submitData as CreateNewsDto | UpdateNewsDto)
+    onSubmit(formData as CreateNewsDto | UpdateNewsDto)
   }
 
   return (
@@ -91,91 +72,108 @@ export function NewsFormDialog({
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="slug">Slug</Label>
-              <Input
-                id="slug"
-                value={formData.slug}
-                onChange={(e) =>
-                  setFormData({ ...formData, slug: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="content">Content</Label>
-              <Textarea
-                id="content"
-                rows={8}
-                value={formData.content}
-                onChange={(e) =>
-                  setFormData({ ...formData, content: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="image">Image URL</Label>
-              <Input
-                id="image"
-                value={formData.image}
-                onChange={(e) =>
-                  setFormData({ ...formData, image: e.target.value })
-                }
-                required
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="title-en">Title (EN)</Label>
+                <Input
+                  id="title-en"
+                  value={formData.title.en}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      title: { ...formData.title, en: e.target.value },
+                    })
+                  }
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="title-ka">Title (KA)</Label>
+                <Input
+                  id="title-ka"
+                  value={formData.title.ka}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      title: { ...formData.title, ka: e.target.value },
+                    })
+                  }
+                  required
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="status">Status</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value: "draft" | "published") =>
-                    setFormData({ ...formData, status: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="publishedAt">Published At</Label>
-                <Input
-                  id="publishedAt"
-                  type="datetime-local"
-                  value={formData.publishedAt}
+                <Label htmlFor="summary-en">Summary (EN)</Label>
+                <Textarea
+                  id="summary-en"
+                  value={formData.summary.en}
                   onChange={(e) =>
-                    setFormData({ ...formData, publishedAt: e.target.value })
+                    setFormData({
+                      ...formData,
+                      summary: { ...formData.summary, en: e.target.value },
+                    })
                   }
+                  required
                 />
               </div>
+              <div className="grid gap-2">
+                <Label htmlFor="summary-ka">Summary (KA)</Label>
+                <Textarea
+                  id="summary-ka"
+                  value={formData.summary.ka}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      summary: { ...formData.summary, ka: e.target.value },
+                    })
+                  }
+                  required
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="content-en">Content (EN)</Label>
+                <Textarea
+                  id="content-en"
+                  rows={8}
+                  value={formData.content.en}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: { ...formData.content, en: e.target.value },
+                    })
+                  }
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="content-ka">Content (KA)</Label>
+                <Textarea
+                  id="content-ka"
+                  rows={8}
+                  value={formData.content.ka}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: { ...formData.content, ka: e.target.value },
+                    })
+                  }
+                  required
+                />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="imageUrl">Image URL</Label>
+              <Input
+                id="imageUrl"
+                value={formData.imageUrl}
+                onChange={(e) =>
+                  setFormData({ ...formData, imageUrl: e.target.value })
+                }
+                required
+              />
             </div>
           </div>
           <DialogFooter>
@@ -191,4 +189,3 @@ export function NewsFormDialog({
     </Dialog>
   )
 }
-

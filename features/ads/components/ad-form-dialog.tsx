@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { Ad, CreateAdDto, UpdateAdDto } from "../types"
+import type { Ad, AdPosition, CreateAdDto, UpdateAdDto } from "../types"
 
 interface AdFormDialogProps {
   open: boolean
@@ -34,47 +34,20 @@ export function AdFormDialog({
   ad,
   onSubmit,
 }: AdFormDialogProps) {
-  const [formData, setFormData] = useState({
-    title: "",
-    image: "",
-    link: "",
-    position: "",
-    isActive: true,
-    startDate: "",
-    endDate: "",
+  const getInitialFormData = (currentAd?: Ad) => ({
+    imageUrl: currentAd?.imageUrl || "",
+    urlLink: currentAd?.urlLink || "",
+    position: currentAd?.position || ("" as AdPosition | ""),
   })
 
-  useEffect(() => {
-    if (ad) {
-      setFormData({
-        title: ad.title,
-        image: ad.image,
-        link: ad.link || "",
-        position: ad.position,
-        isActive: ad.isActive,
-        startDate: ad.startDate ? ad.startDate.split("T")[0] : "",
-        endDate: ad.endDate ? ad.endDate.split("T")[0] : "",
-      })
-    } else {
-      setFormData({
-        title: "",
-        image: "",
-        link: "",
-        position: "",
-        isActive: true,
-        startDate: "",
-        endDate: "",
-      })
-    }
-  }, [ad, open])
+  const [formData, setFormData] = useState(() => getInitialFormData(ad))
+  const formKey = `${ad?._id ?? "new"}-${open ? "open" : "closed"}`
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const submitData = {
       ...formData,
-      link: formData.link || undefined,
-      startDate: formData.startDate || undefined,
-      endDate: formData.endDate || undefined,
+      urlLink: formData.urlLink || undefined,
     }
     onSubmit(submitData as CreateAdDto | UpdateAdDto)
   }
@@ -82,7 +55,7 @@ export function AdFormDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <form onSubmit={handleSubmit}>
+        <form key={formKey} onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{ad ? "Edit Ad" : "Create Ad"}</DialogTitle>
             <DialogDescription>
@@ -91,86 +64,41 @@ export function AdFormDialog({
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="imageUrl">Image URL</Label>
               <Input
-                id="title"
-                value={formData.title}
+                id="imageUrl"
+                value={formData.imageUrl}
                 onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
+                  setFormData({ ...formData, imageUrl: e.target.value })
                 }
                 required
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="image">Image URL</Label>
+              <Label htmlFor="urlLink">Link (optional)</Label>
               <Input
-                id="image"
-                value={formData.image}
+                id="urlLink"
+                value={formData.urlLink}
                 onChange={(e) =>
-                  setFormData({ ...formData, image: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="link">Link (optional)</Label>
-              <Input
-                id="link"
-                value={formData.link}
-                onChange={(e) =>
-                  setFormData({ ...formData, link: e.target.value })
+                  setFormData({ ...formData, urlLink: e.target.value })
                 }
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="position">Position</Label>
-              <Input
-                id="position"
-                value={formData.position}
-                onChange={(e) =>
-                  setFormData({ ...formData, position: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="startDate">Start Date</Label>
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={formData.startDate}
-                  onChange={(e) =>
-                    setFormData({ ...formData, startDate: e.target.value })
-                  }
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="endDate">End Date</Label>
-                <Input
-                  id="endDate"
-                  type="date"
-                  value={formData.endDate}
-                  onChange={(e) =>
-                    setFormData({ ...formData, endDate: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="isActive">Status</Label>
               <Select
-                value={formData.isActive.toString()}
+                value={formData.position}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, isActive: value === "true" })
+                  setFormData({ ...formData, position: value as AdPosition })
                 }
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="true">Active</SelectItem>
-                  <SelectItem value="false">Inactive</SelectItem>
+                  <SelectItem value="main_page">Main Page</SelectItem>
+                  <SelectItem value="aside">Aside</SelectItem>
+                  <SelectItem value="footer">Footer</SelectItem>
                 </SelectContent>
               </Select>
             </div>
