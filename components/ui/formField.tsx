@@ -42,7 +42,7 @@ export const FormField = ({
         <Textarea
           id={name}
           className={inputClassName}
-          value={field.value || ""}
+          value={field.value ?? ""}
           onChange={field.onChange}
           onBlur={field.onBlur}
           placeholder={placeholder}
@@ -53,7 +53,7 @@ export const FormField = ({
         <Input
           id={name}
           className={inputClassName}
-          value={field.value || ""}
+          value={field.value ?? ""}
           onChange={field.onChange}
           onBlur={field.onBlur}
           onBlurCapture={onBlurCapture}

@@ -6,6 +6,20 @@ export const productSchema = yup.object({
     en: yup.string().required("English name is required"),
   }),
   code: yup.string().required("Product code is required"),
+  finaId: yup
+    .number()
+    .transform((value, originalValue) =>
+      originalValue === "" || originalValue === null || originalValue === undefined
+        ? undefined
+        : value
+    )
+    .optional()
+    .integer("FINA ID must be a whole number")
+    .min(1, "FINA ID must be positive"),
+  finaCode: yup
+    .string()
+    .transform((value) => (typeof value === "string" ? value.trim() : value))
+    .optional(),
   description: yup.object({
     ka: yup.string().required("Georgian description is required"),
     en: yup.string().required("English description is required"),

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,52 +11,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { toast } from "sonner";
-import { signIn } from "next-auth/react";
+import { useLogin } from "./hooks/useLogin";
 
 export default function LoginPage() {
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { login, error, isLoading, clearError } = useLogin();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      // Simple validation
-      if (!email || !password) {
-        setError("Please enter both email and password");
-        setIsLoading(false);
-        return;
-      }
-
-      const result = await signIn("credentials", {
-        email: email.trim(),
-        password: password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError("Invalid credentials. Please try again.");
-        toast.error("Login failed. Please check your credentials.");
-      } else if (result?.ok) {
-        toast.success("Login successful!");
-        // Get the callback URL or default to dashboard
-        const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-        router.push(callbackUrl);
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setError("An unexpected error occurred. Please try again.");
-      toast.error("Login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    login({ email, password });
   };
 
   return (
@@ -70,7 +33,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
                 {error}
@@ -83,8 +46,10 @@ export default function LoginPage() {
                 name="email"
                 placeholder="admin@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  clearError();
+                }}
                 disabled={isLoading}
               />
             </div>
@@ -96,8 +61,10 @@ export default function LoginPage() {
                 type="password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  clearError();
+                }}
                 disabled={isLoading}
               />
             </div>

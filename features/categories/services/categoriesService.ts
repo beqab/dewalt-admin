@@ -12,17 +12,16 @@ import {
   UpdateChildCategoryDto,
 } from "../types";
 
-const categoriesClient = createApiClient(
-  API_ROUTES.CATEGORIES
-);
+const categoriesClient = createApiClient(API_ROUTES.CATEGORIES);
 
 export const categoriesService = {
   // Brands
   getBrands: {
-    get: () => categoriesClient.get<BrandResponse[]>({}, "brands"),
+    get: () => categoriesClient.get<BrandResponse[]>({}, "brands/admin"),
   },
   getBrandById: {
-    get: (id: string) => categoriesClient.get<BrandResponse>({}, `brands/${id}`),
+    get: (id: string) =>
+      categoriesClient.get<BrandResponse>({}, `brands/${id}`),
   },
   createBrand: {
     post: (data: CreateBrandDto) =>
@@ -54,9 +53,13 @@ export const categoriesService = {
   },
   createCategory: {
     post: (data: CreateCategoryDto) =>
-      categoriesClient.post<CreateCategoryDto, CategoryResponse>(data, undefined, {
-        url: `${API_ROUTES.CATEGORIES}/categories`,
-      }),
+      categoriesClient.post<CreateCategoryDto, CategoryResponse>(
+        data,
+        undefined,
+        {
+          url: `${API_ROUTES.CATEGORIES}/categories`,
+        }
+      ),
   },
   updateCategory: {
     patch: (id: string, data: UpdateCategoryDto) =>
@@ -83,10 +86,7 @@ export const categoriesService = {
   },
   getChildCategoryById: {
     get: (id: string) =>
-      categoriesClient.get<ChildCategoryResponse>(
-        {},
-        `child-categories/${id}`
-      ),
+      categoriesClient.get<ChildCategoryResponse>({}, `child-categories/${id}`),
   },
   createChildCategory: {
     post: (data: CreateChildCategoryDto) =>
@@ -100,14 +100,13 @@ export const categoriesService = {
   },
   updateChildCategory: {
     patch: (id: string, data: UpdateChildCategoryDto) =>
-      categoriesClient.patchById<
-        UpdateChildCategoryDto,
-        ChildCategoryResponse
-      >(`child-categories/${id}`, data),
+      categoriesClient.patchById<UpdateChildCategoryDto, ChildCategoryResponse>(
+        `child-categories/${id}`,
+        data
+      ),
   },
   deleteChildCategory: {
     delete: (id: string) =>
       categoriesClient.delete<void>(`child-categories/${id}`),
   },
 };
-

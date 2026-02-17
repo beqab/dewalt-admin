@@ -19,4 +19,7 @@ export const API_ROUTES = {
 
   // Products
   PRODUCTS: "/products",
+
+  // FINA (proxy endpoints from dewalt-back)
+  FINA: "/fina",
 };

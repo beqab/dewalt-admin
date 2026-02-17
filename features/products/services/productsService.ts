@@ -41,7 +41,8 @@ export const productsService = {
       if (params?.search) queryParams.search = params.search;
 
       return productsClient.get<ProductsListResponse>(
-        Object.keys(queryParams).length > 0 ? queryParams : undefined
+        Object.keys(queryParams).length > 0 ? queryParams : undefined,
+        "admin"
       );
     },
   },

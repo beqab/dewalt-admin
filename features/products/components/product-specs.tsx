@@ -68,20 +68,20 @@ export function ProductSpecs() {
           />
           <Input
             placeholder="Value (EN)"
-            value={spec.value.en}
+            value={spec?.value?.en}
             onChange={(e) =>
               updateSpec(index, "value", {
-                ...spec.value,
+                ...spec?.value,
                 en: e.target.value,
               })
             }
           />
           <Input
             placeholder="Value (KA)"
-            value={spec.value.ka}
+            value={spec?.value?.ka}
             onChange={(e) =>
               updateSpec(index, "value", {
-                ...spec.value,
+                ...spec?.value,
                 ka: e.target.value,
               })
             }

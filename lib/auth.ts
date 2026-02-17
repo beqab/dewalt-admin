@@ -129,11 +129,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       // Check if access token is expired
       if (Date.now() > new Date(token.tokenExpiresAt).getTime()) {
+        const cookieStore = await cookies();
         try {
           let refreshToken = token.refreshToken;
 
           if (!refreshToken) {
-            const cookieStore = await cookies();
             const refreshTokenCookie = cookieStore.get("refresh_token");
             refreshToken = refreshTokenCookie?.value;
           }
@@ -172,6 +172,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
 
           console.log("🔄 response from refresh token", response);
+
+          cookieStore.set("refresh_token", response.refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            path: "/",
+          });
 
           const refreshedToken = {
             ...token,

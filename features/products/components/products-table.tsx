@@ -71,7 +71,7 @@ export function ProductsTable({
                       <div className="relative w-24 h-16 border rounded-md overflow-hidden bg-muted">
                         <Image
                           src={product.image}
-                          alt={product.name.en}
+                          alt={product.name?.en || product.name?.ka || "Product"}
                           fill
                           className="object-fit"
                           sizes="96px"
