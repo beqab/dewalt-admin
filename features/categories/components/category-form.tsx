@@ -20,10 +20,10 @@ import { createSlug } from "@/lib/slugify";
 
 const categorySchema = yup.object({
   name: yup.object({
-    ka: yup.string().required("Georgian name is required"),
-    en: yup.string().required("English name is required"),
+    ka: yup.string().required("ქართულად დასახელება სავალდებულოა"),
+    en: yup.string().required("ინგლისურად დასახელება სავალდებულოა"),
   }),
-  slug: yup.string().required("Slug is required"),
+  slug: yup.string().required("სლაგი სავალდებულოა"),
 });
 
 type CategoryFormValues = yup.InferType<typeof categorySchema>;
@@ -99,17 +99,17 @@ export function CategoryForm({
         <form onSubmit={formik.handleSubmit}>
           <DialogHeader>
             <DialogTitle>
-              {category ? "Edit Category" : "Create Category"}
+              {category ? "კატეგორიის რედაქტირება" : "კატეგორიის შექმნა"}
             </DialogTitle>
             <DialogDescription>
               {category
-                ? "Update category information."
-                : "Add a new category. You can assign it to brands later."}
+                ? "კატეგორიის ინფორმაციის განახლება."
+                : "ახალი კატეგორიის დამატება. მოგვიანებით შეძლებთ ბრენდებზე მინიჭებას."}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label>Name</Label>
+              <Label>დასახელება</Label>
               <div className="grid gap-3">
                 <div className="grid gap-2">
                   <Label
@@ -139,12 +139,12 @@ export function CategoryForm({
                     htmlFor="category-name-en"
                     className="text-sm text-muted-foreground"
                   >
-                    English
+                    ინგლისურად
                   </Label>
                   <Input
                     id="category-name-en"
                     name="name.en"
-                    placeholder="Category"
+                    placeholder="მაგ.: Category"
                     value={formik.values.name.en}
                     onBlurCapture={onBlurCapture}
                     onChange={(e) => {
@@ -162,7 +162,7 @@ export function CategoryForm({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="category-slug">Slug</Label>
+              <Label htmlFor="category-slug">სლაგი</Label>
               <Input
                 id="category-slug"
                 name="slug"
@@ -172,7 +172,7 @@ export function CategoryForm({
                 onBlur={formik.handleBlur}
               />
               <p className="text-xs text-muted-foreground">
-                URL-friendly identifier (must be unique)
+                URL-ზე გამოსაყენებელი იდენტიფიკატორი (უნდა იყოს უნიკალური)
               </p>
               {formik.touched.slug && formik.errors.slug && (
                 <p className="text-sm font-medium text-destructive">
@@ -183,18 +183,18 @@ export function CategoryForm({
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              გაუქმება
             </Button>
             <Button type="submit" disabled={isCreating || isUpdating}>
               {isCreating || isUpdating ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {category ? "Updating..." : "Creating..."}
+                  {category ? "განახლება მიმდინარეობს..." : "შექმნა მიმდინარეობს..."}
                 </>
               ) : category ? (
-                "Update"
+                "განახლება"
               ) : (
-                "Create"
+                "შექმნა"
               )}
             </Button>
           </DialogFooter>

@@ -9,13 +9,13 @@ export const useDeleteNews = () => {
     mutationFn: (id: string) => newsService.deleteNews.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.NEWS.list() });
-      toast.success("News article deleted successfully!");
+      toast.success("სიახლე წარმატებით წაიშალა!");
     },
     onError: (error: unknown) => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to delete news article. Please try again."
+          : "სიახლის წაშლა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

@@ -22,11 +22,11 @@ export const useCreateChildCategory = () => {
         queryKey:
           QUERY_KEYS.CATEGORIES.CHILD_CATEGORIES.BY_CATEGORY(categoryId),
       });
-      toast.success("Child category created successfully!");
+      toast.success("ქვე-კატეგორია წარმატებით შეიქმნა!");
     },
     onError: (error: ApiErrorResponse) => {
       toast.error(
-        error.message || "Failed to create child category. Please try again."
+        error.message || "ქვე-კატეგორიის შექმნა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

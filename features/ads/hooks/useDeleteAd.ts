@@ -9,13 +9,13 @@ export const useDeleteAd = () => {
     mutationFn: (id: string) => adsService.deleteAd.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADS.ALL });
-      toast.success("Ad deleted successfully!");
+      toast.success("რეკლამა წარმატებით წაიშალა!");
     },
     onError: (error: unknown) => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to delete ad. Please try again."
+          : "რეკლამის წაშლა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

@@ -22,17 +22,17 @@ export function UsersTable({ users }: UsersTableProps) {
         <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Created At</TableHead>
+            <TableHead>სახელი</TableHead>
+            <TableHead>ელ.ფოსტა</TableHead>
+            <TableHead>ვერიფიკაცია</TableHead>
+            <TableHead>შექმნის თარიღი</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {users.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4} className="h-24 text-center">
-                No users found.
+                მომხმარებლები ვერ მოიძებნა.
               </TableCell>
             </TableRow>
           ) : (
@@ -42,7 +42,7 @@ export function UsersTable({ users }: UsersTableProps) {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
                   <Badge variant={user.isVerified ? "default" : "outline"}>
-                    {user.isVerified ? "Verified" : "Not verified"}
+                    {user.isVerified ? "ვერიფიცირებული" : "არ არის ვერიფიცირებული"}
                   </Badge>
                 </TableCell>
                 <TableCell>

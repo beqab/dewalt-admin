@@ -7,10 +7,8 @@ import {
   CategoriesTable,
   CategoryForm,
   AssignToBrandDialog,
-  BrandSelector,
 } from "@/features/categories";
 import {
-  useGetBrands,
   useGetCategories,
   useDeleteCategory,
   useCreateCategory,
@@ -21,14 +19,6 @@ import type {
   CreateCategoryDto,
   UpdateCategoryDto,
 } from "@/features/categories/types";
-import { toast } from "sonner";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export default function CategoriesListPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -53,7 +43,7 @@ export default function CategoriesListPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this category?")) {
+    if (confirm("დარწმუნებული ხართ, რომ გსურთ ამ კატეგორიის წაშლა?")) {
       deleteCategory.mutate(id);
     }
   };
@@ -74,8 +64,8 @@ export default function CategoriesListPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-destructive">
-          Error loading categories:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
+          კატეგორიების ჩატვირთვის შეცდომა:{" "}
+          {error instanceof Error ? error.message : "უცნობი შეცდომა"}
         </p>
       </div>
     );
@@ -85,9 +75,9 @@ export default function CategoriesListPage() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Categories</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">კატეგორიები</h1>
           <p className="text-sm text-muted-foreground sm:text-base">
-            Manage categories and assign them to brands
+            მართეთ კატეგორიები და მიაკუთვნეთ ბრენდებს
           </p>
         </div>
         <div className="flex gap-2">
@@ -97,11 +87,11 @@ export default function CategoriesListPage() {
             className="w-full sm:w-auto"
           >
             <Save className="mr-2 h-4 w-4" />
-            Assign to Brand
+            ბრენდზე მინიჭება
           </Button>
           <Button onClick={handleCreate} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
-            Add Category
+            კატეგორიის დამატება
           </Button>
         </div>
       </div>
@@ -128,7 +118,7 @@ export default function CategoriesListPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="animate-spin" /> Loading categories...
+          <Loader2 className="animate-spin" /> კატეგორიები იტვირთება...
         </div>
       ) : (
         <CategoriesTable

@@ -17,11 +17,11 @@ export const useUpdateCategory = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.CATEGORIES.CATEGORIES.BY_ID(variables.id),
       });
-      toast.success("Category updated successfully!");
+      toast.success("კატეგორია წარმატებით განახლდა!");
     },
     onError: (error: ApiErrorResponse) => {
       toast.error(
-        error.message || "Failed to update category. Please try again."
+        error.message || "კატეგორიის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

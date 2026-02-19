@@ -24,7 +24,7 @@ export default function NewsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this news article?")) {
+    if (confirm("დარწმუნებული ხართ, რომ გსურთ ამ სიახლის წაშლა?")) {
       deleteNews.mutate(id);
     }
   };
@@ -38,8 +38,8 @@ export default function NewsPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-destructive">
-          Error loading news:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
+          სიახლეების ჩატვირთვის შეცდომა:{" "}
+          {error instanceof Error ? error.message : "უცნობი შეცდომა"}
         </p>
       </div>
     );
@@ -48,7 +48,7 @@ export default function NewsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin" /> Loading...
+        <Loader2 className="animate-spin" /> იტვირთება...
       </div>
     );
   }
@@ -57,14 +57,14 @@ export default function NewsPage() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">News</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">სიახლეები</h1>
           <p className="text-sm text-muted-foreground sm:text-base">
-            Manage news articles
+            სიახლეების მართვა
           </p>
         </div>
         <Button onClick={handleCreate} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
-          Add News
+          სიახლის დამატება
         </Button>
       </div>
 
@@ -73,8 +73,8 @@ export default function NewsPage() {
       {data && data.totalPages > 1 && (
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Showing {((page - 1) * limit) + 1} to{" "}
-            {Math.min(page * limit, data.total)} of {data.total} articles
+            ნაჩვენებია {((page - 1) * limit) + 1}-დან{" "}
+            {Math.min(page * limit, data.total)}-მდე, სულ {data.total} სტატია
           </div>
           <Pagination
             currentPage={page}

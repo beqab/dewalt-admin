@@ -35,9 +35,9 @@ export function NewsFormDialog({
     imageUrl: "",
   })
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (news) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         title: news.title,
         content: news.content,
@@ -64,17 +64,17 @@ export function NewsFormDialog({
       <DialogContent className="max-w-3xl max-h-[90vh] w-[calc(100vw-2rem)] overflow-y-auto">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>{news ? "Edit News" : "Create News"}</DialogTitle>
+            <DialogTitle>{news ? "სიახლის რედაქტირება" : "სიახლის შექმნა"}</DialogTitle>
             <DialogDescription>
               {news
-                ? "Update news article information."
-                : "Add a new news article."}
+                ? "სიახლის ინფორმაციის განახლება."
+                : "ახალი სიახლის დამატება."}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="title-en">Title (EN)</Label>
+                <Label htmlFor="title-en">სათაური (EN)</Label>
                 <Input
                   id="title-en"
                   value={formData.title.en}
@@ -88,7 +88,7 @@ export function NewsFormDialog({
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="title-ka">Title (KA)</Label>
+                <Label htmlFor="title-ka">სათაური (KA)</Label>
                 <Input
                   id="title-ka"
                   value={formData.title.ka}
@@ -104,7 +104,7 @@ export function NewsFormDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="summary-en">Summary (EN)</Label>
+                <Label htmlFor="summary-en">შეჯამება (EN)</Label>
                 <Textarea
                   id="summary-en"
                   value={formData.summary.en}
@@ -118,7 +118,7 @@ export function NewsFormDialog({
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="summary-ka">Summary (KA)</Label>
+                <Label htmlFor="summary-ka">შეჯამება (KA)</Label>
                 <Textarea
                   id="summary-ka"
                   value={formData.summary.ka}
@@ -134,7 +134,7 @@ export function NewsFormDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="content-en">Content (EN)</Label>
+                <Label htmlFor="content-en">შინაარსი (EN)</Label>
                 <Textarea
                   id="content-en"
                   rows={8}
@@ -149,7 +149,7 @@ export function NewsFormDialog({
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="content-ka">Content (KA)</Label>
+                <Label htmlFor="content-ka">შინაარსი (KA)</Label>
                 <Textarea
                   id="content-ka"
                   rows={8}
@@ -165,7 +165,7 @@ export function NewsFormDialog({
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="imageUrl">Image URL</Label>
+              <Label htmlFor="imageUrl">სურათის URL</Label>
               <Input
                 id="imageUrl"
                 value={formData.imageUrl}
@@ -178,10 +178,10 @@ export function NewsFormDialog({
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              გაუქმება
             </Button>
             <Button type="submit">
-              {news ? "Update" : "Create"}
+              {news ? "განახლება" : "შექმნა"}
             </Button>
           </DialogFooter>
         </form>

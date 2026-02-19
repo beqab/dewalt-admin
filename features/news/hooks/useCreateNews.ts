@@ -10,13 +10,13 @@ export const useCreateNews = () => {
     mutationFn: (data: CreateNewsDto) => newsService.createNews.post(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.NEWS.list() });
-      toast.success("News article created successfully!");
+      toast.success("სიახლე წარმატებით შეიქმნა!");
     },
     onError: (error: unknown) => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to create news article. Please try again."
+          : "სიახლის შექმნა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

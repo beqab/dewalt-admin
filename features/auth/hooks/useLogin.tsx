@@ -37,7 +37,7 @@ export const useLogin = () => {
       return result;
     },
     onSuccess: () => {
-      toast.success("Login successful!");
+      toast.success("წარმატებით შეხვედით!");
       const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
       console.log("callbackUrl", callbackUrl);
       if (callbackUrl === "/") {
@@ -48,18 +48,18 @@ export const useLogin = () => {
     },
     onError: (err: unknown) => {
       if (err instanceof Error && err.message === "MISSING_FIELDS") {
-        setError("Please enter both email and password");
+        setError("გთხოვთ შეიყვანოთ ელ.ფოსტა და პაროლი");
         return;
       }
 
       if (err instanceof Error && err.message === "INVALID_CREDENTIALS") {
-        setError("Invalid credentials. Please try again.");
-        toast.error("Login failed. Please check your credentials.");
+        setError("არასწორი მონაცემები. გთხოვთ სცადოთ თავიდან.");
+        toast.error("შესვლა ვერ მოხერხდა. გთხოვთ შეამოწმოთ მონაცემები.");
         return;
       }
 
-      setError("An unexpected error occurred. Please try again.");
-      toast.error("Login failed. Please try again.");
+      setError("მოულოდნელი შეცდომა მოხდა. გთხოვთ სცადოთ თავიდან.");
+      toast.error("შესვლა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.");
     },
   });
 

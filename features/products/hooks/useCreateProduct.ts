@@ -17,11 +17,11 @@ export const useCreateProduct = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.PRODUCTS.LIST(),
       });
-      toast.success("Product created successfully!");
+      toast.success("პროდუქტი წარმატებით შეიქმნა!");
     },
     onError: (error: ApiErrorResponse) => {
       toast.error(
-        error.message || "Failed to create product. Please try again."
+        error.message || "პროდუქტის შექმნა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

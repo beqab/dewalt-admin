@@ -35,7 +35,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   }
 
   const setLink = () => {
-    const url = window.prompt("Enter URL:");
+    const url = window.prompt("შეიყვანეთ URL:");
     if (url) {
       editor.chain().focus().setLink({ href: url }).run();
     }
@@ -69,7 +69,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           className={
             editor.isActive("heading", { level: 2 }) ? "bg-accent" : ""
           }
-          title="Heading 2"
+          title="სათაური 2"
         >
           H2
         </Button>
@@ -97,7 +97,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           className={
             editor.isActive("heading", { level: 3 }) ? "bg-accent" : ""
           }
-          title="Heading 3"
+          title="სათაური 3"
         >
           H3
         </Button>
@@ -111,7 +111,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           size="sm"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={editor.isActive("bold") ? "bg-accent" : ""}
-          title="Bold"
+          title="სქელი"
         >
           <Bold className="h-4 w-4" />
         </Button>
@@ -121,7 +121,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           size="sm"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={editor.isActive("italic") ? "bg-accent" : ""}
-          title="Italic"
+          title="კურსივი"
         >
           <Italic className="h-4 w-4" />
         </Button>
@@ -135,7 +135,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           size="sm"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={editor.isActive("bulletList") ? "bg-accent" : ""}
-          title="Bullet List"
+          title="ნიშნული სია"
         >
           <List className="h-4 w-4" />
         </Button>
@@ -145,7 +145,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           size="sm"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={editor.isActive("orderedList") ? "bg-accent" : ""}
-          title="Ordered List"
+          title="დანომრილი სია"
         >
           <ListOrdered className="h-4 w-4" />
         </Button>
@@ -159,7 +159,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           size="sm"
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
           className={editor.isActive({ textAlign: "left" }) ? "bg-accent" : ""}
-          title="Align Left"
+          title="მარცხნივ გასწორება"
         >
           <AlignLeft className="h-4 w-4" />
         </Button>
@@ -171,7 +171,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           className={
             editor.isActive({ textAlign: "center" }) ? "bg-accent" : ""
           }
-          title="Align Center"
+          title="ცენტრში გასწორება"
         >
           <AlignCenter className="h-4 w-4" />
         </Button>
@@ -181,7 +181,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           size="sm"
           onClick={() => editor.chain().focus().setTextAlign("right").run()}
           className={editor.isActive({ textAlign: "right" }) ? "bg-accent" : ""}
-          title="Align Right"
+          title="მარჯვნივ გასწორება"
         >
           <AlignRight className="h-4 w-4" />
         </Button>
@@ -195,7 +195,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           size="sm"
           onClick={setLink}
           className={editor.isActive("link") ? "bg-accent" : ""}
-          title="Add Link"
+          title="ბმულის დამატება"
         >
           <LinkIcon className="h-4 w-4" />
         </Button>
@@ -208,7 +208,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          title="Insert Horizontal Line"
+          title="ჰორიზონტალური ხაზის ჩასმა"
         >
           <Minus className="h-4 w-4" />
         </Button>
@@ -222,7 +222,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           size="sm"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
-          title="Undo"
+          title="გაუქმება"
         >
           <Undo className="h-4 w-4" />
         </Button>
@@ -232,7 +232,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           size="sm"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
-          title="Redo"
+          title="გამეორება"
         >
           <Redo className="h-4 w-4" />
         </Button>
@@ -244,7 +244,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
 export default function RichTextEditorContent({
   value,
   onChange,
-  placeholder = "Enter content...",
+  placeholder = "შეიყვანეთ ტექსტი...",
   className,
   id,
 }: RichTextEditorProps) {

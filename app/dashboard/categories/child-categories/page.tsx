@@ -43,7 +43,7 @@ export default function ChildCategoriesPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this child category?")) {
+    if (confirm("დარწმუნებული ხართ, რომ გსურთ ამ ქვე-კატეგორიის წაშლა?")) {
       deleteChildCategory.mutate(id);
     }
   };
@@ -63,8 +63,8 @@ export default function ChildCategoriesPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-destructive">
-          Error loading child categories:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
+          ქვე-კატეგორიების ჩატვირთვის შეცდომა:{" "}
+          {error instanceof Error ? error.message : "უცნობი შეცდომა"}
         </p>
       </div>
     );
@@ -74,10 +74,10 @@ export default function ChildCategoriesPage() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Child Categories</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">ქვე-კატეგორიები</h1>
           <p className="text-sm text-muted-foreground sm:text-base">
-            Manage child categories independently, then assign to brands and
-            categories
+            მართეთ ქვე-კატეგორიები ცალკე და შემდეგ მიაკუთვნეთ ბრენდებსა და
+            კატეგორიებს
           </p>
         </div>
         <div className="flex gap-2">
@@ -87,18 +87,18 @@ export default function ChildCategoriesPage() {
             className="w-full sm:w-auto"
           >
             <Save className="mr-2 h-4 w-4" />
-            Assign to Brand + Category
+            ბრენდზე და კატეგორიაზე მინიჭება
           </Button>
           <Button onClick={handleCreate} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
-            Add Child Category
+            ქვე-კატეგორიის დამატება
           </Button>
         </div>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="animate-spin" /> Loading child categories...
+          <Loader2 className="animate-spin" /> ქვე-კატეგორიები იტვირთება...
         </div>
       ) : (
         <ChildCategoriesTable

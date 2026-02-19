@@ -20,9 +20,9 @@ interface AdsTableProps {
 }
 
 const positionLabels: Record<AdPosition, string> = {
-  main_page: "Main Page",
-  aside: "Aside",
-  footer: "Footer",
+  main_page: "მთავარი გვერდი",
+  aside: "გვერდითი",
+  footer: "ფუტერი",
 };
 
 export function AdsTable({ ads, onEdit, onDelete }: AdsTableProps) {
@@ -32,18 +32,18 @@ export function AdsTable({ ads, onEdit, onDelete }: AdsTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-32">Image</TableHead>
-              <TableHead>Position</TableHead>
-              <TableHead>Link URL</TableHead>
-              <TableHead className="w-32">Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="w-32">სურათი</TableHead>
+              <TableHead>პოზიცია</TableHead>
+              <TableHead>ბმული</TableHead>
+              <TableHead className="w-32">შექმნის თარიღი</TableHead>
+              <TableHead className="text-right">მოქმედებები</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {ads.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  No ads found.
+                  რეკლამები ვერ მოიძებნა.
                 </TableCell>
               </TableRow>
             ) : (
@@ -53,7 +53,7 @@ export function AdsTable({ ads, onEdit, onDelete }: AdsTableProps) {
                     <div className="relative w-24 h-16 border rounded-md overflow-hidden bg-muted">
                       <Image
                         src={ad.imageUrl}
-                        alt={`Ad ${positionLabels[ad.position]}`}
+                        alt={`რეკლამა: ${positionLabels[ad.position]}`}
                         fill
                         className="object-cover"
                         sizes="96px"
@@ -67,7 +67,7 @@ export function AdsTable({ ads, onEdit, onDelete }: AdsTableProps) {
                   </TableCell>
                   <TableCell>
                     <div className="text-sm text-muted-foreground truncate max-w-xs">
-                      {ad.urlLink || <span className="italic">No link</span>}
+                      {ad.urlLink || <span className="italic">ბმული არ არის</span>}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -81,7 +81,7 @@ export function AdsTable({ ads, onEdit, onDelete }: AdsTableProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => onEdit(ad)}
-                        title="Edit"
+                        title="რედაქტირება"
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -89,7 +89,7 @@ export function AdsTable({ ads, onEdit, onDelete }: AdsTableProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => onDelete(ad._id)}
-                        title="Delete"
+                        title="წაშლა"
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>

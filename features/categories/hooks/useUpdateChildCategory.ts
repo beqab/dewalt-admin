@@ -17,11 +17,11 @@ export const useUpdateChildCategory = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.CATEGORIES.CHILD_CATEGORIES.BY_ID(variables.id),
       });
-      toast.success("Child category updated successfully!");
+      toast.success("ქვე-კატეგორია წარმატებით განახლდა!");
     },
     onError: (error: ApiErrorResponse) => {
       toast.error(
-        error.message || "Failed to update child category. Please try again."
+        error.message || "ქვე-კატეგორიის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

@@ -12,12 +12,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       credentials: {
         email: {
-          label: "Email",
+          label: "ელ.ფოსტა",
           type: "email",
           placeholder: "user@example.com",
         },
         password: {
-          label: "Password",
+          label: "პაროლი",
           type: "password",
         },
       },

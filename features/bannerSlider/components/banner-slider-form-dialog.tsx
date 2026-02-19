@@ -37,9 +37,9 @@ export function BannerSliderFormDialog({
     buttonLink: "",
   });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (banner) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         title: banner.title,
         description: banner.description,
@@ -59,7 +59,7 @@ export function BannerSliderFormDialog({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.imageUrl) {
-      toast.error("Please upload an image");
+      toast.error("გთხოვთ ატვირთოთ სურათი");
       return;
     }
     onSubmit(formData as CreateBannerDto | UpdateBannerDto);
@@ -71,16 +71,16 @@ export function BannerSliderFormDialog({
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>
-              {banner ? "Edit Banner" : "Create Banner"}
+              {banner ? "ბანერის რედაქტირება" : "ბანერის შექმნა"}
             </DialogTitle>
             <DialogDescription>
-              {banner ? "Update banner information." : "Add a new banner."}
+              {banner ? "ბანერის ინფორმაციის განახლება." : "ახალი ბანერის დამატება."}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-4">
               <div className="space-y-2">
-                <Label>Title</Label>
+                <Label>სათაური</Label>
                 <div className="grid gap-3">
                   <div className="grid gap-2">
                     <Label
@@ -106,7 +106,7 @@ export function BannerSliderFormDialog({
                       htmlFor="title-en"
                       className="text-sm text-muted-foreground"
                     >
-                      English
+                      ინგლისურად
                     </Label>
                     <Input
                       id="title-en"
@@ -125,7 +125,7 @@ export function BannerSliderFormDialog({
             </div>
             <div className="grid gap-4">
               <div className="space-y-2">
-                <Label>Description</Label>
+                <Label>აღწერა</Label>
                 <div className="grid gap-3">
                   <div className="grid gap-2">
                     <Label
@@ -154,7 +154,7 @@ export function BannerSliderFormDialog({
                       htmlFor="description-en"
                       className="text-sm text-muted-foreground"
                     >
-                      English
+                      ინგლისურად
                     </Label>
                     <Textarea
                       id="description-en"
@@ -181,11 +181,11 @@ export function BannerSliderFormDialog({
                 }
                 imageUrl={formData.imageUrl}
                 defaultImageUrl={banner?.imageUrl}
-                label="Image"
+                label="სურათი"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="buttonLink">Button Link</Label>
+              <Label htmlFor="buttonLink">ღილაკის ბმული</Label>
               <Input
                 id="buttonLink"
                 type="url"
@@ -203,9 +203,9 @@ export function BannerSliderFormDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              გაუქმება
             </Button>
-            <Button type="submit">{banner ? "Update" : "Create"}</Button>
+            <Button type="submit">{banner ? "განახლება" : "შექმნა"}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

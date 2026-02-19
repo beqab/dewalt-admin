@@ -29,18 +29,18 @@ export function CategoriesTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name (EN / KA)</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead>Brands</TableHead>
+              <TableHead>დასახელება (EN / KA)</TableHead>
+              <TableHead>სლაგი</TableHead>
+              <TableHead>ბრენდები</TableHead>
 
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right">მოქმედებები</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {categories.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  No categories found.
+                  კატეგორიები ვერ მოიძებნა.
                 </TableCell>
               </TableRow>
             ) : (
@@ -84,7 +84,7 @@ export function CategoriesTable({
                           </div>
                         ) : (
                           <span className="text-muted-foreground">
-                            No brands assigned
+                            ბრენდი არ არის მინიჭებული
                           </span>
                         )}
                       </div>
@@ -96,7 +96,7 @@ export function CategoriesTable({
                           variant="ghost"
                           size="icon"
                           onClick={() => onEdit(category)}
-                          title="Edit"
+                          title="რედაქტირება"
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -104,7 +104,7 @@ export function CategoriesTable({
                           variant="ghost"
                           size="icon"
                           onClick={() => onDelete(category._id)}
-                          title="Delete"
+                          title="წაშლა"
                         >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>

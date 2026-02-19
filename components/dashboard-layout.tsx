@@ -40,32 +40,32 @@ interface DashboardLayoutProps {
 
 const navigationItems = [
   {
-    title: "Dashboard",
+    title: "დეშბორდი",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "Users",
+    title: "მომხმარებლები",
     href: "/dashboard/users",
     icon: Users,
   },
   {
-    title: "Products",
+    title: "პროდუქტები",
     href: "/dashboard/products",
     icon: Package,
   },
   {
-    title: "News",
+    title: "სიახლეები",
     href: "/dashboard/news",
     icon: Newspaper,
   },
   {
-    title: "Ads",
+    title: "რეკლამები",
     href: "/dashboard/ads",
     icon: Image,
   },
   {
-    title: "Banner Slider",
+    title: "ბანერ-სლაიდერი",
     href: "/dashboard/banner-slider",
     icon: SlidersHorizontal,
   },
@@ -135,7 +135,7 @@ function NavContent({
               )}
             >
               <Tags className="h-4 w-4" />
-              <span className="flex-1 text-left">Categories</span>
+              <span className="flex-1 text-left">კატეგორიები</span>
               {isCategoriesOpen ? (
                 <ChevronDown className="h-4 w-4" />
               ) : (
@@ -154,7 +154,7 @@ function NavContent({
                     onClick={onMobileMenuClose}
                   >
                     <Tag className="h-3.5 w-3.5" />
-                    Brands
+                    ბრენდები
                   </Link>
                 </SidebarNavItem>
                 <SidebarNavItem
@@ -167,7 +167,7 @@ function NavContent({
                     onClick={onMobileMenuClose}
                   >
                     <Tag className="h-3.5 w-3.5" />
-                    Categories
+                    კატეგორიები
                   </Link>
                 </SidebarNavItem>
                 <SidebarNavItem
@@ -180,7 +180,7 @@ function NavContent({
                     onClick={onMobileMenuClose}
                   >
                     <Tag className="h-3.5 w-3.5" />
-                    Child Categories
+                    ქვე-კატეგორიები
                   </Link>
                 </SidebarNavItem>
               </div>
@@ -205,7 +205,7 @@ function NavContent({
             disabled={isLoggingOut}
           >
             <LogOut className="mr-2 h-4 w-4" />
-            {isLoggingOut ? "Logging out..." : "Logout"}
+            {isLoggingOut ? "გამოსვლა მიმდინარეობს..." : "გამოსვლა"}
           </Button>
         </div>
       </SidebarFooter>
@@ -258,7 +258,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             className="fixed left-4 top-4 z-40 lg:hidden"
           >
             <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle menu</span>
+            <span className="sr-only">მენიუს გადართვა</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-64 p-0">

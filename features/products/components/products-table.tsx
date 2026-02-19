@@ -34,15 +34,15 @@ export function ProductsTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Image</TableHead>
-              <TableHead>Name (EN / KA)</TableHead>
-              <TableHead>Code</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Brand</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Rating</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>სურათი</TableHead>
+              <TableHead>დასახელება (EN / KA)</TableHead>
+              <TableHead>კოდი</TableHead>
+              <TableHead>ფასი</TableHead>
+              <TableHead>ბრენდი</TableHead>
+              <TableHead>კატეგორია</TableHead>
+              <TableHead>მარაგი</TableHead>
+              <TableHead>რეიტინგი</TableHead>
+              <TableHead className="text-right">მოქმედებები</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -51,7 +51,7 @@ export function ProductsTable({
             ) : products.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={9} className="h-24 text-center">
-                  No products found.
+                  პროდუქტები ვერ მოიძებნა.
                 </TableCell>
               </TableRow>
             ) : (
@@ -71,7 +71,9 @@ export function ProductsTable({
                       <div className="relative w-24 h-16 border rounded-md overflow-hidden bg-muted">
                         <Image
                           src={product.image}
-                          alt={product.name?.en || product.name?.ka || "Product"}
+                          alt={
+                            product.name?.en || product.name?.ka || "პროდუქტი"
+                          }
                           fill
                           className="object-fit"
                           sizes="96px"
@@ -114,12 +116,12 @@ export function ProductsTable({
                     </TableCell>
                     <TableCell>
                       <Badge variant={product.inStock ? "default" : "outline"}>
-                        {product.inStock ? "In Stock" : "Out of Stock"}
+                        {product.inStock ? "მარაგშია" : "არ არის მარაგში"}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
-                        {product.rating} ({product.reviewCount} reviews)
+                        {product.rating} ({product.reviewCount} მიმოხილვა)
                       </div>
                     </TableCell>
                     <TableCell className="text-right">

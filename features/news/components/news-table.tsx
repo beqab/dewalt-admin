@@ -36,18 +36,18 @@ export function NewsTable({ news, onDelete }: NewsTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-32">Image</TableHead>
-              <TableHead>Title (EN / KA)</TableHead>
-              <TableHead>Summary (EN / KA)</TableHead>
-              <TableHead className="w-32">Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="w-32">სურათი</TableHead>
+              <TableHead>სათაური (EN / KA)</TableHead>
+              <TableHead>შეჯამება (EN / KA)</TableHead>
+              <TableHead className="w-32">შექმნის თარიღი</TableHead>
+              <TableHead className="text-right">მოქმედებები</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {news.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  No news articles found.
+                  სიახლეები ვერ მოიძებნა.
                 </TableCell>
               </TableRow>
             ) : (
@@ -57,7 +57,7 @@ export function NewsTable({ news, onDelete }: NewsTableProps) {
                     <div className="relative w-24 h-16 border rounded-md overflow-hidden bg-muted">
                       <Image
                         src={article.imageUrl}
-                        alt={article.title.en || "News image"}
+                        alt={article.title.en || "სიახლის სურათი"}
                         fill
                         className="object-cover"
                         sizes="96px"
@@ -95,7 +95,7 @@ export function NewsTable({ news, onDelete }: NewsTableProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => handlePreview(article._id)}
-                        title="Preview"
+                        title="გადახედვა"
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -103,7 +103,7 @@ export function NewsTable({ news, onDelete }: NewsTableProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(article._id)}
-                        title="Edit"
+                        title="რედაქტირება"
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -111,7 +111,7 @@ export function NewsTable({ news, onDelete }: NewsTableProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => onDelete(article._id)}
-                        title="Delete"
+                        title="წაშლა"
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>

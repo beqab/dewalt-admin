@@ -33,9 +33,9 @@ import UploadImage from "@/components/uploadImage";
 import { toast } from "sonner";
 
 const positionLabels: Record<AdPosition, string> = {
-  main_page: "Main Page",
-  aside: "Aside",
-  footer: "Footer",
+  main_page: "მთავარი გვერდი",
+  aside: "გვერდითი",
+  footer: "ფუტერი",
 };
 
 export default function AdsPage() {
@@ -74,7 +74,7 @@ export default function AdsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this ad?")) {
+    if (confirm("დარწმუნებული ხართ, რომ გსურთ ამ რეკლამის წაშლა?")) {
       deleteAd.mutate(id);
     }
   };
@@ -82,11 +82,11 @@ export default function AdsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.imageUrl) {
-      toast.error("Please upload an image");
+      toast.error("გთხოვთ ატვირთოთ სურათი");
       return;
     }
     if (!formData.position) {
-      toast.error("Please select a position");
+      toast.error("გთხოვთ აირჩიოთ პოზიცია");
       return;
     }
 
@@ -112,8 +112,8 @@ export default function AdsPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-destructive">
-          Error loading ads:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
+          რეკლამების ჩატვირთვის შეცდომა:{" "}
+          {error instanceof Error ? error.message : "უცნობი შეცდომა"}
         </p>
       </div>
     );
@@ -122,7 +122,7 @@ export default function AdsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin" /> Loading...
+        <Loader2 className="animate-spin" /> იტვირთება...
       </div>
     );
   }
@@ -137,14 +137,14 @@ export default function AdsPage() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Ads</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">რეკლამები</h1>
           <p className="text-sm text-muted-foreground sm:text-base">
-            Manage advertisements
+            რეკლამების მართვა
           </p>
         </div>
         <Button onClick={handleCreate} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
-          Add Ad
+          რეკლამის დამატება
         </Button>
       </div>
 
@@ -154,16 +154,18 @@ export default function AdsPage() {
         <DialogContent>
           <form onSubmit={handleSubmit}>
             <DialogHeader>
-              <DialogTitle>{editingAd ? "Edit Ad" : "Create Ad"}</DialogTitle>
+              <DialogTitle>
+                {editingAd ? "რეკლამის რედაქტირება" : "რეკლამის შექმნა"}
+              </DialogTitle>
               <DialogDescription>
                 {editingAd
-                  ? "Update ad information."
-                  : "Add a new advertisement."}
+                  ? "რეკლამის ინფორმაციის განახლება."
+                  : "ახალი რეკლამის დამატება."}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="position">Position</Label>
+                <Label htmlFor="position">პოზიცია</Label>
                 <Select
                   value={formData.position}
                   onValueChange={(value) =>
@@ -173,7 +175,7 @@ export default function AdsPage() {
                   disabled={!!editingAd}
                 >
                   <SelectTrigger id="position">
-                    <SelectValue placeholder="Select position" />
+                    <SelectValue placeholder="აირჩიეთ პოზიცია" />
                   </SelectTrigger>
                   <SelectContent>
                     {availablePositions.map((position) => (
@@ -185,7 +187,7 @@ export default function AdsPage() {
                 </Select>
                 {editingAd && (
                   <p className="text-xs text-muted-foreground">
-                    Position cannot be changed after creation
+                    შექმნის შემდეგ პოზიციის შეცვლა შეუძლებელია
                   </p>
                 )}
               </div>
@@ -197,12 +199,12 @@ export default function AdsPage() {
                   }
                   imageUrl={formData.imageUrl}
                   defaultImageUrl={editingAd?.imageUrl}
-                  label="Image"
+                  label="სურათი"
                 />
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="urlLink">Link URL (Optional)</Label>
+                <Label htmlFor="urlLink">ბმულის URL (არასავალდებულო)</Label>
                 <Input
                   id="urlLink"
                   type="url"
@@ -220,7 +222,7 @@ export default function AdsPage() {
                 variant="outline"
                 onClick={() => setIsDialogOpen(false)}
               >
-                Cancel
+                გაუქმება
               </Button>
               <Button
                 type="submit"
@@ -229,12 +231,14 @@ export default function AdsPage() {
                 {createAd.isPending || updateAd.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {editingAd ? "Updating..." : "Creating..."}
+                    {editingAd
+                      ? "განახლება მიმდინარეობს..."
+                      : "შექმნა მიმდინარეობს..."}
                   </>
                 ) : editingAd ? (
-                  "Update"
+                  "განახლება"
                 ) : (
-                  "Create"
+                  "შექმნა"
                 )}
               </Button>
             </DialogFooter>

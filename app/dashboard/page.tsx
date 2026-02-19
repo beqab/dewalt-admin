@@ -3,7 +3,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -27,41 +26,41 @@ export default function DashboardPage() {
 
   const stats = [
     {
-      title: "Users",
+      title: "მომხმარებლები",
       value: dummyUsers.length.toString(),
-      description: "Total registered users",
+      description: "რეგისტრირებული მომხმარებლების რაოდენობა",
       icon: Users,
       href: "/dashboard/users",
     },
     {
-      title: "Products",
+      title: "პროდუქტები",
       value: dummyProducts.length.toString(),
-      description: "Total products",
+      description: "პროდუქტების რაოდენობა",
       icon: Package,
       href: "/dashboard/products",
     },
     {
-      title: "News",
+      title: "სიახლეები",
       value: dummyNews.length.toString(),
-      description: "Total news articles",
+      description: "სიახლეების რაოდენობა",
       icon: Newspaper,
       href: "/dashboard/news",
     },
     {
-      title: "Ads",
+      title: "რეკლამები",
       value: 5,
-      description: "Active ads",
+      description: "აქტიური რეკლამები",
       icon: Image,
       href: "/dashboard/ads",
     },
     {
-      title: "Banner Sliders",
+      title: "ბანერ-სლაიდერები",
       value: isBannerSliderLoading ? (
         <Loader2 className="animate-spin w-6 h-6" />
       ) : (
         bannerCount.toString()
       ),
-      description: "Total banners",
+      description: "ბანერების რაოდენობა",
       icon: SlidersHorizontal,
       href: "/dashboard/banner-slider",
     },
@@ -70,9 +69,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold sm:text-3xl">Dashboard</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">დეშბორდი</h1>
         <p className="text-sm text-muted-foreground sm:text-base">
-          Welcome to Dewalt Admin Panel
+          მოგესალმებით Dewalt-ის ადმინისტრაციულ პანელში
         </p>
       </div>
 

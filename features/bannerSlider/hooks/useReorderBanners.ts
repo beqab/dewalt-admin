@@ -52,7 +52,7 @@ export const useReorderBanners = () => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to reorder banners. Please try again."
+          : "ბანერების გადალაგება ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
     onSettled: () => {
@@ -61,7 +61,7 @@ export const useReorderBanners = () => {
       });
     },
     onSuccess: () => {
-      toast.success("Banners reordered successfully!");
+      toast.success("ბანერები წარმატებით გადალაგდა!");
     },
   });
 };

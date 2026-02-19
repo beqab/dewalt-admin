@@ -27,10 +27,10 @@ import { createSlug } from "@/lib/slugify";
 
 const childCategorySchema = yup.object({
   name: yup.object({
-    ka: yup.string().required("Georgian name is required"),
-    en: yup.string().required("English name is required"),
+    ka: yup.string().required("ქართულად დასახელება სავალდებულოა"),
+    en: yup.string().required("ინგლისურად დასახელება სავალდებულოა"),
   }),
-  slug: yup.string().required("Slug is required"),
+  slug: yup.string().required("სლაგი სავალდებულოა"),
   brandIds: yup.array().of(yup.string()).default([]),
   categoryId: yup.string().optional(),
 });
@@ -153,17 +153,17 @@ export function ChildCategoryForm({
         <form onSubmit={formik.handleSubmit}>
           <DialogHeader>
             <DialogTitle>
-              {childCategory ? "Edit Child Category" : "Create Child Category"}
+              {childCategory ? "ქვე-კატეგორიის რედაქტირება" : "ქვე-კატეგორიის შექმნა"}
             </DialogTitle>
             <DialogDescription>
               {childCategory
-                ? "Update child category information."
-                : "Add a new child category. You can assign it to brands and categories later."}
+                ? "ქვე-კატეგორიის ინფორმაციის განახლება."
+                : "ახალი ქვე-კატეგორიის დამატება. მოგვიანებით შეძლებთ ბრენდებსა და კატეგორიებზე მინიჭებას."}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label>Name</Label>
+              <Label>დასახელება</Label>
               <div className="grid gap-3">
                 <div className="grid gap-2">
                   <Label
@@ -193,12 +193,12 @@ export function ChildCategoryForm({
                     htmlFor="child-category-name-en"
                     className="text-sm text-muted-foreground"
                   >
-                    English
+                    ინგლისურად
                   </Label>
                   <Input
                     id="child-category-name-en"
                     name="name.en"
-                    placeholder="Child Category"
+                    placeholder="მაგ.: Child Category"
                     onBlurCapture={onBlurCapture}
                     value={formik.values.name.en}
                     onChange={(e) => {
@@ -216,7 +216,7 @@ export function ChildCategoryForm({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="child-category-slug">Slug</Label>
+              <Label htmlFor="child-category-slug">სლაგი</Label>
               <Input
                 id="child-category-slug"
                 name="slug"
@@ -226,7 +226,7 @@ export function ChildCategoryForm({
                 onBlur={formik.handleBlur}
               />
               <p className="text-xs text-muted-foreground">
-                URL-friendly identifier (must be unique)
+                URL-ზე გამოსაყენებელი იდენტიფიკატორი (უნდა იყოს უნიკალური)
               </p>
               {formik.touched.slug && formik.errors.slug && (
                 <p className="text-sm font-medium text-destructive">
@@ -258,7 +258,7 @@ export function ChildCategoryForm({
                   <p className="text-sm font-medium text-destructive">
                     {typeof formik.errors.brandIds === "string"
                       ? formik.errors.brandIds
-                      : "Invalid brand selection"}
+                      : "ბრენდის არჩევა არასწორია"}
                   </p>
                 )}
               </div>
@@ -275,7 +275,7 @@ export function ChildCategoryForm({
                   <p className="text-sm font-medium text-destructive">
                     {typeof formik.errors.brandIds === "string"
                       ? formik.errors.brandIds
-                      : "Invalid brand selection"}
+                      : "ბრენდის არჩევა არასწორია"}
                   </p>
                 )}
               </div>
@@ -286,12 +286,12 @@ export function ChildCategoryForm({
               <>
                 {formik.values.categoryId && (
                   <div className="space-y-2">
-                    <Label>Current Category</Label>
+                    <Label>მიმდინარე კატეგორია</Label>
                     <div className="flex items-center justify-between p-2 border rounded bg-muted/50">
                       <span className="text-sm font-medium">
                         {categories?.find(
                           (c) => c._id === formik.values.categoryId
-                        )?.name.en || "Unknown"}
+                        )?.name.en || "უცნობი"}
                       </span>
                       <Button
                         type="button"
@@ -316,15 +316,15 @@ export function ChildCategoryForm({
                     }}
                     label={
                       formik.values.categoryId
-                        ? "Change Category"
-                        : "Add Category"
+                        ? "კატეგორიის შეცვლა"
+                        : "კატეგორიის დამატება"
                     }
                     filterByBrandIds={formik.values.brandIds || []}
                   />
                   <p className="text-xs text-muted-foreground">
                     {(formik.values.brandIds || []).length > 0
-                      ? "Only categories for selected brands are shown."
-                      : "Select a parent category."}
+                      ? "ნაჩვენებია მხოლოდ არჩეული ბრენდებისთვის ხელმისაწვდომი კატეგორიები."
+                      : "აირჩიეთ მშობელი კატეგორია."}
                   </p>
                   {formik.touched.categoryId && formik.errors.categoryId && (
                     <p className="text-sm font-medium text-destructive">
@@ -345,8 +345,8 @@ export function ChildCategoryForm({
                 />
                 <p className="text-xs text-muted-foreground">
                   {(formik.values.brandIds || []).length > 0
-                    ? "Only categories for selected brands are shown."
-                    : "Select a parent category (optional)."}
+                    ? "ნაჩვენებია მხოლოდ არჩეული ბრენდებისთვის ხელმისაწვდომი კატეგორიები."
+                    : "აირჩიეთ მშობელი კატეგორია (არასავალდებულო)."}
                 </p>
                 {formik.touched.categoryId && formik.errors.categoryId && (
                   <p className="text-sm font-medium text-destructive">
@@ -358,18 +358,18 @@ export function ChildCategoryForm({
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              გაუქმება
             </Button>
             <Button type="submit" disabled={isCreating || isUpdating}>
               {isCreating || isUpdating ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {childCategory ? "Updating..." : "Creating..."}
+                  {childCategory ? "განახლება მიმდინარეობს..." : "შექმნა მიმდინარეობს..."}
                 </>
               ) : childCategory ? (
-                "Update"
+                "განახლება"
               ) : (
-                "Create"
+                "შექმნა"
               )}
             </Button>
           </DialogFooter>

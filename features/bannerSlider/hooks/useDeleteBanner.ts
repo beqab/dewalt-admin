@@ -12,13 +12,13 @@ export const useDeleteBanner = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.BANNER_SLIDER.ALL,
       });
-      toast.success("Banner deleted successfully!");
+      toast.success("ბანერი წარმატებით წაიშალა!");
     },
     onError: (error: unknown) => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to delete banner. Please try again."
+          : "ბანერის წაშლა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

@@ -32,6 +32,7 @@ export default function EditNewsPage() {
 
   useEffect(() => {
     if (news && !isNew) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         title: news.title,
         summary: news.summary,
@@ -39,13 +40,12 @@ export default function EditNewsPage() {
         imageUrl: news.imageUrl,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [news, isNew]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.imageUrl) {
-      toast.error("Please upload an image");
+      toast.error("გთხოვთ ატვირთოთ სურათი");
       return;
     }
 
@@ -70,7 +70,7 @@ export default function EditNewsPage() {
   if (isLoadingNews && !isNew) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin" /> Loading...
+        <Loader2 className="animate-spin" /> იტვირთება...
       </div>
     );
   }
@@ -87,12 +87,12 @@ export default function EditNewsPage() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold sm:text-3xl">
-            {isNew ? "Create News Article" : "Edit News Article"}
+            {isNew ? "სიახლის შექმნა" : "სიახლის რედაქტირება"}
           </h1>
           <p className="text-sm text-muted-foreground sm:text-base">
             {isNew
-              ? "Add a new news article"
-              : "Update news article information"}
+              ? "ახალი სიახლის დამატება"
+              : "სიახლის ინფორმაციის განახლება"}
           </p>
         </div>
       </div>
@@ -100,7 +100,7 @@ export default function EditNewsPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid gap-4">
           <div className="space-y-2">
-            <Label>Title</Label>
+            <Label>სათაური</Label>
             <div className="grid gap-3">
               <div className="grid gap-2">
                 <Label
@@ -126,7 +126,7 @@ export default function EditNewsPage() {
                   htmlFor="title-en"
                   className="text-sm text-muted-foreground"
                 >
-                  English
+                  ინგლისურად
                 </Label>
                 <Input
                   id="title-en"
@@ -146,7 +146,7 @@ export default function EditNewsPage() {
 
         <div className="grid gap-4">
           <div className="space-y-2">
-            <Label>Summary</Label>
+            <Label>შეჯამება</Label>
             <div className="grid gap-3">
               <div className="grid gap-2">
                 <Label
@@ -173,7 +173,7 @@ export default function EditNewsPage() {
                   htmlFor="summary-en"
                   className="text-sm text-muted-foreground"
                 >
-                  English
+                  ინგლისურად
                 </Label>
                 <Textarea
                   id="summary-en"
@@ -194,7 +194,7 @@ export default function EditNewsPage() {
 
         <div className="grid gap-4">
           <div className="space-y-2">
-            <Label>Content</Label>
+            <Label>შინაარსი</Label>
             <div className="grid gap-3">
               <div className="grid gap-2">
                 <Label
@@ -212,7 +212,7 @@ export default function EditNewsPage() {
                       content: { ...formData.content, ka: value },
                     })
                   }
-                  placeholder="Enter content in Georgian..."
+                  placeholder="შეიყვანეთ შინაარსი ქართულად..."
                 />
               </div>
               <div className="grid gap-2">
@@ -220,7 +220,7 @@ export default function EditNewsPage() {
                   htmlFor="content-en"
                   className="text-sm text-muted-foreground"
                 >
-                  English
+                  ინგლისურად
                 </Label>
                 <RichTextEditor
                   id="content-en"
@@ -231,7 +231,7 @@ export default function EditNewsPage() {
                       content: { ...formData.content, en: value },
                     })
                   }
-                  placeholder="Enter content in English..."
+                  placeholder="შეიყვანეთ შინაარსი ინგლისურად..."
                 />
               </div>
             </div>
@@ -243,7 +243,7 @@ export default function EditNewsPage() {
             onImageChange={(url) => setFormData({ ...formData, imageUrl: url })}
             imageUrl={formData.imageUrl}
             defaultImageUrl={news?.imageUrl}
-            label="Image"
+            label="სურათი"
           />
         </div>
 
@@ -253,7 +253,7 @@ export default function EditNewsPage() {
             variant="outline"
             onClick={() => router.push("/dashboard/news")}
           >
-            Cancel
+            გაუქმება
           </Button>
           <Button
             type="submit"
@@ -262,12 +262,12 @@ export default function EditNewsPage() {
             {createNews.isPending || updateNews.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {isNew ? "Creating..." : "Updating..."}
+                {isNew ? "შექმნა მიმდინარეობს..." : "განახლება მიმდინარეობს..."}
               </>
             ) : isNew ? (
-              "Create"
+              "შექმნა"
             ) : (
-              "Update"
+              "განახლება"
             )}
           </Button>
         </div>

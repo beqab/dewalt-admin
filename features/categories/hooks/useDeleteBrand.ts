@@ -15,10 +15,10 @@ export const useDeleteBrand = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.CATEGORIES.CATEGORIES.ALL,
       });
-      toast.success("Brand deleted successfully!");
+      toast.success("ბრენდი წარმატებით წაიშალა!");
     },
     onError: (error: ApiErrorResponse) => {
-      toast.error(error.message || "Failed to delete brand. Please try again.");
+      toast.error(error.message || "ბრენდის წაშლა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.");
     },
   });
 };

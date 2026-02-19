@@ -239,7 +239,7 @@ class APIClient<TResponse = unknown> {
 
     // Network error or other non-response error - convert to consistent format
     return {
-      message: error.message || "An unexpected error occurred",
+      message: error.message || "მოულოდნელი შეცდომა მოხდა",
       statusCode: 500,
     };
   }

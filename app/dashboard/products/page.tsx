@@ -81,7 +81,7 @@ export default function ProductsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this product?")) {
+    if (confirm("დარწმუნებული ხართ, რომ გსურთ ამ პროდუქტის წაშლა?")) {
       deleteProduct.mutate(id);
     }
   };
@@ -144,8 +144,8 @@ export default function ProductsPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-destructive">
-          Error loading products:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
+          პროდუქტების ჩატვირთვის შეცდომა:{" "}
+          {error instanceof Error ? error.message : "უცნობი შეცდომა"}
         </p>
       </div>
     );
@@ -157,14 +157,15 @@ export default function ProductsPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Products</CardTitle>
+              <CardTitle>პროდუქტები</CardTitle>
               <CardDescription>
-                Manage your product catalog. Create, edit, and delete products.
+                მართეთ პროდუქციის კატალოგი. შექმენით, დაარედაქტირეთ და წაშალეთ
+                პროდუქტები.
               </CardDescription>
             </div>
             <Button onClick={handleCreate}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Product
+              პროდუქტის დამატება
             </Button>
           </div>
         </CardHeader>
@@ -174,12 +175,12 @@ export default function ProductsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               {/* Search */}
               <div className="space-y-2">
-                <Label htmlFor="search">Search</Label>
+                <Label htmlFor="search">ძიება</Label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="search"
-                    placeholder="Search products..."
+                    placeholder="მოძებნეთ პროდუქტები..."
                     value={search}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     className="pl-9"
@@ -189,13 +190,13 @@ export default function ProductsPage() {
 
               {/* Brand Filter */}
               <div className="space-y-2">
-                <Label htmlFor="brand-filter">Brand</Label>
+                <Label htmlFor="brand-filter">ბრენდი</Label>
                 <Select
                   value={brandId || undefined}
                   onValueChange={handleBrandChange}
                 >
                   <SelectTrigger id="brand-filter">
-                    <SelectValue placeholder="All Brands" />
+                    <SelectValue placeholder="ყველა ბრენდი" />
                   </SelectTrigger>
                   <SelectContent>
                     {brands?.map((brand) => (
@@ -209,7 +210,7 @@ export default function ProductsPage() {
 
               {/* Category Filter */}
               <div className="space-y-2">
-                <Label htmlFor="category-filter">Category</Label>
+                <Label htmlFor="category-filter">კატეგორია</Label>
                 <Select
                   value={categoryId || undefined}
                   onValueChange={(val) =>
@@ -217,7 +218,7 @@ export default function ProductsPage() {
                   }
                 >
                   <SelectTrigger id="category-filter">
-                    <SelectValue placeholder="All Categories" />
+                    <SelectValue placeholder="ყველა კატეგორია" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories
@@ -245,14 +246,14 @@ export default function ProductsPage() {
 
               {/* Child Category Filter */}
               <div className="space-y-2">
-                <Label htmlFor="childCategory">Sub Category</Label>
+                <Label htmlFor="childCategory">ქვე-კატეგორია</Label>
                 <Select
                   value={childCategoryId || undefined}
                   onValueChange={handleChildCategoryChange}
                   disabled={!categoryId}
                 >
                   <SelectTrigger id="childCategory">
-                    <SelectValue placeholder="All Sub Categories" />
+                    <SelectValue placeholder="ყველა ქვე-კატეგორია" />
                   </SelectTrigger>
                   <SelectContent>
                     {childCategories?.map((child) => (
@@ -273,7 +274,7 @@ export default function ProductsPage() {
                     className="w-full"
                   >
                     <X className="mr-2 h-4 w-4" />
-                    Clear Filters
+                    ფილტრების გასუფთავება
                   </Button>
                 </div>
               )}
@@ -292,8 +293,9 @@ export default function ProductsPage() {
           {data && data.totalPages > 1 && (
             <div className="mt-6 flex items-center justify-between">
               <div className="text-sm text-muted-foreground">
-                Showing {(page - 1) * limit + 1} to{" "}
-                {Math.min(page * limit, data.total)} of {data.total} products
+                ნაჩვენებია {(page - 1) * limit + 1}-დან{" "}
+                {Math.min(page * limit, data.total)}-მდე, სულ {data.total}{" "}
+                პროდუქტი
               </div>
               <Pagination
                 currentPage={page}

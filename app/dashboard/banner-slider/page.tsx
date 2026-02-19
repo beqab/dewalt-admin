@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus, Save } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { BannerSliderTable } from "@/features/bannerSlider/components/banner-slider-table";
 import { BannerSliderFormDialog } from "@/features/bannerSlider/components/banner-slider-form-dialog";
 import type {
@@ -89,14 +89,16 @@ export default function BannerSliderPage() {
     }));
 
     // Remove order from banners (backend will assign based on array position)
-    const bannersWithoutOrder = updatedBanners.map(
-      ({ order, ...banner }) => banner
-    );
+    const bannersWithoutOrder = updatedBanners.map((b) => {
+      const { order, ...rest } = b;
+      void order;
+      return rest;
+    });
     reorderBanners.mutate({ banners: bannersWithoutOrder });
   };
 
   const handleDelete = async (order: number) => {
-    if (confirm("Are you sure you want to delete this banner?")) {
+    if (confirm("დარწმუნებული ხართ, რომ გსურთ ამ ბანერის წაშლა?")) {
       deleteBanner.mutate(order);
     }
   };
@@ -105,8 +107,8 @@ export default function BannerSliderPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-destructive">
-          Error loading banners:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
+          ბანერების ჩატვირთვის შეცდომა:{" "}
+          {error instanceof Error ? error.message : "უცნობი შეცდომა"}
         </p>
       </div>
     );
@@ -115,7 +117,7 @@ export default function BannerSliderPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin" /> იტვირტბა...
+        <Loader2 className="animate-spin" /> იტვირთება...
       </div>
     );
   }
@@ -124,15 +126,15 @@ export default function BannerSliderPage() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Banner Slider</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">ბანერ-სლაიდერი</h1>
           <p className="text-sm text-muted-foreground sm:text-base">
-            Manage banner slider
+            ბანერ-სლაიდერის მართვა
           </p>
         </div>
         <div>
           <Button onClick={handleCreate} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
-            Add Banner
+            ბანერის დამატება
           </Button>
         </div>
       </div>

@@ -25,8 +25,8 @@ export function CategorySelector({
   categories,
   value,
   onValueChange,
-  label = "Select Category",
-  placeholder = "Select a category",
+  label = "კატეგორიის არჩევა",
+  placeholder = "აირჩიეთ კატეგორია",
   id = "category-select",
   disabled = false,
   filterByBrandIds,
@@ -62,7 +62,7 @@ export function CategorySelector({
           ))}
           {filterByBrandIds && filterByBrandIds.length > 0 && availableCategories?.length === 0 && (
             <div className="p-2 text-sm text-muted-foreground">
-              No categories available for selected brands
+              არჩეული ბრენდისთვის კატეგორიები არ არის ხელმისაწვდომი
             </div>
           )}
         </SelectContent>

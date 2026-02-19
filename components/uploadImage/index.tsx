@@ -17,7 +17,7 @@ export default function UploadImage({
   onImageChange,
   imageUrl,
   defaultImageUrl,
-  label = "Image",
+  label = "სურათი",
 }: UploadImageProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(
@@ -38,14 +38,14 @@ export default function UploadImage({
     // Validate file type
     const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
-      toast.error("Invalid file type. Only images are allowed.");
+      toast.error("ფაილის ტიპი არასწორია. დასაშვებია მხოლოდ სურათები.");
       return;
     }
 
     // Validate file size (max 5MB)
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      toast.error("File size exceeds 5MB limit.");
+      toast.error("ფაილის ზომა აღემატება 5MB-ს.");
       return;
     }
 
@@ -66,7 +66,7 @@ export default function UploadImage({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to upload image");
+        throw new Error(error.error || "სურათის ატვირთვა ვერ მოხერხდა");
       }
 
       const data = await response.json();
@@ -76,11 +76,11 @@ export default function UploadImage({
       URL.revokeObjectURL(objectUrl);
       setPreviewUrl(data.url);
 
-      toast.success("Image uploaded successfully!");
+      toast.success("სურათი წარმატებით აიტვირთა!");
     } catch (error) {
       setPreviewUrl(null);
       toast.error(
-        error instanceof Error ? error.message : "Failed to upload image"
+        error instanceof Error ? error.message : "სურათის ატვირთვა ვერ მოხერხდა"
       );
     } finally {
       setIsUploading(false);
@@ -107,7 +107,7 @@ export default function UploadImage({
           <div className="relative w-full h-48 border rounded-md overflow-hidden">
             <Image
               src={previewUrl}
-              alt="Banner preview"
+              alt="სურათის პრევიუ"
               fill
               className="object-contain"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -132,10 +132,10 @@ export default function UploadImage({
                   htmlFor="image"
                   className="cursor-pointer text-sm font-medium text-primary hover:underline"
                 >
-                  Click to upload image
+                  დააჭირეთ სურათის ასატვირთად
                 </Label>
                 <p className="text-xs text-muted-foreground mt-1">
-                  PNG, JPG, WEBP up to 5MB
+                  PNG, JPG, WEBP — მაქს. 5MB
                 </p>
               </div>
             </div>

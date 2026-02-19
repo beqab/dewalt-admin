@@ -13,13 +13,13 @@ export const useUpdateBanner = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.BANNER_SLIDER.ALL,
       });
-      toast.success("Banner updated successfully!");
+      toast.success("ბანერი წარმატებით განახლდა!");
     },
     onError: (error: unknown) => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to update banner. Please try again."
+          : "ბანერის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

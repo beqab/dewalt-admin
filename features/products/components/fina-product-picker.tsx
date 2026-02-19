@@ -43,7 +43,7 @@ export function FinaProductPicker({
           variant="secondary"
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? "Hide FINA picker" : "Pick from FINA"}
+          {open ? "FINA არჩევის დამალვა" : "FINA-დან არჩევა"}
         </Button>
 
         {open && (
@@ -53,7 +53,7 @@ export function FinaProductPicker({
             onClick={() => refetch()}
             disabled={isFetching}
           >
-            Refresh
+            განახლება
           </Button>
         )}
 
@@ -65,14 +65,14 @@ export function FinaProductPicker({
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search FINA by code or name..."
+            placeholder="მოძებნეთ FINA კოდით ან სახელით..."
           />
 
           {isError && (
             <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
-              Failed to load FINA products.
+              FINA პროდუქტების ჩატვირთვა ვერ მოხერხდა.
               <div className="mt-1 text-xs opacity-80">
-                {error instanceof Error ? error.message : "Unknown error"}
+                {error instanceof Error ? error.message : "უცნობი შეცდომა"}
               </div>
             </div>
           )}
@@ -80,7 +80,7 @@ export function FinaProductPicker({
           <div className="max-h-72 overflow-y-auto rounded-md border">
             {filtered.length === 0 ? (
               <div className="p-3 text-sm text-muted-foreground">
-                No results.
+                შედეგები ვერ მოიძებნა.
               </div>
             ) : (
               <div className="divide-y">
@@ -113,7 +113,7 @@ export function FinaProductPicker({
             )}
           </div>
           <div className="text-xs text-muted-foreground">
-            Showing up to 50 results. Refine search to narrow down.
+            ნაჩვენებია მაქსიმუმ 50 შედეგი. უფრო ზუსტი ძიებით შეამცირეთ შედეგები.
           </div>
         </>
       )}

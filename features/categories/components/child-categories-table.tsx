@@ -29,19 +29,19 @@ export function ChildCategoriesTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name (EN / KA)</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead>Brand</TableHead>
-              <TableHead>Category</TableHead>
+              <TableHead>დასახელება (EN / KA)</TableHead>
+              <TableHead>სლაგი</TableHead>
+              <TableHead>ბრენდები</TableHead>
+              <TableHead>კატეგორია</TableHead>
 
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right">მოქმედებები</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {childCategories.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  No child categories found.
+                  ქვე-კატეგორიები ვერ მოიძებნა.
                 </TableCell>
               </TableRow>
             ) : (
@@ -86,7 +86,7 @@ export function ChildCategoriesTable({
                         </div>
                       ) : (
                         <span className="text-xs text-muted-foreground">
-                          Not assigned
+                          არ არის მინიჭებული
                         </span>
                       )}
                     </TableCell>
@@ -97,7 +97,7 @@ export function ChildCategoriesTable({
                         </span>
                       ) : (
                         <span className="text-xs text-muted-foreground">
-                          Not assigned
+                          არ არის მინიჭებული
                         </span>
                       )}
                     </TableCell>
@@ -107,7 +107,7 @@ export function ChildCategoriesTable({
                           variant="ghost"
                           size="icon"
                           onClick={() => onEdit(childCategory)}
-                          title="Edit"
+                          title="რედაქტირება"
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -115,7 +115,7 @@ export function ChildCategoriesTable({
                           variant="ghost"
                           size="icon"
                           onClick={() => onDelete(childCategory._id)}
-                          title="Delete"
+                          title="წაშლა"
                         >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>

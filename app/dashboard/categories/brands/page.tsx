@@ -61,7 +61,7 @@ export default function BrandsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this brand?")) {
+    if (confirm("დარწმუნებული ხართ, რომ გსურთ ამ ბრენდის წაშლა?")) {
       deleteBrand.mutate(id);
     }
   };
@@ -69,11 +69,11 @@ export default function BrandsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.ka || !formData.name.en) {
-      toast.error("Please fill in both Georgian and English names");
+      toast.error("გთხოვთ შეავსოთ დასახელება ქართულად და ინგლისურად");
       return;
     }
     if (!formData.slug) {
-      toast.error("Please enter a slug");
+      toast.error("გთხოვთ შეიყვანოთ სლაგი");
       return;
     }
 
@@ -106,8 +106,8 @@ export default function BrandsPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-destructive">
-          Error loading brands:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
+          ბრენდების ჩატვირთვის შეცდომა:{" "}
+          {error instanceof Error ? error.message : "უცნობი შეცდომა"}
         </p>
       </div>
     );
@@ -116,7 +116,7 @@ export default function BrandsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin" /> Loading...
+        <Loader2 className="animate-spin" /> იტვირთება...
       </div>
     );
   }
@@ -125,14 +125,14 @@ export default function BrandsPage() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Brands</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">ბრენდები</h1>
           <p className="text-sm text-muted-foreground sm:text-base">
-            Manage brands and their categories
+            მართეთ ბრენდები და მათი კატეგორიები
           </p>
         </div>
         <Button onClick={handleCreate} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
-          Add Brand
+          ბრენდის დამატება
         </Button>
       </div>
 
@@ -147,17 +147,17 @@ export default function BrandsPage() {
           <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>
-                {editingBrand ? "Edit Brand" : "Create Brand"}
+                {editingBrand ? "ბრენდის რედაქტირება" : "ბრენდის შექმნა"}
               </DialogTitle>
               <DialogDescription>
                 {editingBrand
-                  ? "Update brand information."
-                  : "Add a new brand."}
+                  ? "ბრენდის ინფორმაციის განახლება."
+                  : "ახალი ბრენდის დამატება."}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
-                <Label>Name</Label>
+                <Label>დასახელება</Label>
                 <div className="grid gap-3">
                   <div className="grid gap-2">
                     <Label
@@ -183,7 +183,7 @@ export default function BrandsPage() {
                       htmlFor="name-en"
                       className="text-sm text-muted-foreground"
                     >
-                      English
+                      ინგლისურად
                     </Label>
                     <Input
                       id="name-en"
@@ -201,7 +201,7 @@ export default function BrandsPage() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="slug">Slug</Label>
+                <Label htmlFor="slug">სლაგი</Label>
                 <Input
                   id="slug"
                   value={formData.slug}
@@ -215,7 +215,8 @@ export default function BrandsPage() {
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  URL-friendly identifier (lowercase, no spaces, use hyphens)
+                  URL-ზე გამოსაყენებელი იდენტიფიკატორი (მცირე ასოები, გამოტოვებების
+                  გარეშე, გამოიყენეთ დეფისი)
                 </p>
               </div>
             </div>
@@ -225,7 +226,7 @@ export default function BrandsPage() {
                 variant="outline"
                 onClick={() => setIsDialogOpen(false)}
               >
-                Cancel
+                გაუქმება
               </Button>
               <Button
                 type="submit"
@@ -234,12 +235,12 @@ export default function BrandsPage() {
                 {createBrand.isPending || updateBrand.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {editingBrand ? "Updating..." : "Creating..."}
+                    {editingBrand ? "განახლება მიმდინარეობს..." : "შექმნა მიმდინარეობს..."}
                   </>
                 ) : editingBrand ? (
-                  "Update"
+                  "განახლება"
                 ) : (
-                  "Create"
+                  "შექმნა"
                 )}
               </Button>
             </DialogFooter>

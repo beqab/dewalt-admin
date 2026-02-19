@@ -125,7 +125,7 @@ export function AssignToBrandCategoryDialog({
 
   const handleAssign = async () => {
     if (!selectedBrandForAssign || !selectedCategoryForAssign) {
-      toast.error("Please select both brand and category");
+      toast.error("გთხოვთ აირჩიოთ ბრენდი და კატეგორია");
       return;
     }
 
@@ -221,7 +221,7 @@ export function AssignToBrandCategoryDialog({
     });
 
     if (updatePromises.length === 0) {
-      toast.info("No changes to apply");
+      toast.info("ცვლილებები არ არის");
       onClose();
       return;
     }
@@ -230,20 +230,14 @@ export function AssignToBrandCategoryDialog({
       await Promise.all(updatePromises);
       const addCount = childCategoriesToAdd.length;
       const removeCount = childCategoriesToRemove.length;
-      const message = [];
-      if (addCount > 0)
-        message.push(
-          `Added ${addCount} child categor${addCount > 1 ? "ies" : "y"}`
-        );
-      if (removeCount > 0)
-        message.push(
-          `Removed ${removeCount} child categor${removeCount > 1 ? "ies" : "y"}`
-        );
-      toast.success(`Successfully updated: ${message.join(", ")}`);
+      const message: string[] = [];
+      if (addCount > 0) message.push(`დამატებულია ${addCount} ქვე-კატეგორია`);
+      if (removeCount > 0) message.push(`წაშლილია ${removeCount} ქვე-კატეგორია`);
+      toast.success(`წარმატებით განახლდა: ${message.join(", ")}`);
       onClose();
       onSuccess?.();
     } catch (error) {
-      toast.error("Failed to update child category assignments");
+      toast.error("ქვე-კატეგორიების მინიჭების განახლება ვერ მოხერხდა");
       console.error("Error:", error);
     }
   };
@@ -252,9 +246,9 @@ export function AssignToBrandCategoryDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Assign Child Categories to Brand + Category</DialogTitle>
+          <DialogTitle>ქვე-კატეგორიების მინიჭება ბრენდზე და კატეგორიაზე</DialogTitle>
           <DialogDescription>
-            Select a brand, its category, and child categories to assign
+            აირჩიეთ ბრენდი, კატეგორია და ქვე-კატეგორიები მინიჭებისთვის
           </DialogDescription>
         </DialogHeader>
 
@@ -272,14 +266,14 @@ export function AssignToBrandCategoryDialog({
 
           {/* Category Selection */}
           <div className="space-y-2">
-            <Label htmlFor="assign-category-select">Select Category</Label>
+            <Label htmlFor="assign-category-select">კატეგორიის არჩევა</Label>
             <Select
               value={selectedCategoryForAssign}
               onValueChange={setSelectedCategoryForAssign}
               disabled={!selectedBrandForAssign}
             >
               <SelectTrigger id="assign-category-select">
-                <SelectValue placeholder="Select a category" />
+                <SelectValue placeholder="აირჩიეთ კატეგორია" />
               </SelectTrigger>
               <SelectContent>
                 {categoriesForBrand?.map((category) => (
@@ -289,7 +283,7 @@ export function AssignToBrandCategoryDialog({
                 ))}
                 {selectedBrandForAssign && categoriesForBrand?.length === 0 && (
                   <div className="p-2 text-sm text-muted-foreground">
-                    No categories available for this brand
+                    ამ ბრენდისთვის კატეგორიები არ არის ხელმისაწვდომი
                   </div>
                 )}
               </SelectContent>
@@ -298,7 +292,7 @@ export function AssignToBrandCategoryDialog({
 
           {/* Child Categories Selection */}
           <div className="space-y-2">
-            <Label>Select Child Categories</Label>
+            <Label>ქვე-კატეგორიების არჩევა</Label>
             <div className="space-y-2 max-h-60 overflow-y-auto border rounded p-4">
               {childCategories.map((childCategory) => {
                 const childCategoryBrandIds = Array.isArray(
@@ -348,7 +342,7 @@ export function AssignToBrandCategoryDialog({
                         </div>
                         {isAssigned && (
                           <span className="text-xs text-muted-foreground">
-                            Already assigned
+                            უკვე მინიჭებულია
                           </span>
                         )}
                       </div>
@@ -358,7 +352,7 @@ export function AssignToBrandCategoryDialog({
               })}
               {childCategories.length === 0 && (
                 <p className="text-center text-muted-foreground py-8">
-                  No child categories available
+                  ქვე-კატეგორიები არ არის ხელმისაწვდომი
                 </p>
               )}
             </div>
@@ -376,7 +370,7 @@ export function AssignToBrandCategoryDialog({
               setSelectedChildCategoryIds([]);
             }}
           >
-            Cancel
+            გაუქმება
           </Button>
           <Button
             type="button"
@@ -391,13 +385,12 @@ export function AssignToBrandCategoryDialog({
             {updateChildCategory.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Assigning...
+                მინიჭება მიმდინარეობს...
               </>
             ) : (
               <>
                 <Save className="mr-2 h-4 w-4" />
-                Assign ({selectedChildCategoryIds.length} child categor
-                {selectedChildCategoryIds.length > 1 ? "ies" : "y"})
+                მინიჭება ({selectedChildCategoryIds.length} ქვე-კატეგორია)
               </>
             )}
           </Button>

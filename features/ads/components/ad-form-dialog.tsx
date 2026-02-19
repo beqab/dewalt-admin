@@ -57,14 +57,16 @@ export function AdFormDialog({
       <DialogContent>
         <form key={formKey} onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>{ad ? "Edit Ad" : "Create Ad"}</DialogTitle>
+            <DialogTitle>
+              {ad ? "რეკლამის რედაქტირება" : "რეკლამის შექმნა"}
+            </DialogTitle>
             <DialogDescription>
-              {ad ? "Update ad information." : "Add a new ad."}
+              {ad ? "რეკლამის ინფორმაციის განახლება." : "ახალი რეკლამის დამატება."}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="imageUrl">Image URL</Label>
+              <Label htmlFor="imageUrl">სურათის URL</Label>
               <Input
                 id="imageUrl"
                 value={formData.imageUrl}
@@ -75,7 +77,7 @@ export function AdFormDialog({
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="urlLink">Link (optional)</Label>
+              <Label htmlFor="urlLink">ბმული (არასავალდებულო)</Label>
               <Input
                 id="urlLink"
                 value={formData.urlLink}
@@ -85,7 +87,7 @@ export function AdFormDialog({
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="position">Position</Label>
+              <Label htmlFor="position">პოზიცია</Label>
               <Select
                 value={formData.position}
                 onValueChange={(value) =>
@@ -96,19 +98,19 @@ export function AdFormDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="main_page">Main Page</SelectItem>
-                  <SelectItem value="aside">Aside</SelectItem>
-                  <SelectItem value="footer">Footer</SelectItem>
+                  <SelectItem value="main_page">მთავარი გვერდი</SelectItem>
+                  <SelectItem value="aside">გვერდითი</SelectItem>
+                  <SelectItem value="footer">ფუტერი</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              გაუქმება
             </Button>
             <Button type="submit">
-              {ad ? "Update" : "Create"}
+              {ad ? "განახლება" : "შექმნა"}
             </Button>
           </DialogFooter>
         </form>

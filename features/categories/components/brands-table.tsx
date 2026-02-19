@@ -25,17 +25,17 @@ export function BrandsTable({ brands, onEdit, onDelete }: BrandsTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name (EN / KA)</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead className="w-32">Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>დასახელება (EN / KA)</TableHead>
+              <TableHead>სლაგი</TableHead>
+              <TableHead className="w-32">შექმნის თარიღი</TableHead>
+              <TableHead className="text-right">მოქმედებები</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {brands.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  No brands found.
+                  ბრენდები ვერ მოიძებნა.
                 </TableCell>
               </TableRow>
             ) : (
@@ -63,7 +63,7 @@ export function BrandsTable({ brands, onEdit, onDelete }: BrandsTableProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => onEdit(brand)}
-                        title="Edit"
+                        title="რედაქტირება"
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -71,7 +71,7 @@ export function BrandsTable({ brands, onEdit, onDelete }: BrandsTableProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => onDelete(brand._id)}
-                        title="Delete"
+                        title="წაშლა"
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>

@@ -29,7 +29,7 @@ export default function LoginPage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Dewalt Admin</CardTitle>
           <CardDescription>
-            Enter your credentials to access the admin panel
+            ადმინისტრაციის პანელზე შესასვლელად შეიყვანეთ მონაცემები
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -40,7 +40,7 @@ export default function LoginPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">ელ.ფოსტა</Label>
               <Input
                 id="email"
                 name="email"
@@ -54,12 +54,12 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">პაროლი</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="შეიყვანეთ პაროლი"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -69,11 +69,11 @@ export default function LoginPage() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? "შესვლა მიმდინარეობს..." : "შესვლა"}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm text-muted-foreground">
-            <p>Demo: Use any email and password to login</p>
+            <p>დემო: შესასვლელად გამოიყენეთ ნებისმიერი ელ.ფოსტა და პაროლი</p>
           </div>
         </CardContent>
       </Card>

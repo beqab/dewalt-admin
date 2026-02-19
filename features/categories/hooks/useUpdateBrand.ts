@@ -17,10 +17,10 @@ export const useUpdateBrand = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.CATEGORIES.BRANDS.BY_ID(variables.id),
       });
-      toast.success("Brand updated successfully!");
+      toast.success("ბრენდი წარმატებით განახლდა!");
     },
     onError: (error: ApiErrorResponse) => {
-      toast.error(error.message || "Failed to update brand. Please try again.");
+      toast.error(error.message || "ბრენდის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.");
     },
   });
 };

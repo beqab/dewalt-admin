@@ -23,8 +23,8 @@ export function BrandSelector({
   brands,
   value,
   onValueChange,
-  label = "Select Brand",
-  placeholder = "Select a brand",
+  label = "ბრენდის არჩევა",
+  placeholder = "აირჩიეთ ბრენდი",
   id = "brand-select",
 }: BrandSelectorProps) {
   return (

@@ -14,13 +14,13 @@ export const useUpdateAd = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.ADS.BY_ID(variables.id),
       });
-      toast.success("Ad updated successfully!");
+      toast.success("რეკლამა წარმატებით განახლდა!");
     },
     onError: (error: unknown) => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to update ad. Please try again."
+          : "რეკლამის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

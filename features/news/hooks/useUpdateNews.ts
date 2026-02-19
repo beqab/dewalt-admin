@@ -14,13 +14,13 @@ export const useUpdateNews = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.NEWS.BY_ID(variables.id),
       });
-      toast.success("News article updated successfully!");
+      toast.success("სიახლე წარმატებით განახლდა!");
     },
     onError: (error: unknown) => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to update news article. Please try again."
+          : "სიახლის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

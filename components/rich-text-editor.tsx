@@ -15,7 +15,7 @@ const TipTapEditor = dynamic(() => import("./rich-text-editor-content"), {
   ssr: false,
   loading: () => (
     <div className="border rounded-md min-h-[200px] flex items-center justify-center bg-muted/50">
-      <p className="text-muted-foreground">Loading editor...</p>
+      <p className="text-muted-foreground">რედაქტორი იტვირთება...</p>
     </div>
   ),
 }) as React.ComponentType<RichTextEditorProps>;

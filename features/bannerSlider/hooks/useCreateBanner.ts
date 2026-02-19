@@ -13,13 +13,13 @@ export const useCreateBanner = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.BANNER_SLIDER.ALL,
       });
-      toast.success("Banner added successfully!");
+      toast.success("ბანერი წარმატებით დაემატა!");
     },
     onError: (error: unknown) => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to add banner. Please try again."
+          : "ბანერის დამატება ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

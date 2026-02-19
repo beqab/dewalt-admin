@@ -10,13 +10,13 @@ export const useCreateAd = () => {
     mutationFn: (data: CreateAdDto) => adsService.createAd.post(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADS.ALL });
-      toast.success("Ad created successfully!");
+      toast.success("რეკლამა წარმატებით შეიქმნა!");
     },
     onError: (error: unknown) => {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to create ad. Please try again."
+          : "რეკლამის შექმნა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

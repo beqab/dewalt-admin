@@ -20,7 +20,7 @@ export default function MultipleImageUpload({
   onImagesChange,
   images,
   defaultImages,
-  label = "Additional Images",
+  label = "დამატებითი სურათები",
   maxImages = 6,
 }: MultipleImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
@@ -40,7 +40,7 @@ export default function MultipleImageUpload({
 
     // Check if we've reached the max limit
     if (images.length >= maxImages) {
-      toast.error(`Maximum ${maxImages} images allowed.`);
+      toast.error(`მაქსიმუმ ${maxImages} სურათი შეიძლება.`);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -50,14 +50,14 @@ export default function MultipleImageUpload({
     // Validate file type
     const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
-      toast.error("Invalid file type. Only images are allowed.");
+      toast.error("ფაილის ტიპი არასწორია. დასაშვებია მხოლოდ სურათები.");
       return;
     }
 
     // Validate file size (max 5MB)
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      toast.error("File size exceeds 5MB limit.");
+      toast.error("ფაილის ზომა აღემატება 5MB-ს.");
       return;
     }
 
@@ -75,16 +75,16 @@ export default function MultipleImageUpload({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to upload image");
+        throw new Error(error.error || "სურათის ატვირთვა ვერ მოხერხდა");
       }
 
       const data = await response.json();
       onImagesChange([...images, data.url]);
 
-      toast.success("Image uploaded successfully!");
+      toast.success("სურათი წარმატებით აიტვირთა!");
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to upload image"
+        error instanceof Error ? error.message : "სურათის ატვირთვა ვერ მოხერხდა"
       );
     } finally {
       setIsUploading(false);
@@ -122,7 +122,7 @@ export default function MultipleImageUpload({
             >
               <Image
                 src={imageUrl}
-                alt={`Product image ${index + 1}`}
+                alt={`პროდუქტის სურათი ${index + 1}`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 20vw"
@@ -161,11 +161,11 @@ export default function MultipleImageUpload({
                   className="cursor-pointer text-sm font-medium text-primary hover:underline"
                 >
                   {isUploading && uploadingIndex !== null
-                    ? "Uploading..."
-                    : "Click to upload image"}
+                    ? "იტვირთება..."
+                    : "დააჭირეთ სურათის ასატვირთად"}
                 </Label>
                 <p className="text-xs text-muted-foreground mt-1">
-                  PNG, JPG, WEBP up to 5MB
+                  PNG, JPG, WEBP — მაქს. 5MB
                 </p>
               </div>
             </div>
@@ -184,7 +184,7 @@ export default function MultipleImageUpload({
 
       {!canAddMore && (
         <p className="text-xs text-muted-foreground">
-          Maximum {maxImages} images reached. Remove an image to add more.
+          მიღწეულია მაქსიმუმ {maxImages} სურათი. წაშალეთ ერთი სურათი, რომ დაამატოთ სხვა.
         </p>
       )}
     </div>

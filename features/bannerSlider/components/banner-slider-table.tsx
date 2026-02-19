@@ -32,18 +32,18 @@ export function BannerSliderTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-12">Order</TableHead>
-              <TableHead>Title (EN / KA)</TableHead>
-              <TableHead>Description (EN / KA)</TableHead>
-              <TableHead className="w-32">Image</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="w-12">რიგი</TableHead>
+              <TableHead>სათაური (EN / KA)</TableHead>
+              <TableHead>აღწერა (EN / KA)</TableHead>
+              <TableHead className="w-32">სურათი</TableHead>
+              <TableHead className="text-right">მოქმედებები</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {banners.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  No banners found.
+                  ბანერები ვერ მოიძებნა.
                 </TableCell>
               </TableRow>
             ) : (
@@ -98,7 +98,7 @@ export function BannerSliderTable({
                     <div className="relative w-24 h-16 border rounded-md overflow-hidden bg-muted">
                       <Image
                         src={banner.imageUrl}
-                        alt={banner.title.en || "Banner image"}
+                        alt={banner.title.en || "ბანერის სურათი"}
                         fill
                         className="object-cover"
                         sizes="96px"

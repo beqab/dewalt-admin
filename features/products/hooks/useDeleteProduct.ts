@@ -13,11 +13,11 @@ export const useDeleteProduct = () => {
         queryKey: QUERY_KEYS.PRODUCTS.ALL,
       });
 
-      toast.success("Product deleted successfully!");
+      toast.success("პროდუქტი წარმატებით წაიშალა!");
     },
     onError: (error: ApiErrorResponse) => {
       toast.error(
-        error.message || "Failed to delete product. Please try again."
+        error.message || "პროდუქტის წაშლა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

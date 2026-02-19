@@ -18,7 +18,7 @@ export function BrandMultiSelector({
   brands,
   selectedBrandIds,
   onSelectionChange,
-  label = "Select Brands",
+  label = "ბრენდების არჩევა",
   showCurrentBrands = false,
   onRemoveBrand,
 }: BrandMultiSelectorProps) {
@@ -38,7 +38,7 @@ export function BrandMultiSelector({
     <div className="space-y-2">
       {showCurrentBrands && selectedBrandIds.length > 0 && (
         <div className="space-y-2">
-          <Label>Current Brands</Label>
+          <Label>მიმდინარე ბრენდები</Label>
           <div className="space-y-2">
             {selectedBrandIds.map((brandId) => {
               const brand = brands?.find((b) => b._id === brandId);
@@ -69,7 +69,7 @@ export function BrandMultiSelector({
 
       {showCurrentBrands && (
         <div className="space-y-2">
-          <Label>Add Brands</Label>
+          <Label>ბრენდების დამატება</Label>
           <div className="space-y-2 max-h-40 overflow-y-auto border rounded p-2">
             {availableBrands && availableBrands.length > 0 ? (
               availableBrands.map((brand) => (
@@ -86,7 +86,7 @@ export function BrandMultiSelector({
               ))
             ) : (
               <p className="text-xs text-muted-foreground text-center py-2">
-                All brands are assigned
+                ყველა ბრენდი უკვე მინიჭებულია
               </p>
             )}
           </div>

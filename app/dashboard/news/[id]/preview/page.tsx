@@ -16,7 +16,7 @@ export default function PreviewNewsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin" /> Loading...
+        <Loader2 className="animate-spin" /> იტვირთება...
       </div>
     );
   }
@@ -27,7 +27,7 @@ export default function PreviewNewsPage() {
         <p className="text-destructive">
           {error instanceof Error
             ? error.message
-            : "Failed to load news article"}
+            : "სიახლის ჩატვირთვა ვერ მოხერხდა"}
         </p>
       </div>
     );
@@ -45,9 +45,9 @@ export default function PreviewNewsPage() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold sm:text-3xl">Preview News</h1>
+            <h1 className="text-2xl font-bold sm:text-3xl">სიახლის გადახედვა</h1>
             <p className="text-sm text-muted-foreground sm:text-base">
-              Preview news article
+              სიახლის გადახედვა
             </p>
           </div>
         </div>
@@ -56,7 +56,7 @@ export default function PreviewNewsPage() {
           onClick={() => router.push(`/dashboard/news/${id}/edit`)}
         >
           <Edit className="mr-2 h-4 w-4" />
-          Edit
+          რედაქტირება
         </Button>
       </div>
 
@@ -65,7 +65,7 @@ export default function PreviewNewsPage() {
         <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden border">
           <Image
             src={news.imageUrl}
-            alt={news.title.en || "News image"}
+            alt={news.title.en || "სიახლის სურათი"}
             fill
             className="object-cover"
             sizes="100vw"
@@ -84,7 +84,7 @@ export default function PreviewNewsPage() {
 
         {/* Summary */}
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Summary</h3>
+          <h3 className="text-lg font-semibold">შეჯამება</h3>
           <div className="space-y-3">
             <p className="text-base leading-relaxed">{news.summary.en}</p>
             <p className="text-base leading-relaxed text-muted-foreground">
@@ -95,7 +95,7 @@ export default function PreviewNewsPage() {
 
         {/* Content */}
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Content</h3>
+          <h3 className="text-lg font-semibold">შინაარსი</h3>
           <div className="space-y-3">
             <div
               className="text-base leading-relaxed prose prose-sm max-w-none"
@@ -112,11 +112,11 @@ export default function PreviewNewsPage() {
         <div className="pt-4 border-t text-sm text-muted-foreground">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <span className="font-medium">Created:</span>{" "}
+              <span className="font-medium">შექმნილია:</span>{" "}
               {new Date(news.createdAt).toLocaleString()}
             </div>
             <div>
-              <span className="font-medium">Updated:</span>{" "}
+              <span className="font-medium">განახლებულია:</span>{" "}
               {new Date(news.updatedAt).toLocaleString()}
             </div>
           </div>

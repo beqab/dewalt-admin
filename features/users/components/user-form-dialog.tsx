@@ -46,12 +46,14 @@ function UserFormDialogInner({
   return (
     <form onSubmit={handleSubmit}>
       <DialogHeader>
-        <DialogTitle>Create User</DialogTitle>
-        <DialogDescription>Add a new user to the system.</DialogDescription>
+        <DialogTitle>მომხმარებლის შექმნა</DialogTitle>
+        <DialogDescription>
+          სისტემაში ახალი მომხმარებლის დამატება.
+        </DialogDescription>
       </DialogHeader>
       <div className="grid gap-4 py-4">
         <div className="grid gap-2">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">სახელი</Label>
           <Input
             id="name"
             value={formData.name}
@@ -60,7 +62,7 @@ function UserFormDialogInner({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">ელ.ფოსტა</Label>
           <Input
             id="email"
             type="email"
@@ -72,7 +74,7 @@ function UserFormDialogInner({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">პაროლი</Label>
           <Input
             id="password"
             type="password"
@@ -90,9 +92,9 @@ function UserFormDialogInner({
           variant="outline"
           onClick={() => onOpenChange(false)}
         >
-          Cancel
+          გაუქმება
         </Button>
-        <Button type="submit">Create</Button>
+        <Button type="submit">შექმნა</Button>
       </DialogFooter>
     </form>
   );

@@ -21,11 +21,11 @@ export const useCreateCategory = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.CATEGORIES.CATEGORIES.BY_BRAND(brandId),
       });
-      toast.success("Category created successfully!");
+      toast.success("კატეგორია წარმატებით შეიქმნა!");
     },
     onError: (error: ApiErrorResponse) => {
       toast.error(
-        error.message || "Failed to create category. Please try again."
+        error.message || "კატეგორიის შექმნა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

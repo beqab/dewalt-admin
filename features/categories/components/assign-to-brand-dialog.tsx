@@ -87,7 +87,7 @@ export function AssignToBrandDialog({
 
   const handleAssign = async () => {
     if (!brandId) {
-      toast.error("Please select a brand");
+      toast.error("გთხოვთ აირჩიოთ ბრენდი");
       return;
     }
 
@@ -154,7 +154,7 @@ export function AssignToBrandDialog({
     });
 
     if (updatePromises.length === 0) {
-      toast.info("No changes to apply");
+      toast.info("ცვლილებები არ არის");
       onClose();
       return;
     }
@@ -163,18 +163,14 @@ export function AssignToBrandDialog({
       await Promise.all(updatePromises);
       const addCount = categoriesToAdd.length;
       const removeCount = categoriesToRemove.length;
-      const message = [];
-      if (addCount > 0)
-        message.push(`Added ${addCount} categor${addCount > 1 ? "ies" : "y"}`);
-      if (removeCount > 0)
-        message.push(
-          `Removed ${removeCount} categor${removeCount > 1 ? "ies" : "y"}`
-        );
-      toast.success(`Successfully updated: ${message.join(", ")}`);
+      const message: string[] = [];
+      if (addCount > 0) message.push(`დამატებულია ${addCount} კატეგორია`);
+      if (removeCount > 0) message.push(`წაშლილია ${removeCount} კატეგორია`);
+      toast.success(`წარმატებით განახლდა: ${message.join(", ")}`);
       onClose();
       onSuccess?.();
     } catch (error) {
-      toast.error("Failed to update category assignments");
+      toast.error("კატეგორიების მინიჭების განახლება ვერ მოხერხდა");
       console.error("Error:", error);
     }
   };
@@ -183,9 +179,11 @@ export function AssignToBrandDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Assign Categories to Brand</DialogTitle>
+          <DialogTitle>კატეგორიების მინიჭება ბრენდზე</DialogTitle>
           <DialogDescription>
-            Select categories to assign to {brandName}
+            {brandName
+              ? `აირჩიეთ კატეგორიები, რომლებიც უნდა მიენიჭოს ${brandName}`
+              : "აირჩიეთ ბრენდი და კატეგორიები"}
           </DialogDescription>
         </DialogHeader>
 
@@ -229,7 +227,7 @@ export function AssignToBrandDialog({
                     </div>
                     {isAssigned && (
                       <span className="text-xs text-muted-foreground">
-                        Already assigned
+                        უკვე მინიჭებულია
                       </span>
                     )}
                   </div>
@@ -239,13 +237,13 @@ export function AssignToBrandDialog({
           })}
           {categories.length === 0 && (
             <p className="text-center text-muted-foreground py-8">
-              No categories available
+              კატეგორიები არ არის ხელმისაწვდომი
             </p>
           )}
         </div>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
+            გაუქმება
           </Button>
           <Button
             type="button"
@@ -255,12 +253,12 @@ export function AssignToBrandDialog({
             {updateCategory.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Assigning...
+                მინიჭება მიმდინარეობს...
               </>
             ) : (
               <>
                 <Save className="mr-2 h-4 w-4" />
-                Assign Selected ({selectedCategoryIds.length})
+                მონიშნულის მინიჭება ({selectedCategoryIds.length})
               </>
             )}
           </Button>

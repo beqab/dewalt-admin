@@ -10,15 +10,15 @@ export const useUpdateProduct = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateProductDto }) =>
       productsService.updateProduct.post(id, data),
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.PRODUCTS.ALL,
       });
-      toast.success("Product updated successfully!");
+      toast.success("პროდუქტი წარმატებით განახლდა!");
     },
     onError: (error: ApiErrorResponse) => {
       toast.error(
-        error.message || "Failed to update product. Please try again."
+        error.message || "პროდუქტის განახლება ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

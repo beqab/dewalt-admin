@@ -14,10 +14,10 @@ export const useCreateBrand = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.CATEGORIES.BRANDS.ALL,
       });
-      toast.success("Brand created successfully!");
+      toast.success("ბრენდი წარმატებით შეიქმნა!");
     },
     onError: (error: ApiErrorResponse) => {
-      toast.error(error.message || "Failed to create brand. Please try again.");
+      toast.error(error.message || "ბრენდის შექმნა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.");
     },
   });
 };

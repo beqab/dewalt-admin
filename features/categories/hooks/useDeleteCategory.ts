@@ -15,11 +15,11 @@ export const useDeleteCategory = () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.CATEGORIES.CHILD_CATEGORIES.ALL,
       });
-      toast.success("Category deleted successfully!");
+      toast.success("კატეგორია წარმატებით წაიშალა!");
     },
     onError: (error: ApiErrorResponse) => {
       toast.error(
-        error.message || "Failed to delete category. Please try again."
+        error.message || "კატეგორიის წაშლა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
       );
     },
   });

@@ -166,7 +166,7 @@ export function ProductForm({
       } catch (err) {
         // mutation hooks already toast errors, but keep a fallback just in case
         const msg =
-          err instanceof Error ? err.message : "Failed to save product";
+          err instanceof Error ? err.message : "პროდუქტის შენახვა ვერ მოხერხდა";
         toast.error(msg);
       }
     },
@@ -189,8 +189,9 @@ export function ProductForm({
   // Auto-calculate discount (%) based on price and originalPrice
   useEffect(() => {
     const price = Number(formik.values.price);
-    const originalRaw = (formik.values as unknown as { originalPrice?: unknown })
-      .originalPrice;
+    const originalRaw = (
+      formik.values as unknown as { originalPrice?: unknown }
+    ).originalPrice;
     const isOriginalEmpty =
       originalRaw === undefined ||
       originalRaw === null ||
@@ -235,7 +236,7 @@ export function ProductForm({
     const errors = await formik.validateForm();
     if (Object.keys(errors).length > 0) {
       formik.setTouched(markAllTouched(formik.values) as never, true);
-      toast.error("Please check mandatory fields");
+      toast.error("გთხოვთ შეამოწმოთ სავალდებულო ველები");
       return;
     }
 
@@ -249,12 +250,12 @@ export function ProductForm({
           <form onSubmit={formik.handleSubmit}>
             <DialogHeader>
               <DialogTitle>
-                {product ? "Edit Product" : "Create Product"}
+                {product ? "პროდუქტის რედაქტირება" : "პროდუქტის შექმნა"}
               </DialogTitle>
               <DialogDescription>
                 {product
-                  ? "Update product information"
-                  : "Add a new product to the catalog"}
+                  ? "პროდუქტის ინფორმაციის განახლება"
+                  : "კატალოგში ახალი პროდუქტის დამატება"}
               </DialogDescription>
             </DialogHeader>
 
@@ -263,16 +264,16 @@ export function ProductForm({
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   name="name.en"
-                  label="Name (English)"
+                  label="სახელი (ინგლისურად)"
                   required
-                  placeholder="Product name in English"
+                  placeholder="პროდუქტის სახელი ინგლისურად"
                   onBlurCapture={onBlurCapture}
                 />
                 <FormField
                   name="name.ka"
-                  label="Name (Georgian)"
+                  label="სახელი (ქართულად)"
                   required
-                  placeholder="Product name in Georgian"
+                  placeholder="პროდუქტის სახელი ქართულად"
                 />
               </div>
 
@@ -280,13 +281,13 @@ export function ProductForm({
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   name="code"
-                  label="Product Code"
+                  label="პროდუქტის კოდი"
                   required
                   placeholder="DEW-86511"
                 />
                 <FormField
                   name="slug"
-                  label="Slug"
+                  label="სლაგი"
                   required
                   placeholder="product-slug"
                 />
@@ -294,19 +295,19 @@ export function ProductForm({
 
               {/* FINA Integration */}
               <div className="space-y-3 rounded-md border p-4">
-                <div className="text-sm font-medium">FINA integration</div>
+                <div className="text-sm font-medium">FINA ინტეგრაცია</div>
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     name="finaId"
                     label="FINA ID"
-                    placeholder="e.g. 12345"
+                    placeholder="მაგ. 12345"
                     type="number"
                     min={1}
                   />
                   <FormField
                     name="finaCode"
                     label="FINA Code"
-                    placeholder="e.g. FINA-ABC-001"
+                    placeholder="მაგ. FINA-ABC-001"
                   />
                 </div>
                 <FinaProductPicker
@@ -341,11 +342,11 @@ export function ProductForm({
                       formik.setFieldValue("inStock", checked === true)
                     }
                   />
-                  <Label htmlFor="inStock">In Stock</Label>
+                  <Label htmlFor="inStock">მარაგშია</Label>
                 </div>
                 <FormField
                   name="quantity"
-                  label="Quantity"
+                  label="რაოდენობა"
                   required
                   type="number"
                   min={0}
@@ -357,17 +358,17 @@ export function ProductForm({
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   name="description.en"
-                  label="Description (English)"
+                  label="აღწერა (ინგლისურად)"
                   required
-                  placeholder="Product description in English"
+                  placeholder="პროდუქტის აღწერა ინგლისურად"
                   as="textarea"
                   rows={3}
                 />
                 <FormField
                   name="description.ka"
-                  label="Description (Georgian)"
+                  label="აღწერა (ქართულად)"
                   required
-                  placeholder="Product description in Georgian"
+                  placeholder="პროდუქტის აღწერა ქართულად"
                   as="textarea"
                   rows={3}
                 />
@@ -379,7 +380,7 @@ export function ProductForm({
                   onImageChange={(url) => formik.setFieldValue("image", url)}
                   imageUrl={formik.values.image}
                   defaultImageUrl={product?.image}
-                  label="Main Image *"
+                  label="მთავარი სურათი *"
                 />
                 {formik.touched.image && formik.errors.image && (
                   <p className="text-sm text-destructive">
@@ -398,14 +399,14 @@ export function ProductForm({
                     (img): img is string => Boolean(img)
                   )}
                   defaultImages={product?.images}
-                  label="Additional Images (Max 6)"
+                  label="დამატებითი სურათები (მაქს. 6)"
                   maxImages={6}
                 />
                 {formik.touched.images && formik.errors.images && (
                   <p className="text-sm text-destructive">
                     {typeof formik.errors.images === "string"
                       ? formik.errors.images
-                      : "Invalid images"}
+                      : "არასწორი სურათები"}
                   </p>
                 )}
               </div>
@@ -416,7 +417,7 @@ export function ProductForm({
               <div className="grid grid-cols-3 gap-4">
                 <FormField
                   name="price"
-                  label="Price"
+                  label="ფასი"
                   required
                   type="number"
                   min={0}
@@ -424,14 +425,14 @@ export function ProductForm({
                 />
                 <FormField
                   name="originalPrice"
-                  label="Original Price"
+                  label="ძველი ფასი"
                   type="number"
                   min={0}
                   step="0.01"
                 />
                 <FormField
                   name="discount"
-                  label="Discount (%)"
+                  label="ფასდაკლება (%)"
                   type="number"
                   min={0}
                   max={100}
@@ -460,7 +461,7 @@ export function ProductForm({
                   }
                 />
                 <div className="space-y-2">
-                  <Label htmlFor="childCategoryId">Child Category</Label>
+                  <Label htmlFor="childCategoryId">ქვე-კატეგორია</Label>
                   <select
                     id="childCategoryId"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -473,7 +474,7 @@ export function ProductForm({
                     }
                     disabled={!formik.values.categoryId}
                   >
-                    <option value="">None</option>
+                    <option value="">არცერთი</option>
                     {childCategories?.map((child) => (
                       <option key={child._id} value={child._id}>
                         {child.name.en}
@@ -486,7 +487,7 @@ export function ProductForm({
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose}>
-                Cancel
+                გაუქმება
               </Button>
               <Button
                 type="button"
@@ -496,7 +497,7 @@ export function ProductForm({
                 {(isCreating || isUpdating) && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                {product ? "Update" : "Create"}
+                {product ? "განახლება" : "შექმნა"}
               </Button>
             </DialogFooter>
           </form>

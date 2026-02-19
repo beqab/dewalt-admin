@@ -38,16 +38,16 @@ export function ProductSpecs() {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <Label>Specifications</Label>
+        <Label>მახასიათებლები</Label>
         <Button type="button" variant="outline" size="sm" onClick={addSpec}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Spec
+          მახასიათებლის დამატება
         </Button>
       </div>
       {specs.map((spec, index) => (
         <div key={index} className="grid grid-cols-5 gap-2 p-2 border rounded">
           <Input
-            placeholder="Label (EN)"
+            placeholder="დასახელება (EN)"
             value={spec.label.en}
             onChange={(e) =>
               updateSpec(index, "label", {
@@ -57,7 +57,7 @@ export function ProductSpecs() {
             }
           />
           <Input
-            placeholder="Label (KA)"
+            placeholder="დასახელება (KA)"
             value={spec.label.ka}
             onChange={(e) =>
               updateSpec(index, "label", {
@@ -67,7 +67,7 @@ export function ProductSpecs() {
             }
           />
           <Input
-            placeholder="Value (EN)"
+            placeholder="მნიშვნელობა (EN)"
             value={spec?.value?.en}
             onChange={(e) =>
               updateSpec(index, "value", {
@@ -77,7 +77,7 @@ export function ProductSpecs() {
             }
           />
           <Input
-            placeholder="Value (KA)"
+            placeholder="მნიშვნელობა (KA)"
             value={spec?.value?.ka}
             onChange={(e) =>
               updateSpec(index, "value", {
