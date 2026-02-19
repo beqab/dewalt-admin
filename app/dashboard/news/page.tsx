@@ -4,16 +4,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import { NewsTable } from "@/features/news/components/news-table";
-import {
-  useGetNews,
-  useDeleteNews,
-} from "@/features/news";
+import { useGetNews, useDeleteNews } from "@/features/news";
 import { Pagination } from "@/components/pagination";
 import { useRouter } from "next/navigation";
 
+const limit = 20;
 export default function NewsPage() {
   const [page, setPage] = useState(1);
-  const limit = 10;
+
   const router = useRouter();
 
   const { data, isLoading, error } = useGetNews(page, limit);
@@ -73,7 +71,7 @@ export default function NewsPage() {
       {data && data.totalPages > 1 && (
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            ნაჩვენებია {((page - 1) * limit) + 1}-დან{" "}
+            ნაჩვენებია {(page - 1) * limit + 1}-დან{" "}
             {Math.min(page * limit, data.total)}-მდე, სულ {data.total} სტატია
           </div>
           <Pagination

@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+const limit = 20;
 
 export default function ProductsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -47,7 +48,6 @@ export default function ProductsPage() {
   const [brandId, setBrandId] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [childCategoryId, setChildCategoryId] = useState<string>("");
-  const limit = 10;
 
   const { data: brands } = useGetBrands();
   const { data: categories } = useGetCategories();

@@ -9,7 +9,7 @@ import { useGetUsers } from "@/features/users";
 
 export default function UsersPage() {
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(20);
   const [search, setSearch] = useState("");
 
   const { data, isLoading, error } = useGetUsers({ page, limit, search });
