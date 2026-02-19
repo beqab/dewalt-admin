@@ -66,6 +66,16 @@ const QUERY_KEYS = {
       return key;
     },
   },
+  USERS: {
+    ALL: ["users"],
+    LIST: (page?: number, limit?: number, search?: string) => {
+      const key: (string | number)[] = ["users", "list"];
+      if (page !== undefined) key.push("page", page);
+      if (limit !== undefined) key.push("limit", limit);
+      if (search) key.push("search", search);
+      return key;
+    },
+  },
 };
 
 export default QUERY_KEYS;

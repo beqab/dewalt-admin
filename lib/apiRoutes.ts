@@ -3,6 +3,7 @@ export const API_ROUTES = {
   LOGOUT: "/admin/logout",
   REFRESH_TOKEN: "/admin/get-token",
   GET_ME: "/admin/me",
+  ADMIN_USERS: "/admin/users",
 
   // Banner Slider
   BANNER_SLIDER: "/banner-slider",
