@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import UploadImage from "@/components/uploadImage";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 const positionLabels: Record<AdPosition, string> = {
   main_page: "მთავარი გვერდი",
@@ -133,6 +134,12 @@ export default function AdsPage() {
     (pos) => !usedPositions.includes(pos) || editingAd?.position === pos
   );
 
+  console.log(formData.position, "formData.position");
+  console.log(
+    formData.position === AdPosition.MAIN_PAGE,
+    "availablePositions AdPosition.MAIN_PAGE",
+    AdPosition.MAIN_PAGE
+  );
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -193,14 +200,28 @@ export default function AdsPage() {
               </div>
 
               <div className="grid gap-2">
-                <UploadImage
-                  onImageChange={(url) =>
-                    setFormData({ ...formData, imageUrl: url })
-                  }
-                  imageUrl={formData.imageUrl}
-                  defaultImageUrl={editingAd?.imageUrl}
-                  label="სურათი"
-                />
+                <div
+                  className={cn(
+                    "w-full h-48 border rounded-md overflow-hidden",
+                    formData.position === AdPosition.ASIDE
+                      ? "aspect-[200/450] w-[200px] h-[450px]"
+                      : "aspect-[1120/250]"
+                  )}
+                >
+                  <UploadImage
+                    onImageChange={(url) =>
+                      setFormData({ ...formData, imageUrl: url })
+                    }
+                    imageUrl={formData.imageUrl}
+                    defaultImageUrl={editingAd?.imageUrl}
+                    label="სურათი"
+                    imgWrapperClassName={
+                      formData.position === AdPosition.ASIDE
+                        ? "w-[200px] h-[450px]"
+                        : "w-full h-48"
+                    }
+                  />
+                </div>
               </div>
 
               <div className="grid gap-2">

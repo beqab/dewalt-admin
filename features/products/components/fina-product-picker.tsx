@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useGetFinaProductsList, type FinaProductListItem } from "@/features/fina";
+import {
+  useGetFinaProductsList,
+  type FinaProductListItem,
+} from "@/features/fina";
 
 export function FinaProductPicker({
   onSelect,
@@ -120,4 +123,3 @@ export function FinaProductPicker({
     </div>
   );
 }
-

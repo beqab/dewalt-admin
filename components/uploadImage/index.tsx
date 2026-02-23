@@ -5,12 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { cn } from "@/lib/utils";
 
 interface UploadImageProps {
   onImageChange: (url: string) => void;
   imageUrl: string;
   label?: string;
   defaultImageUrl?: string;
+  imgWrapperClassName?: string;
 }
 
 export default function UploadImage({
@@ -18,6 +20,7 @@ export default function UploadImage({
   imageUrl,
   defaultImageUrl,
   label = "სურათი",
+  imgWrapperClassName,
 }: UploadImageProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(
@@ -104,7 +107,12 @@ export default function UploadImage({
       <Label htmlFor="image">{label}</Label>
       <div className="space-y-2">
         {previewUrl ? (
-          <div className="relative w-full h-48 border rounded-md overflow-hidden">
+          <div
+            className={cn(
+              "relative w-full h-48 border rounded-md overflow-hidden",
+              imgWrapperClassName
+            )}
+          >
             <Image
               src={previewUrl}
               alt="სურათის პრევიუ"
