@@ -2,68 +2,78 @@ import * as yup from "yup";
 
 export const productSchema = yup.object({
   name: yup.object({
-    ka: yup.string().required("Georgian name is required"),
-    en: yup.string().required("English name is required"),
+    ka: yup.string().required("საჭიროა სახელის მითითება ქართულად"),
+    en: yup.string().required("საჭიროა სახელის მითითება ინგლისურად"),
   }),
-  code: yup.string().required("Product code is required"),
+
   finaId: yup
     .number()
     .transform((value, originalValue) =>
-      originalValue === "" || originalValue === null || originalValue === undefined
+      originalValue === "" ||
+      originalValue === null ||
+      originalValue === undefined
         ? undefined
         : value
     )
     .optional()
-    .integer("FINA ID must be a whole number")
-    .min(1, "FINA ID must be positive"),
+    .integer("FINA ID უნდა იყოს მთელი რიცხვი")
+    .min(1, "FINA ID უნდა იყოს დადებითი"),
   finaCode: yup
     .string()
     .transform((value) => (typeof value === "string" ? value.trim() : value))
     .optional(),
   description: yup.object({
-    ka: yup.string().required("Georgian description is required"),
-    en: yup.string().required("English description is required"),
+    ka: yup.string().required("საჭიროა აღწერის მითითება ქართულად"),
+    en: yup.string().required("საჭიროა აღწერის მითითება ინგლისურად"),
   }),
-  image: yup.string().required("Image URL is required"),
+  image: yup.string().required("სურათის ბმულის მითითება სავალდებულოა"),
   images: yup
     .array()
     .of(yup.string())
-    .max(6, "Maximum 6 additional images allowed")
+    .max(6, "დანართი სურათების რაოდენობა არ უნდა აღემატებოდეს 6-ს")
     .optional(),
   price: yup
     .number()
-    .required("Price is required")
-    .min(0, "Price must be positive"),
+    .required("ფასის მითითება სავალდებულოა")
+    .min(0, "ფასი უნდა იყოს დადებითი"),
   originalPrice: yup
     .number()
     .optional()
-    .min(0, "Original price must be positive"),
+    .min(0, "საწყისი ფასი უნდა იყოს დადებითი"),
   discount: yup
     .number()
     .optional()
-    .min(0)
-    .max(100, "Discount must be between 0 and 100"),
+    .min(0, "ფასდაკლება არ შეიძლება იყოს უარყოფითი")
+    .max(100, "ფასდაკლება უნდა იყოს 0-დან 100-მდე"),
   inStock: yup.boolean().default(true),
   quantity: yup
     .number()
-    .required("Quantity is required")
-    .min(0, "Quantity must be positive")
-    .integer("Quantity must be a whole number"),
-  slug: yup.string().required("Slug is required"),
-  brandId: yup.string().required("Brand is required"),
-  categoryId: yup.string().required("Category is required"),
+    .required("მარაგის რაოდენობა სავალდებულოა")
+    .min(0, "მარაგის რაოდენობა არ უნდა იყოს უარყოფითი")
+    .integer("მარაგის რაოდენობა უნდა იყოს მთელი რიცხვი"),
+  slug: yup.string().required("სლაგის მითითება სავალდებულოა"),
+  brandId: yup.string().required("ბრენდის არჩევა სავალდებულოა"),
+  categoryId: yup.string().required("კატეგორიის არჩევა სავალდებულოა"),
   childCategoryId: yup.string().optional(),
   specs: yup
     .array()
     .of(
       yup.object({
         label: yup.object({
-          ka: yup.string().required(),
-          en: yup.string().required(),
+          ka: yup
+            .string()
+            .required("საჭიროა სპეციფიკაციის სახელწოდების მითითება ქართულად"),
+          en: yup
+            .string()
+            .required("საჭიროა სპეციფიკაციის სახელწოდების მითითება ინგლისურად"),
         }),
         value: yup.object({
-          ka: yup.string().required(),
-          en: yup.string().required(),
+          ka: yup
+            .string()
+            .required("საჭიროა სპეციფიკაციის მნიშვნელობის მითითება ქართულად"),
+          en: yup
+            .string()
+            .required("საჭიროა სპეციფიკაციის მნიშვნელობის მითითება ინგლისურად"),
         }),
       })
     )

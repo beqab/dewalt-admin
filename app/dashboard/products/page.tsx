@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useDebounce } from "@/hooks/useDebaunce";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,9 +46,17 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState<Product | undefined>();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [brandId, setBrandId] = useState<string>("");
-  const [categoryId, setCategoryId] = useState<string>("");
-  const [childCategoryId, setChildCategoryId] = useState<string>("");
+  const [brandId, setBrandId] = useState<string>("all");
+  const [categoryId, setCategoryId] = useState<string>("all");
+  const [childCategoryId, setChildCategoryId] = useState<string>("all");
+  const [inStockFilter, setInStockFilter] = useState<string>("all"); // all | true | false
+  const [minPrice, setMinPrice] = useState<string>("");
+  const [maxPrice, setMaxPrice] = useState<string>("");
+  const [sort, setSort] = useState<string>(""); // price-asc | price-desc | ""
+
+  const debouncedSearch = useDebounce(search, 400);
+  const debouncedMinPrice = useDebounce(minPrice, 400);
+  const debouncedMaxPrice = useDebounce(maxPrice, 400);
 
   const { data: brands } = useGetBrands();
   const { data: categories } = useGetCategories();
@@ -56,13 +65,59 @@ export default function ProductsPage() {
     categoryId || undefined
   );
 
+  const { inStock, parsedMinPrice, parsedMaxPrice } = useMemo(() => {
+    const nextInStock =
+      inStockFilter === "all" ? undefined : inStockFilter === "true";
+
+    const min =
+      debouncedMinPrice.trim() === "" ? undefined : Number(debouncedMinPrice);
+    const max =
+      debouncedMaxPrice.trim() === "" ? undefined : Number(debouncedMaxPrice);
+
+    const safeMin = Number.isFinite(min) ? min : undefined;
+    const safeMax = Number.isFinite(max) ? max : undefined;
+
+    if (safeMin !== undefined && safeMax !== undefined && safeMin > safeMax) {
+      return {
+        inStock: nextInStock,
+        parsedMinPrice: safeMax,
+        parsedMaxPrice: safeMin,
+      };
+    }
+
+    return {
+      inStock: nextInStock,
+      parsedMinPrice: safeMin,
+      parsedMaxPrice: safeMax,
+    };
+  }, [inStockFilter, debouncedMinPrice, debouncedMaxPrice]);
+
+  const effectiveSearch = useMemo(() => {
+    const trimmed = debouncedSearch.trim();
+    if (trimmed.length === 0) return undefined;
+    if (trimmed.length <= 2) return undefined;
+    return trimmed;
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    // Reset pagination only after debounced filters actually change (prevents heavy typing / extra requests)
+    const t = setTimeout(() => {
+      setPage((prev) => (prev === 1 ? prev : 1));
+    }, 0);
+    return () => clearTimeout(t);
+  }, [effectiveSearch, parsedMinPrice, parsedMaxPrice]);
+
   const { data, isLoading, error } = useGetProducts({
     page,
     limit,
     brandId: brandId || undefined,
     categoryId: categoryId || undefined,
     childCategoryId: childCategoryId || undefined,
-    search: search || undefined,
+    search: effectiveSearch,
+    inStock,
+    minPrice: parsedMinPrice,
+    maxPrice: parsedMaxPrice,
+    sort: sort || undefined,
   });
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
@@ -107,7 +162,6 @@ export default function ProductsPage() {
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
-    handleFilterChange();
   };
 
   const handleBrandChange = (value: string) => {
@@ -128,17 +182,57 @@ export default function ProductsPage() {
     handleFilterChange();
   };
 
+  const handleInStockChange = (value: string) => {
+    setInStockFilter(value);
+    handleFilterChange();
+  };
+
+  const handleMinPriceChange = (value: string) => {
+    setMinPrice(value);
+  };
+
+  const handleMaxPriceChange = (value: string) => {
+    setMaxPrice(value);
+  };
+
+  const handleSortChange = (value: string) => {
+    setSort(value === "default" ? "" : value);
+    handleFilterChange();
+  };
+
   const handleClearFilters = () => {
     setSearch("");
     setBrandId("");
     setCategoryId("");
     setChildCategoryId("");
+    setInStockFilter("all");
+    setMinPrice("");
+    setMaxPrice("");
+    setSort("");
     setPage(1);
   };
 
   const hasActiveFilters = useMemo(() => {
-    return !!(search || brandId || categoryId || childCategoryId);
-  }, [search, brandId, categoryId, childCategoryId]);
+    return !!(
+      search ||
+      brandId ||
+      categoryId ||
+      childCategoryId ||
+      inStockFilter !== "all" ||
+      minPrice.trim() !== "" ||
+      maxPrice.trim() !== "" ||
+      sort
+    );
+  }, [
+    search,
+    brandId,
+    categoryId,
+    childCategoryId,
+    inStockFilter,
+    minPrice,
+    maxPrice,
+    sort,
+  ]);
 
   if (error) {
     return (
@@ -172,9 +266,9 @@ export default function ProductsPage() {
         <CardContent>
           {/* Filters */}
           <div className="space-y-4 mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
               {/* Search */}
-              <div className="space-y-2">
+              <div className="space-y-2 lg:col-span-2">
                 <Label htmlFor="search">ძიება</Label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -199,9 +293,10 @@ export default function ProductsPage() {
                     <SelectValue placeholder="ყველა ბრენდი" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">ყველა ბრენდი</SelectItem>
                     {brands?.map((brand) => (
                       <SelectItem key={brand._id} value={brand._id}>
-                        {brand.name.en}
+                        {brand.name.ka}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -221,9 +316,10 @@ export default function ProductsPage() {
                     <SelectValue placeholder="ყველა კატეგორია" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">ყველა კატეგორია</SelectItem>
                     {categories
                       ?.filter((category) => {
-                        if (brandId) {
+                        if (brandId && brandId !== "all") {
                           const categoryBrandIds = Array.isArray(
                             category.brandIds
                           )
@@ -237,7 +333,7 @@ export default function ProductsPage() {
                       })
                       .map((category) => (
                         <SelectItem key={category._id} value={category._id}>
-                          {category.name.en}
+                          {category.name.ka}
                         </SelectItem>
                       ))}
                   </SelectContent>
@@ -256,18 +352,81 @@ export default function ProductsPage() {
                     <SelectValue placeholder="ყველა ქვე-კატეგორია" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">ყველა ქვე-კატეგორია</SelectItem>
                     {childCategories?.map((child) => (
                       <SelectItem key={child._id} value={child._id}>
-                        {child.name.en}
+                        {child.name.ka}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
+              {/* In Stock */}
+              <div className="space-y-2">
+                <Label htmlFor="inStock-filter">მარაგი</Label>
+                <Select
+                  value={inStockFilter}
+                  onValueChange={handleInStockChange}
+                >
+                  <SelectTrigger id="inStock-filter">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">ყველა</SelectItem>
+                    <SelectItem value="true">მარაგშია</SelectItem>
+                    <SelectItem value="false">არ არის მარაგში</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Min Price */}
+              <div className="space-y-2">
+                <Label htmlFor="minPrice">მინ. ფასი</Label>
+                <Input
+                  id="minPrice"
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="0"
+                  value={minPrice}
+                  onChange={(e) => handleMinPriceChange(e.target.value)}
+                />
+              </div>
+
+              {/* Max Price */}
+              <div className="space-y-2">
+                <Label htmlFor="maxPrice">მაქს. ფასი</Label>
+                <Input
+                  id="maxPrice"
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="99999"
+                  value={maxPrice}
+                  onChange={(e) => handleMaxPriceChange(e.target.value)}
+                />
+              </div>
+
+              {/* Sort */}
+              <div className="space-y-2">
+                <Label htmlFor="sort">სორტირება</Label>
+                <Select
+                  value={sort || "default"}
+                  onValueChange={handleSortChange}
+                >
+                  <SelectTrigger id="sort">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">დეფოლტი</SelectItem>
+                    <SelectItem value="price-asc">ფასი: ზრდადი</SelectItem>
+                    <SelectItem value="price-desc">ფასი: კლებადი</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Clear Filters */}
               {hasActiveFilters && (
-                <div className="flex items-end">
+                <div className="flex items-end md:col-span-2 lg:col-span-2">
                   <Button
                     variant="outline"
                     onClick={handleClearFilters}

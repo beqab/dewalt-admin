@@ -36,12 +36,12 @@ export function ProductsTable({
             <TableRow>
               <TableHead>სურათი</TableHead>
               <TableHead>დასახელება (EN / KA)</TableHead>
-              <TableHead>კოდი</TableHead>
+              <TableHead>FINA კოდი</TableHead>
               <TableHead>ფასი</TableHead>
               <TableHead>ბრენდი</TableHead>
               <TableHead>კატეგორია</TableHead>
+              <TableHead>სუბ კატეგორია</TableHead>
               <TableHead>მარაგი</TableHead>
-              <TableHead>რეიტინგი</TableHead>
               <TableHead className="text-right">მოქმედებები</TableHead>
             </TableRow>
           </TableHeader>
@@ -59,11 +59,11 @@ export function ProductsTable({
                 const brandName =
                   typeof product.brandId === "string"
                     ? "-"
-                    : product.brandId.name.en;
+                    : product.brandId.name.ka;
                 const categoryName =
                   typeof product.categoryId === "string"
                     ? "-"
-                    : product.categoryId.name.en;
+                    : product.categoryId.name.ka;
 
                 return (
                   <TableRow key={product._id}>
@@ -72,7 +72,7 @@ export function ProductsTable({
                         <Image
                           src={product.image}
                           alt={
-                            product.name?.en || product.name?.ka || "პროდუქტი"
+                            product.name?.ka || product.name?.en || "პროდუქტი"
                           }
                           fill
                           className="object-fit"
@@ -91,7 +91,9 @@ export function ProductsTable({
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="text-sm font-mono">{product.code}</div>
+                      <div className="text-sm font-mono">
+                        {product.finaCode}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="font-medium">
@@ -115,15 +117,18 @@ export function ProductsTable({
                       <div className="text-sm">{categoryName}</div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={product.inStock ? "default" : "outline"}>
-                        {product.inStock ? "მარაგშია" : "არ არის მარაგში"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
                       <div className="text-sm">
-                        {product.rating} ({product.reviewCount} მიმოხილვა)
+                        {product.childCategoryId?.name.ka}
                       </div>
                     </TableCell>
+                    <TableCell>
+                      <Badge variant={product.inStock ? "default" : "outline"}>
+                        {product.inStock
+                          ? `მარაგშია (${product.quantity})`
+                          : "არ არის მარაგში"}
+                      </Badge>
+                    </TableCell>
+
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button

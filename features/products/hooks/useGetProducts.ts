@@ -15,6 +15,7 @@ export const useGetProducts = (params?: {
   minPrice?: number;
   maxPrice?: number;
   search?: string;
+  sort?: string;
 }) => {
   return useQuery<ProductsListResponse>({
     queryKey: QUERY_KEYS.PRODUCTS.LIST(params?.page, params?.limit, {
@@ -22,6 +23,10 @@ export const useGetProducts = (params?: {
       categoryId: params?.categoryId,
       childCategoryId: params?.childCategoryId,
       search: params?.search,
+      inStock: params?.inStock,
+      minPrice: params?.minPrice,
+      maxPrice: params?.maxPrice,
+      sort: params?.sort,
     }),
     queryFn: () => productsService.getProducts.get(params),
   });

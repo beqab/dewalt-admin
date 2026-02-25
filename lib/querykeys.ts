@@ -53,6 +53,10 @@ const QUERY_KEYS = {
         categoryId?: string;
         childCategoryId?: string;
         search?: string;
+        inStock?: boolean;
+        minPrice?: number;
+        maxPrice?: number;
+        sort?: string;
       }
     ) => {
       const key: (string | number)[] = ["products", "list"];
@@ -63,6 +67,10 @@ const QUERY_KEYS = {
       if (filters?.childCategoryId)
         key.push("childCategory", filters.childCategoryId);
       if (filters?.search) key.push("search", filters.search);
+      if (filters?.inStock !== undefined) key.push("inStock", String(filters.inStock));
+      if (filters?.minPrice !== undefined) key.push("minPrice", filters.minPrice);
+      if (filters?.maxPrice !== undefined) key.push("maxPrice", filters.maxPrice);
+      if (filters?.sort) key.push("sort", filters.sort);
       return key;
     },
   },

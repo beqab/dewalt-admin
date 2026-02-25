@@ -48,7 +48,7 @@ export function BrandMultiSelector({
                   key={brandId}
                   className="flex items-center justify-between p-2 border rounded bg-muted/50"
                 >
-                  <span className="text-sm font-medium">{brand.name.en}</span>
+                  <span className="text-sm font-medium">{brand.name.ka}</span>
                   {onRemoveBrand && (
                     <Button
                       type="button"
@@ -81,7 +81,7 @@ export function BrandMultiSelector({
                   onClick={() => handleBrandToggle(brand._id)}
                   className="w-full justify-start"
                 >
-                  + {brand.name.en}
+                  + {brand.name.ka}
                 </Button>
               ))
             ) : (
@@ -111,7 +111,7 @@ export function BrandMultiSelector({
                   htmlFor={`brand-${brand._id}`}
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
                 >
-                  {brand.name.en}
+                  {brand.name.ka}
                 </label>
               </div>
             ))}
@@ -121,4 +121,3 @@ export function BrandMultiSelector({
     </div>
   );
 }
-

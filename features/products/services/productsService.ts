@@ -28,17 +28,20 @@ export const productsService = {
       minPrice?: number;
       maxPrice?: number;
       search?: string;
+      sort?: string;
     }): Promise<ProductsListResponse> => {
       const queryParams: Record<string, string | number | boolean> = {};
       if (params?.page) queryParams.page = params.page;
       if (params?.limit) queryParams.limit = params.limit;
       if (params?.brandId) queryParams.brandId = params.brandId;
       if (params?.categoryId) queryParams.categoryId = params.categoryId;
-      if (params?.childCategoryId) queryParams.childCategoryId = params.childCategoryId;
+      if (params?.childCategoryId)
+        queryParams.childCategoryId = params.childCategoryId;
       if (params?.inStock !== undefined) queryParams.inStock = params.inStock;
       if (params?.minPrice !== undefined) queryParams.minPrice = params.minPrice;
       if (params?.maxPrice !== undefined) queryParams.maxPrice = params.maxPrice;
       if (params?.search) queryParams.search = params.search;
+      if (params?.sort) queryParams.sort = params.sort;
 
       return productsClient.get<ProductsListResponse>(
         Object.keys(queryParams).length > 0 ? queryParams : undefined,

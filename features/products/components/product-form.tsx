@@ -83,7 +83,7 @@ export function ProductForm({
 
       return {
         name: product.name,
-        code: product.code,
+
         finaId: product.finaId,
         finaCode: product.finaCode || "",
         description: product.description,
@@ -103,7 +103,7 @@ export function ProductForm({
     }
     return {
       name: { ka: "", en: "" },
-      code: "",
+
       finaId: undefined,
       finaCode: "",
       description: { ka: "", en: "" },
@@ -236,6 +236,7 @@ export function ProductForm({
     const errors = await formik.validateForm();
     if (Object.keys(errors).length > 0) {
       formik.setTouched(markAllTouched(formik.values) as never, true);
+      console.log(errors, "ერრორ");
       toast.error("გთხოვთ შეამოწმოთ სავალდებულო ველები");
       return;
     }
@@ -279,12 +280,6 @@ export function ProductForm({
 
               {/* Code and Slug */}
               <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  name="code"
-                  label="პროდუქტის კოდი"
-                  required
-                  placeholder="DEW-86511"
-                />
                 <FormField
                   name="slug"
                   label="სლაგი"
@@ -442,24 +437,44 @@ export function ProductForm({
 
               {/* Brand, Category, Child Category */}
               <div className="grid grid-cols-3 gap-4">
-                <BrandSelector
-                  brands={brands}
-                  value={formik.values.brandId}
-                  onValueChange={(value) => {
-                    formik.setFieldValue("brandId", value);
-                  }}
-                />
-                <CategorySelector
-                  categories={categories}
-                  value={formik.values.categoryId}
-                  onValueChange={(value) => {
-                    formik.setFieldValue("categoryId", value || "");
-                    formik.setFieldValue("childCategoryId", undefined);
-                  }}
-                  filterByBrandIds={
-                    formik.values.brandId ? [formik.values.brandId] : undefined
-                  }
-                />
+                <div className="space-y-2">
+                  <BrandSelector
+                    brands={brands}
+                    value={formik.values.brandId}
+                    onValueChange={(value) => {
+                      formik.setFieldValue("brandId", value);
+                      formik.setFieldTouched("brandId", true, false);
+                      // Brand affects available categories
+                      formik.setFieldValue("categoryId", "");
+                      formik.setFieldValue("childCategoryId", undefined);
+                    }}
+                  />
+                  {formik.touched.brandId && formik.errors.brandId && (
+                    <p className="text-sm text-destructive">
+                      {formik.errors.brandId}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <CategorySelector
+                    categories={categories}
+                    value={formik.values.categoryId}
+                    onValueChange={(value) => {
+                      formik.setFieldValue("categoryId", value || "");
+                      formik.setFieldTouched("categoryId", true, false);
+                      formik.setFieldValue("childCategoryId", undefined);
+                    }}
+                    filterByBrandIds={
+                      formik.values.brandId ? [formik.values.brandId] : undefined
+                    }
+                  />
+                  {formik.touched.categoryId && formik.errors.categoryId && (
+                    <p className="text-sm text-destructive">
+                      {formik.errors.categoryId}
+                    </p>
+                  )}
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="childCategoryId">ქვე-კატეგორია</Label>
                   <select
