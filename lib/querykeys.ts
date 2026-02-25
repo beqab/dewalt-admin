@@ -76,6 +76,24 @@ const QUERY_KEYS = {
       return key;
     },
   },
+  ORDERS: {
+    ALL: ["orders"],
+    LIST: (
+      page?: number,
+      limit?: number,
+      filters?: { status?: string; uuid?: string; id?: string; email?: string }
+    ) => {
+      const key: (string | number)[] = ["orders", "list"];
+      if (page !== undefined) key.push("page", page);
+      if (limit !== undefined) key.push("limit", limit);
+      if (filters?.status) key.push("status", filters.status);
+      if (filters?.uuid) key.push("uuid", filters.uuid);
+      if (filters?.id) key.push("id", filters.id);
+      if (filters?.email) key.push("email", filters.email);
+      return key;
+    },
+    BY_ID: (id: string) => ["orders", "byId", id],
+  },
 };
 
 export default QUERY_KEYS;

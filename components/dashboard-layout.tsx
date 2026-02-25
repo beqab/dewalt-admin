@@ -13,6 +13,7 @@ import {
   Image,
   SlidersHorizontal,
   Package,
+  ShoppingCart,
   LogOut,
   Menu,
   Tags,
@@ -53,6 +54,11 @@ const navigationItems = [
     title: "პროდუქტები",
     href: "/dashboard/products",
     icon: Package,
+  },
+  {
+    title: "შეკვეთები",
+    href: "/dashboard/orders",
+    icon: ShoppingCart,
   },
   {
     title: "სიახლეები",

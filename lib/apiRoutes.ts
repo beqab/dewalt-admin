@@ -23,4 +23,7 @@ export const API_ROUTES = {
 
   // FINA (proxy endpoints from dewalt-back)
   FINA: "/fina",
+
+  // Orders (admin list)
+  ORDERS_ADMIN: "/orders/admin",
 };
