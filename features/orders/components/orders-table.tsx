@@ -338,7 +338,7 @@ export function OrdersTable({
                                       >
                                         <div className="min-w-0 flex   gap-2">
                                           <Image
-                                            src={p?.image || ""}
+                                            src={item?.image || ""}
                                             alt={""}
                                             width={160}
                                             height={160}
@@ -346,23 +346,25 @@ export function OrdersTable({
                                           />
                                           <div>
                                             <div className="text-sm font-medium">
-                                              {typeof p?.name === "string"
-                                                ? p?.name
-                                                : p?.name?.en}
+                                              {typeof item?.name === "string"
+                                                ? item?.name
+                                                : item?.name?.en}
                                             </div>
                                             <div className="text-sm font-medium">
-                                              {typeof p?.name === "string"
-                                                ? p?.name
-                                                : p?.name?.ka}
+                                              {typeof item?.name === "string"
+                                                ? item?.name
+                                                : item?.name?.ka}
                                             </div>
                                             <div className="text-sm text-muted-foreground">
-                                              {p?.finaCode
-                                                ? `fina კოდი: ${p.finaCode}`
-                                                : null}
+                                              fina კოდი:{" "}
+                                              {item?.finaCode
+                                                ? ` ${item.finaCode}`
+                                                : "არ მოიძებნა"}
                                             </div>
                                             <div className="text-sm text-muted-foreground">
-                                              {p?._id
-                                                ? `პროდუქტის Id: ${p._id}`
+                                              {typeof item?.productId ===
+                                              "string"
+                                                ? `პროდუქტის Id: ${item?.productId}`
                                                 : null}
                                             </div>
                                           </div>

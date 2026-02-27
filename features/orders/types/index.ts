@@ -16,9 +16,13 @@ export interface OrderUser {
 
 export interface OrderItem {
   productId: string | ProductSummary;
+  name: LocalizedText;
+  image: string;
+  finaCode?: string;
   quantity: number;
   unitPrice: number;
   lineTotal: number;
+  _id: string;
 }
 
 export type LocalizedText = { ka: string; en: string };
@@ -73,4 +77,3 @@ export interface OrderDetailsResponse {
   order: Order;
   ordersCountForUser: number;
 }
-
