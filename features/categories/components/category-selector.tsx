@@ -57,17 +57,18 @@ export function CategorySelector({
         <SelectContent>
           {availableCategories?.map((category) => (
             <SelectItem key={category._id} value={category._id}>
-              {category.name.en}
+              {category.name.ka}
             </SelectItem>
           ))}
-          {filterByBrandIds && filterByBrandIds.length > 0 && availableCategories?.length === 0 && (
-            <div className="p-2 text-sm text-muted-foreground">
-              არჩეული ბრენდისთვის კატეგორიები არ არის ხელმისაწვდომი
-            </div>
-          )}
+          {filterByBrandIds &&
+            filterByBrandIds.length > 0 &&
+            availableCategories?.length === 0 && (
+              <div className="p-2 text-sm text-muted-foreground">
+                არჩეული ბრენდისთვის კატეგორიები არ არის ხელმისაწვდომი
+              </div>
+            )}
         </SelectContent>
       </Select>
     </div>
   );
 }
-

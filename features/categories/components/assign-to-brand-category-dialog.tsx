@@ -210,7 +210,7 @@ export function AssignToBrandCategoryDialog({
               <SelectContent>
                 {categoriesForBrand?.map((category) => (
                   <SelectItem key={category._id} value={category._id}>
-                    {category.name.en}
+                    {category.name.ka}
                   </SelectItem>
                 ))}
                 {selectedBrandForAssign && categoriesForBrand?.length === 0 && (
@@ -253,7 +253,7 @@ export function AssignToBrandCategoryDialog({
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium">
-                            {childCategory.name.en}
+                            {childCategory.name.ka}
                           </div>
                           <div className="text-sm text-muted-foreground">
                             {childCategory.name.ka}

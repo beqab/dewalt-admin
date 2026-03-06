@@ -173,10 +173,16 @@ export function ProductForm({
     enableReinitialize: true,
   });
 
-  const { data: childCategories } = useGetChildCategories(
-    formik.values.brandId || undefined,
-    formik.values.categoryId || undefined
-  );
+  const { data: childCategories, refetch: refetchChildCategories } =
+    useGetChildCategories(
+      formik.values.brandId || undefined,
+      formik.values.categoryId || undefined
+    );
+
+  useEffect(() => {
+    refetchChildCategories();
+    console.log(formik.values.categoryId, "categoryId");
+  }, [formik.values.brandId, formik.values.categoryId]);
 
   // Reset form when dialog opens/closes or product changes
   useEffect(() => {
@@ -466,14 +472,18 @@ export function ProductForm({
                       formik.setFieldValue("childCategoryId", undefined);
                     }}
                     filterByBrandIds={
-                      formik.values.brandId ? [formik.values.brandId] : undefined
+                      formik.values.brandId
+                        ? [formik.values.brandId]
+                        : undefined
                     }
                   />
-                  {formik.touched.categoryId && formik.errors.categoryId && (
-                    <p className="text-sm text-destructive">
-                      {formik.errors.categoryId}
-                    </p>
-                  )}
+                  {formik.touched.categoryId &&
+                    formik.errors.categoryId &&
+                    !formik.values.categoryId && (
+                      <p className="text-sm text-destructive">
+                        {formik.errors.categoryId}
+                      </p>
+                    )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="childCategoryId">ქვე-კატეგორია</Label>
@@ -492,7 +502,7 @@ export function ProductForm({
                     <option value="">არცერთი</option>
                     {childCategories?.map((child) => (
                       <option key={child._id} value={child._id}>
-                        {child.name.en}
+                        {child.name.ka}
                       </option>
                     ))}
                   </select>
