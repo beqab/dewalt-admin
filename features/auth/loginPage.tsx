@@ -72,9 +72,6 @@ export default function LoginPage() {
               {isLoading ? "შესვლა მიმდინარეობს..." : "შესვლა"}
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm text-muted-foreground">
-            <p>დემო: შესასვლელად გამოიყენეთ ნებისმიერი ელ.ფოსტა და პაროლი</p>
-          </div>
         </CardContent>
       </Card>
     </div>

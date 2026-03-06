@@ -74,7 +74,9 @@ export function BannerSliderFormDialog({
               {banner ? "ბანერის რედაქტირება" : "ბანერის შექმნა"}
             </DialogTitle>
             <DialogDescription>
-              {banner ? "ბანერის ინფორმაციის განახლება." : "ახალი ბანერის დამატება."}
+              {banner
+                ? "ბანერის ინფორმაციის განახლება."
+                : "ახალი ბანერის დამატება."}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -98,7 +100,6 @@ export function BannerSliderFormDialog({
                           title: { ...formData.title, ka: e.target.value },
                         })
                       }
-                      required
                     />
                   </div>
                   <div className="grid gap-2">
@@ -117,7 +118,6 @@ export function BannerSliderFormDialog({
                           title: { ...formData.title, en: e.target.value },
                         })
                       }
-                      required
                     />
                   </div>
                 </div>
@@ -146,7 +146,6 @@ export function BannerSliderFormDialog({
                           },
                         })
                       }
-                      required
                     />
                   </div>
                   <div className="grid gap-2">
@@ -168,7 +167,6 @@ export function BannerSliderFormDialog({
                           },
                         })
                       }
-                      required
                     />
                   </div>
                 </div>
