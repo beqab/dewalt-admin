@@ -53,6 +53,7 @@ export const useLogin = () => {
       }
 
       if (err instanceof Error && err.message === "INVALID_CREDENTIALS") {
+        console.log("INVALID_CREDENTIALS", err);
         setError("არასწორი მონაცემები. გთხოვთ სცადოთ თავიდან.");
         toast.error("შესვლა ვერ მოხერხდა. გთხოვთ შეამოწმოთ მონაცემები.");
         return;

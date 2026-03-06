@@ -21,11 +21,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import type { ChildCategory, UpdateChildCategoryDto } from "../types";
+import type { ChildCategory } from "../types";
 import {
-  useUpdateChildCategory,
   useGetBrands,
   useGetCategories,
+  useGetChildCategories,
+  useSetChildCategoryGroup,
 } from "@/features/categories";
 import { BrandSelector } from "./brand-selector";
 
@@ -44,7 +45,7 @@ export function AssignToBrandCategoryDialog({
 }: AssignToBrandCategoryDialogProps) {
   const { data: brands } = useGetBrands();
   const { data: categories } = useGetCategories();
-  const updateChildCategory = useUpdateChildCategory();
+  const setChildCategoryGroup = useSetChildCategoryGroup();
 
   const [selectedBrandForAssign, setSelectedBrandForAssign] =
     useState<string>("");
@@ -53,6 +54,12 @@ export function AssignToBrandCategoryDialog({
   const [selectedChildCategoryIds, setSelectedChildCategoryIds] = useState<
     string[]
   >([]);
+
+  const { data: assignedChildCategories } = useGetChildCategories(
+    selectedBrandForAssign || undefined,
+    selectedCategoryForAssign || undefined,
+    { enabled: Boolean(selectedBrandForAssign && selectedCategoryForAssign) }
+  );
 
   // Filter categories by selected brand
   const categoriesForBrand = useMemo(() => {
@@ -66,39 +73,37 @@ export function AssignToBrandCategoryDialog({
       : categories;
   }, [selectedBrandForAssign, categories]);
 
-  // Compute initial selected child categories
-  const initialSelectedChildCategoryIds = useMemo(() => {
-    if (
-      selectedBrandForAssign &&
-      selectedCategoryForAssign &&
-      childCategories
-    ) {
-      return childCategories
-        .filter((childCat) => {
-          const childCategoryBrandIds = Array.isArray(childCat.brandIds)
-            ? childCat.brandIds.map((b) => (typeof b === "string" ? b : b._id))
-            : [];
-          const childCategoryId =
-            typeof childCat.categoryId === "string"
-              ? childCat.categoryId
-              : childCat.categoryId?._id;
-          return (
-            childCategoryBrandIds.includes(selectedBrandForAssign) &&
-            childCategoryId === selectedCategoryForAssign
-          );
-        })
-        .map((childCat) => childCat._id);
+  const assignedChildCategoryIds = useMemo(() => {
+    if (!assignedChildCategories || assignedChildCategories.length === 0) {
+      return [];
     }
-    return [];
-  }, [selectedBrandForAssign, selectedCategoryForAssign, childCategories]);
+    return assignedChildCategories.map((childCat) => childCat._id);
+  }, [assignedChildCategories]);
+
+  const hasChanges = useMemo(() => {
+    if (assignedChildCategoryIds.length !== selectedChildCategoryIds.length) {
+      return true;
+    }
+    const assignedSet = new Set(assignedChildCategoryIds);
+    return selectedChildCategoryIds.some((id) => !assignedSet.has(id));
+  }, [assignedChildCategoryIds, selectedChildCategoryIds]);
 
   // Reset selected child categories when dependencies change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    if (!selectedBrandForAssign || !selectedCategoryForAssign) {
+      setSelectedChildCategoryIds([]);
+      return;
+    }
     const timer = setTimeout(() => {
-      setSelectedChildCategoryIds(initialSelectedChildCategoryIds);
+      setSelectedChildCategoryIds(assignedChildCategoryIds);
     }, 0);
     return () => clearTimeout(timer);
-  }, [initialSelectedChildCategoryIds]);
+  }, [
+    assignedChildCategoryIds,
+    selectedBrandForAssign,
+    selectedCategoryForAssign,
+  ]);
 
   // Validate selected category when brand changes
   useEffect(() => {
@@ -129,110 +134,35 @@ export function AssignToBrandCategoryDialog({
       return;
     }
 
-    const allChildCategories = childCategories || [];
-    const previouslyAssignedChildCategoryIds = allChildCategories
-      .filter((childCat) => {
-        const childCategoryBrandIds = Array.isArray(childCat.brandIds)
-          ? childCat.brandIds.map((b) => (typeof b === "string" ? b : b._id))
-          : [];
-        const childCategoryId =
-          typeof childCat.categoryId === "string"
-            ? childCat.categoryId
-            : childCat.categoryId?._id;
-        return (
-          childCategoryBrandIds.includes(selectedBrandForAssign) &&
-          childCategoryId === selectedCategoryForAssign
-        );
-      })
-      .map((childCat) => childCat._id);
-
+    const previouslyAssignedChildCategoryIds = assignedChildCategoryIds;
     const childCategoriesToAdd = selectedChildCategoryIds.filter(
       (id) => !previouslyAssignedChildCategoryIds.includes(id)
     );
-
     const childCategoriesToRemove = previouslyAssignedChildCategoryIds.filter(
       (id) => !selectedChildCategoryIds.includes(id)
     );
 
-    const updatePromises: Promise<unknown>[] = [];
+    const hasChanges =
+      childCategoriesToAdd.length > 0 || childCategoriesToRemove.length > 0;
 
-    // Add brand and category to new child categories
-    childCategoriesToAdd.forEach((childCategoryId) => {
-      const childCategory = childCategories.find(
-        (c) => c._id === childCategoryId
-      );
-      if (!childCategory) return;
-
-      const currentBrandIds = Array.isArray(childCategory.brandIds)
-        ? childCategory.brandIds.map((b) => (typeof b === "string" ? b : b._id))
-        : [];
-
-      const newBrandIds = currentBrandIds.includes(selectedBrandForAssign)
-        ? currentBrandIds
-        : [...currentBrandIds, selectedBrandForAssign];
-
-      updatePromises.push(
-        updateChildCategory.mutateAsync({
-          id: childCategoryId,
-          data: {
-            brandIds: newBrandIds,
-            categoryId: selectedCategoryForAssign,
-          } as UpdateChildCategoryDto,
-        })
-      );
-    });
-
-    // Remove brand and category from unselected child categories
-    childCategoriesToRemove.forEach((childCategoryId) => {
-      const childCategory = childCategories.find(
-        (c) => c._id === childCategoryId
-      );
-      if (!childCategory) return;
-
-      const currentBrandIds = Array.isArray(childCategory.brandIds)
-        ? childCategory.brandIds.map((b) => (typeof b === "string" ? b : b._id))
-        : [];
-
-      const newBrandIds = currentBrandIds.filter(
-        (id) => id !== selectedBrandForAssign
-      );
-
-      const updateData: UpdateChildCategoryDto = {
-        brandIds: newBrandIds,
-      };
-      if (newBrandIds.length === 0) {
-        updateData.categoryId = undefined;
-      } else {
-        const currentCategoryId =
-          typeof childCategory.categoryId === "string"
-            ? childCategory.categoryId
-            : childCategory.categoryId?._id;
-        if (currentCategoryId === selectedCategoryForAssign) {
-          updateData.categoryId = currentCategoryId;
-        }
-      }
-
-      updatePromises.push(
-        updateChildCategory.mutateAsync({
-          id: childCategoryId,
-          data: updateData,
-        })
-      );
-    });
-
-    if (updatePromises.length === 0) {
+    if (!hasChanges) {
       toast.info("ცვლილებები არ არის");
       onClose();
       return;
     }
 
     try {
-      await Promise.all(updatePromises);
+      await setChildCategoryGroup.mutateAsync({
+        brandId: selectedBrandForAssign,
+        categoryId: selectedCategoryForAssign,
+        childCategoryIds: selectedChildCategoryIds,
+      });
       const addCount = childCategoriesToAdd.length;
       const removeCount = childCategoriesToRemove.length;
       const message: string[] = [];
       if (addCount > 0) message.push(`დამატებულია ${addCount} ქვე-კატეგორია`);
-      if (removeCount > 0) message.push(`წაშლილია ${removeCount} ქვე-კატეგორია`);
+      if (removeCount > 0)
+        message.push(`წაშლილია ${removeCount} ქვე-კატეგორია`);
       toast.success(`წარმატებით განახლდა: ${message.join(", ")}`);
       onClose();
       onSuccess?.();
@@ -246,7 +176,9 @@ export function AssignToBrandCategoryDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>ქვე-კატეგორიების მინიჭება ბრენდზე და კატეგორიაზე</DialogTitle>
+          <DialogTitle>
+            ქვე-კატეგორიების მინიჭება ბრენდზე და კატეგორიაზე
+          </DialogTitle>
           <DialogDescription>
             აირჩიეთ ბრენდი, კატეგორია და ქვე-კატეგორიები მინიჭებისთვის
           </DialogDescription>
@@ -295,22 +227,9 @@ export function AssignToBrandCategoryDialog({
             <Label>ქვე-კატეგორიების არჩევა</Label>
             <div className="space-y-2 max-h-60 overflow-y-auto border rounded p-4">
               {childCategories.map((childCategory) => {
-                const childCategoryBrandIds = Array.isArray(
-                  childCategory.brandIds
-                )
-                  ? childCategory.brandIds.map((b) =>
-                      typeof b === "string" ? b : b._id
-                    )
-                  : [];
-                const childCategoryId =
-                  typeof childCategory.categoryId === "string"
-                    ? childCategory.categoryId
-                    : childCategory.categoryId?._id;
-                const isAssigned =
-                  selectedBrandForAssign &&
-                  selectedCategoryForAssign &&
-                  childCategoryBrandIds.includes(selectedBrandForAssign) &&
-                  childCategoryId === selectedCategoryForAssign;
+                const isAssigned = assignedChildCategoryIds.includes(
+                  childCategory._id
+                );
                 const isSelected = selectedChildCategoryIds.includes(
                   childCategory._id
                 );
@@ -378,11 +297,11 @@ export function AssignToBrandCategoryDialog({
             disabled={
               !selectedBrandForAssign ||
               !selectedCategoryForAssign ||
-              selectedChildCategoryIds.length === 0 ||
-              updateChildCategory.isPending
+              setChildCategoryGroup.isPending ||
+              !hasChanges
             }
           >
-            {updateChildCategory.isPending ? (
+            {setChildCategoryGroup.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 მინიჭება მიმდინარეობს...

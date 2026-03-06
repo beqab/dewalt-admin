@@ -33,9 +33,11 @@ const QUERY_KEYS = {
     CHILD_CATEGORIES: {
       ALL: ["categories", "child-categories"],
       BY_ID: (id: string) => ["categories", "child-categories", id],
-      BY_CATEGORY: (categoryId: string) => [
+      BY_BRAND_CATEGORY: (brandId: string, categoryId: string) => [
         "categories",
         "child-categories",
+        "brand",
+        brandId,
         "category",
         categoryId,
       ],

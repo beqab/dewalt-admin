@@ -10,6 +10,8 @@ import {
   UpdateCategoryDto,
   CreateChildCategoryDto,
   UpdateChildCategoryDto,
+  SetChildCategoryGroupDto,
+  ChildCategoryGroupResponse,
 } from "../types";
 
 const categoriesClient = createApiClient(API_ROUTES.CATEGORIES);
@@ -103,6 +105,16 @@ export const categoriesService = {
       categoriesClient.patchById<UpdateChildCategoryDto, ChildCategoryResponse>(
         `child-categories/${id}`,
         data
+      ),
+  },
+  setChildCategoryGroup: {
+    post: (data: SetChildCategoryGroupDto) =>
+      categoriesClient.post<SetChildCategoryGroupDto, ChildCategoryGroupResponse>(
+        data,
+        undefined,
+        {
+          url: `${API_ROUTES.CATEGORIES}/child-categories/group`,
+        }
       ),
   },
   deleteChildCategory: {

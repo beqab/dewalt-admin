@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
-export default auth((req) => {
-  const { pathname } = req.nextUrl;
-  const session = req.auth;
+export default async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const session = await auth();
 
   // Allow access to login page and API routes (including NextAuth routes)
   if (pathname === "/login" || pathname.startsWith("/api/auth/")) {
@@ -11,16 +11,16 @@ export default auth((req) => {
   }
 
   // If not authenticated, redirect to login
-  if (!session?.user) {
-    console.log(!session?.user, "redirecting to login");
-    const loginUrl = new URL("/login", req.url);
+  if (!session) {
+    console.log(!session, "redirecting to login");
+    const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
   // Allow access to all routes if authenticated
   return NextResponse.next();
-});
+}
 
 // Configure which paths the proxy should run on
 export const config = {

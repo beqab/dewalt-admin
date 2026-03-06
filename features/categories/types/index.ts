@@ -35,6 +35,14 @@ export interface ChildCategory {
   updatedAt: string;
 }
 
+export interface ChildCategoryGroup {
+  brandId: string;
+  categoryId: string;
+  childCategoryIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 // DTOs for creating and updating
 export interface CreateBrandDto {
   name: LocalizedText;
@@ -72,7 +80,14 @@ export interface UpdateChildCategoryDto {
   categoryId?: string;
 }
 
+export interface SetChildCategoryGroupDto {
+  brandId: string;
+  categoryId: string;
+  childCategoryIds: string[];
+}
+
 // Response types
 export type BrandResponse = Brand;
 export type CategoryResponse = Category;
 export type ChildCategoryResponse = ChildCategory;
+export type ChildCategoryGroupResponse = ChildCategoryGroup;
