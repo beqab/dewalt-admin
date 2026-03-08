@@ -229,7 +229,9 @@ class APIClient<TResponse = unknown> {
     console.log(error.response?.data.statusCode, "rrr");
     console.log(error.response, "message");
     if (error.response?.data.statusCode === 401) {
-      signOut();
+      if (typeof window !== "undefined") {
+        void signOut({ redirect: true, callbackUrl: "/login" });
+      }
       return error.response.data;
     }
 
