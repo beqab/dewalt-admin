@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,9 +12,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useLogin } from "./hooks/useLogin";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
+  const session = useSession();
   const [password, setPassword] = useState("");
   const { login, error, isLoading, clearError } = useLogin();
 
@@ -22,6 +25,12 @@ export default function LoginPage() {
     e.preventDefault();
     login({ email, password });
   };
+
+  useEffect(() => {
+    if (session.data?.user) {
+      redirect("/dashboard");
+    }
+  }, [session]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
