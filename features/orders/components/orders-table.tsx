@@ -211,12 +211,12 @@ export function OrdersTable({
                                     ({getUserEmail(expandedOrder)})
                                   </span>
                                 </div>
-                                <div className="text-sm text-muted-foreground">
+                                {/* <div className="text-sm text-muted-foreground">
                                   შეკვეთების რაოდენობა ამ მომხმარებელზე:{" "}
                                   <span className="font-medium text-foreground">
                                     {ordersCountForUser}
                                   </span>
-                                </div>
+                                </div> */}
                               </div>
 
                               <div className="flex w-full flex-col gap-3 md:w-auto md:min-w-[280px]">
