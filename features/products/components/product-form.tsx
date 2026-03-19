@@ -399,7 +399,6 @@ export function ProductForm({
                   images={(formik.values.images || []).filter(
                     (img): img is string => Boolean(img)
                   )}
-                  defaultImages={product?.images}
                   label="დამატებითი სურათები (მაქს. 6)"
                   maxImages={6}
                 />

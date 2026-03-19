@@ -12,38 +12,38 @@ interface MultipleImageUploadProps {
   onImagesChange: (urls: string[]) => void;
   images: string[];
   label?: string;
-  defaultImages?: string[];
   maxImages?: number;
+}
+
+function resetFileInput(el: HTMLInputElement | null) {
+  if (el) el.value = "";
 }
 
 export default function MultipleImageUpload({
   onImagesChange,
   images,
-  defaultImages,
   label = "დამატებითი სურათები",
   maxImages = 6,
 }: MultipleImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  /** Always append to the latest images (avoids stale closures vs Formik/async). */
+  const imagesRef = useRef(images);
   useEffect(() => {
-    if (defaultImages && defaultImages.length > 0 && images.length === 0) {
-      onImagesChange(defaultImages);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultImages]);
+    imagesRef.current = images;
+  }, [images]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const current = imagesRef.current;
+
     // Check if we've reached the max limit
-    if (images.length >= maxImages) {
+    if (current.length >= maxImages) {
       toast.error(`მაქსიმუმ ${maxImages} სურათი შეიძლება.`);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      resetFileInput(fileInputRef.current);
       return;
     }
 
@@ -51,6 +51,7 @@ export default function MultipleImageUpload({
     const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
       toast.error("ფაილის ტიპი არასწორია. დასაშვებია მხოლოდ სურათები.");
+      resetFileInput(fileInputRef.current);
       return;
     }
 
@@ -58,12 +59,13 @@ export default function MultipleImageUpload({
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
       toast.error("ფაილის ზომა აღემატება 5MB-ს.");
+      resetFileInput(fileInputRef.current);
       return;
     }
 
     // Upload file
     setIsUploading(true);
-    setUploadingIndex(images.length);
+    setUploadingIndex(current.length);
     try {
       const uploadFormData = new FormData();
       uploadFormData.append("file", file);
@@ -79,7 +81,8 @@ export default function MultipleImageUpload({
       }
 
       const data = await response.json();
-      onImagesChange([...images, data.url]);
+      const latest = imagesRef.current;
+      onImagesChange([...latest, data.url]);
 
       toast.success("სურათი წარმატებით აიტვირთა!");
     } catch (error) {
@@ -89,10 +92,7 @@ export default function MultipleImageUpload({
     } finally {
       setIsUploading(false);
       setUploadingIndex(null);
-      // Reset file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      resetFileInput(fileInputRef.current);
     }
   };
 
@@ -145,31 +145,29 @@ export default function MultipleImageUpload({
       {/* Upload Button */}
       {canAddMore && (
         <div>
-          <div
-            className={`border-2 border-dashed rounded-md p-6 cursor-pointer transition-colors ${
+          {/* არა ორმაგი ტრიგერი: htmlFor + ref.click() ზოგ ბრაუზერში ფაილის დიალოგს არღვევს */}
+          <label
+            htmlFor={isUploading ? undefined : "multiple-images"}
+            className={`border-2 border-dashed rounded-md p-6 cursor-pointer transition-colors block ${
               isUploading
-                ? "border-muted bg-muted"
+                ? "border-muted bg-muted pointer-events-none"
                 : "border-primary/20 hover:border-primary/40"
             }`}
-            onClick={() => !isUploading && fileInputRef.current?.click()}
           >
             <div className="flex flex-col items-center justify-center gap-2">
               <Upload className="h-6 w-6 text-muted-foreground" />
               <div className="text-center">
-                <Label
-                  htmlFor="multiple-images"
-                  className="cursor-pointer text-sm font-medium text-primary hover:underline"
-                >
+                <span className="text-sm font-medium text-primary">
                   {isUploading && uploadingIndex !== null
                     ? "იტვირთება..."
                     : "დააჭირეთ სურათის ასატვირთად"}
-                </Label>
+                </span>
                 <p className="text-xs text-muted-foreground mt-1">
                   PNG, JPG, WEBP — მაქს. 5MB
                 </p>
               </div>
             </div>
-          </div>
+          </label>
           <Input
             ref={fileInputRef}
             id="multiple-images"
