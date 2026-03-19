@@ -238,7 +238,7 @@ export function ChildCategoryForm({
             </div>
 
             {/* Brands Selection */}
-            {childCategory ? (
+            {/* {childCategory ? (
               <div className="space-y-2">
                 <BrandMultiSelector
                   brands={brands}
@@ -281,10 +281,10 @@ export function ChildCategoryForm({
                   </p>
                 )}
               </div>
-            )}
+            )} */}
 
             {/* Category Selection */}
-            {childCategory ? (
+            {/* {childCategory ? (
               <>
                 {formik.values.categoryId && (
                   <div className="space-y-2">
@@ -356,7 +356,7 @@ export function ChildCategoryForm({
                   </p>
                 )}
               </div>
-            )}
+            )} */}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
