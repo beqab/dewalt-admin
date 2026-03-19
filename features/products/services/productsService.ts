@@ -52,9 +52,6 @@ export const productsService = {
   getProductById: {
     get: (id: string) => productsClient.get<ProductResponse>({}, id),
   },
-  getProductBySlug: {
-    get: (slug: string) => productsClient.get<ProductResponse>({}, `slug/${slug}`),
-  },
   createProduct: {
     post: (data: CreateProductDto) =>
       productsClient.post<CreateProductDto, ProductResponse>(data),

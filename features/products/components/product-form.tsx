@@ -31,7 +31,6 @@ import {
 } from "@/features/categories";
 import { BrandSelector } from "@/features/categories/components/brand-selector";
 import { CategorySelector } from "@/features/categories/components/category-selector";
-import { createSlug } from "@/lib/slugify";
 import { FormField } from "@/components/ui/formField";
 import { ProductSpecs } from "./product-specs";
 import { productSchema } from "../schemas/product.schema";
@@ -94,7 +93,6 @@ export function ProductForm({
         discount: product.discount,
         inStock: product.inStock,
         quantity: product.quantity,
-        slug: product.slug,
         brandId,
         categoryId,
         childCategoryId,
@@ -114,7 +112,6 @@ export function ProductForm({
       discount: undefined,
       inStock: true,
       quantity: 0,
-      slug: "",
       brandId: "",
       categoryId: "",
       childCategoryId: undefined,
@@ -236,16 +233,7 @@ export function ProductForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values.price, formik.values.originalPrice]);
 
-  const onBlurCapture = () => {
-    formik.setFieldValue("slug", createSlug(formik.values.name.en));
-  };
-
   const handleSubmitAttempt = async () => {
-    // Auto-fill slug if user didn't leave the name field
-    if (!formik.values.slug && formik.values.name?.en) {
-      formik.setFieldValue("slug", createSlug(formik.values.name.en), false);
-    }
-
     const errors = await formik.validateForm();
     if (Object.keys(errors).length > 0) {
       formik.setTouched(markAllTouched(formik.values) as never, true);
@@ -281,23 +269,12 @@ export function ProductForm({
                   label="სახელი (ინგლისურად)"
                   required
                   placeholder="პროდუქტის სახელი ინგლისურად"
-                  onBlurCapture={onBlurCapture}
                 />
                 <FormField
                   name="name.ka"
                   label="სახელი (ქართულად)"
                   required
                   placeholder="პროდუქტის სახელი ქართულად"
-                />
-              </div>
-
-              {/* Code and Slug */}
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  name="slug"
-                  label="სლაგი"
-                  required
-                  placeholder="product-slug"
                 />
               </div>
 

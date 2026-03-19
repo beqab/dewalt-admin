@@ -58,7 +58,6 @@ export const productSchema = yup.object({
     .required("მარაგის რაოდენობა სავალდებულოა")
     .min(0, "მარაგის რაოდენობა არ უნდა იყოს უარყოფითი")
     .integer("მარაგის რაოდენობა უნდა იყოს მთელი რიცხვი"),
-  slug: yup.string().required("სლაგის მითითება სავალდებულოა"),
   brandId: yup.string().required("ბრენდის არჩევა სავალდებულოა"),
   categoryId: yup.string().required("კატეგორიის არჩევა სავალდებულოა"),
   childCategoryId: yup.string().optional(),

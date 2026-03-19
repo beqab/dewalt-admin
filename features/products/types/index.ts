@@ -21,7 +21,6 @@ export interface Product {
   quantity: number;
   rating: number;
   reviewCount: number;
-  slug: string;
   brandId: { _id: string; name: LocalizedText; slug: string };
   categoryId: { _id: string; name: LocalizedText; slug: string };
   childCategoryId?: { _id: string; name: LocalizedText; slug: string };
@@ -45,7 +44,6 @@ export interface CreateProductDto {
   quantity?: number;
   rating?: number;
   reviewCount?: number;
-  slug: string;
   brandId: string;
   categoryId: string;
   childCategoryId?: string;
@@ -67,7 +65,6 @@ export interface UpdateProductDto {
   quantity?: number;
   rating?: number;
   reviewCount?: number;
-  slug?: string;
   brandId?: string;
   categoryId?: string;
   childCategoryId?: string;
