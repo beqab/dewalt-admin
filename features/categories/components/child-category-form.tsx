@@ -153,7 +153,9 @@ export function ChildCategoryForm({
         <form onSubmit={formik.handleSubmit}>
           <DialogHeader>
             <DialogTitle>
-              {childCategory ? "ქვე-კატეგორიის რედაქტირება" : "ქვე-კატეგორიის შექმნა"}
+              {childCategory
+                ? "ქვე-კატეგორიის რედაქტირება"
+                : "ქვე-კატეგორიის შექმნა"}
             </DialogTitle>
             <DialogDescription>
               {childCategory
@@ -364,7 +366,9 @@ export function ChildCategoryForm({
               {isCreating || isUpdating ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {childCategory ? "განახლება მიმდინარეობს..." : "შექმნა მიმდინარეობს..."}
+                  {childCategory
+                    ? "განახლება მიმდინარეობს..."
+                    : "შექმნა მიმდინარეობს..."}
                 </>
               ) : childCategory ? (
                 "განახლება"

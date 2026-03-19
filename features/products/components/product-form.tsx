@@ -173,11 +173,14 @@ export function ProductForm({
     enableReinitialize: true,
   });
 
-  const { data: childCategories, refetch: refetchChildCategories } =
-    useGetChildCategories(
-      formik.values.brandId || undefined,
-      formik.values.categoryId || undefined
-    );
+  const {
+    data: childCategories,
+    refetch: refetchChildCategories,
+    isLoading: isLoadingChildCategories,
+  } = useGetChildCategories(
+    formik.values.brandId || undefined,
+    formik.values.categoryId || undefined
+  );
 
   useEffect(() => {
     refetchChildCategories();
@@ -192,7 +195,9 @@ export function ProductForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, initialFormData]);
 
-  // Auto-calculate discount (%) based on price and originalPrice
+  // Auto-calculate discount (%) based on price and originalPrice.
+  // When originalPrice is empty we only set discount to 0 — we do NOT overwrite
+  // originalPrice with price, so the user can clear the field without it jumping back.
   useEffect(() => {
     const price = Number(formik.values.price);
     const originalRaw = (
@@ -203,9 +208,11 @@ export function ProductForm({
       originalRaw === null ||
       (typeof originalRaw === "string" && originalRaw.trim().length === 0);
 
-    // If original price is empty, keep it in sync with price
-    if (isOriginalEmpty && Number.isFinite(price)) {
-      formik.setFieldValue("originalPrice", price, false);
+    if (isOriginalEmpty) {
+      const current = Number(formik.values.discount ?? 0);
+      if (current !== 0) {
+        formik.setFieldValue("discount", 0, false);
+      }
       return;
     }
 
@@ -215,7 +222,7 @@ export function ProductForm({
     if (Number.isFinite(price) && Number.isFinite(original) && original > 0) {
       const raw = ((original - price) / original) * 100;
       if (Number.isFinite(raw) && raw > 0) {
-        nextDiscount = Math.round(raw);
+        nextDiscount = Math.round(raw * 10) / 10; // one decimal for accuracy
       }
     }
 
@@ -223,7 +230,7 @@ export function ProductForm({
     const current = Number(formik.values.discount ?? 0);
     const safeCurrent = Number.isFinite(current) ? current : 0;
 
-    if (safeCurrent !== nextDiscount) {
+    if (Math.abs(safeCurrent - nextDiscount) > 0.01) {
       formik.setFieldValue("discount", nextDiscount, false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -454,11 +461,13 @@ export function ProductForm({
                       formik.setFieldValue("childCategoryId", undefined);
                     }}
                   />
-                  {formik.touched.brandId && formik.errors.brandId && (
-                    <p className="text-sm text-destructive">
-                      {formik.errors.brandId}
-                    </p>
-                  )}
+                  {formik.touched.brandId &&
+                    formik.errors.brandId &&
+                    !formik.values.brandId && (
+                      <p className="text-sm text-destructive">
+                        {formik.errors.brandId}
+                      </p>
+                    )}
                 </div>
 
                 <div className="space-y-2">
@@ -498,12 +507,19 @@ export function ProductForm({
                     }
                     disabled={!formik.values.categoryId}
                   >
-                    <option value="">არცერთი</option>
-                    {childCategories?.map((child) => (
-                      <option key={child._id} value={child._id}>
-                        {child.name.ka}
-                      </option>
-                    ))}
+                    {isLoadingChildCategories ? (
+                      <option value="">იტვირთება...</option>
+                    ) : (
+                      <>
+                        <option value="">არცერთი</option>
+
+                        {childCategories?.map((child) => (
+                          <option key={child._id} value={child._id}>
+                            {child.name.ka}
+                          </option>
+                        ))}
+                      </>
+                    )}
                   </select>
                 </div>
               </div>

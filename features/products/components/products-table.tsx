@@ -98,17 +98,17 @@ export function ProductsTable({
                     <TableCell>
                       <div className="font-medium">
                         {product.price} GEL
-                        {product.originalPrice && (
+                        {product.originalPrice ? (
                           <span className="text-xs text-muted-foreground line-through ml-2">
                             {product.originalPrice} GEL
                           </span>
-                        )}
+                        ) : null}
                       </div>
-                      {product.discount && (
+                      {product.discount ? (
                         <div className="text-xs text-destructive">
                           -{product.discount}%
                         </div>
-                      )}
+                      ) : null}
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">{brandName}</div>

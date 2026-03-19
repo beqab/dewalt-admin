@@ -38,6 +38,13 @@ export const productSchema = yup.object({
     .min(0, "ფასი უნდა იყოს დადებითი"),
   originalPrice: yup
     .number()
+    .transform((value, originalValue) =>
+      originalValue === "" ||
+      originalValue === null ||
+      originalValue === undefined
+        ? undefined
+        : value
+    )
     .optional()
     .min(0, "საწყისი ფასი უნდა იყოს დადებითი"),
   discount: yup
