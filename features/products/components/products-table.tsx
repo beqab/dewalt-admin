@@ -122,8 +122,10 @@ export function ProductsTable({
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={product.inStock ? "default" : "outline"}>
-                        {product.inStock
+                      <Badge
+                        variant={product.quantity > 0 ? "default" : "outline"}
+                      >
+                        {product.quantity > 0
                           ? `მარაგშია (${product.quantity})`
                           : "არ არის მარაგში"}
                       </Badge>

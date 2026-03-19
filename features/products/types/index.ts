@@ -8,7 +8,6 @@ export interface ProductSpec {
 export interface Product {
   _id: string;
   name: LocalizedText;
-  code: string;
   finaId?: number;
   finaCode?: string;
   description: LocalizedText;
@@ -31,7 +30,6 @@ export interface Product {
 
 export interface CreateProductDto {
   name: LocalizedText;
-  code: string;
   finaId?: number;
   finaCode?: string;
   description: LocalizedText;
@@ -52,7 +50,6 @@ export interface CreateProductDto {
 
 export interface UpdateProductDto {
   name?: LocalizedText;
-  code?: string;
   finaId?: number;
   finaCode?: string;
   description?: LocalizedText;
