@@ -59,11 +59,11 @@ export function ProductsTable({
                 const brandName =
                   typeof product.brandId === "string"
                     ? "-"
-                    : product.brandId.name.ka;
+                    : product?.brandId?.name.ka;
                 const categoryName =
                   typeof product.categoryId === "string"
                     ? "-"
-                    : product.categoryId.name.ka;
+                    : product?.categoryId?.name.ka;
 
                 return (
                   <TableRow key={product._id}>
