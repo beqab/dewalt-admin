@@ -31,6 +31,7 @@ import {
 import { BrandSelector } from "@/features/categories/components/brand-selector";
 import { CategorySelector } from "@/features/categories/components/category-selector";
 import { FormField } from "@/components/ui/formField";
+import RichTextEditorContent from "@/components/rich-text-editor-content";
 import { ProductSpecs } from "./product-specs";
 import { productSchema } from "../schemas/product.schema";
 import { FinaProductPicker } from "./fina-product-picker";
@@ -326,23 +327,59 @@ export function ProductForm({
               </div>
 
               {/* Description */}
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  name="description.en"
-                  label="აღწერა (ინგლისურად)"
-                  required
-                  placeholder="პროდუქტის აღწერა ინგლისურად"
-                  as="textarea"
-                  rows={3}
-                />
-                <FormField
-                  name="description.ka"
-                  label="აღწერა (ქართულად)"
-                  required
-                  placeholder="პროდუქტის აღწერა ქართულად"
-                  as="textarea"
-                  rows={3}
-                />
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                  <Label>
+                    აღწერა (ინგლისურად){" "}
+                    <span className="text-destructive">*</span>
+                  </Label>
+                  <RichTextEditorContent
+                    value={formik.values.description?.en || ""}
+                    onChange={(val) =>
+                      formik.setFieldValue("description.en", val)
+                    }
+                    placeholder="პროდუქტის აღწერა ინგლისურად"
+                  />
+                  {formik.touched.description?.en &&
+                    (
+                      formik.errors.description as
+                        | Record<string, string>
+                        | undefined
+                    )?.en && (
+                      <p className="text-sm text-destructive">
+                        {
+                          (formik.errors.description as Record<string, string>)
+                            .en
+                        }
+                      </p>
+                    )}
+                </div>
+                <div className="space-y-2">
+                  <Label>
+                    აღწერა (ქართულად){" "}
+                    <span className="text-destructive">*</span>
+                  </Label>
+                  <RichTextEditorContent
+                    value={formik.values.description?.ka || ""}
+                    onChange={(val) =>
+                      formik.setFieldValue("description.ka", val)
+                    }
+                    placeholder="პროდუქტის აღწერა ქართულად"
+                  />
+                  {formik.touched.description?.ka &&
+                    (
+                      formik.errors.description as
+                        | Record<string, string>
+                        | undefined
+                    )?.ka && (
+                      <p className="text-sm text-destructive">
+                        {
+                          (formik.errors.description as Record<string, string>)
+                            .ka
+                        }
+                      </p>
+                    )}
+                </div>
               </div>
 
               {/* Image */}
