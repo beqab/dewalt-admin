@@ -32,6 +32,7 @@ export interface ChildCategory {
   slug: string;
   brandIds?: Brand[];
   categoryId?: string | Category;
+  sortOrder: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -89,6 +90,10 @@ export interface SetChildCategoryGroupDto {
 
 export interface ReorderCategoriesDto {
   categoryIds: string[];
+}
+
+export interface ReorderChildCategoriesDto {
+  childCategoryIds: string[];
 }
 
 // Response types

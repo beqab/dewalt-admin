@@ -13,6 +13,7 @@ import {
   useDeleteChildCategory,
   useCreateChildCategory,
   useUpdateChildCategory,
+  useReorderChildCategories,
 } from "@/features/categories";
 import type {
   ChildCategory,
@@ -31,6 +32,7 @@ export default function ChildCategoriesPage() {
   const createChildCategory = useCreateChildCategory();
   const updateChildCategory = useUpdateChildCategory();
   const deleteChildCategory = useDeleteChildCategory();
+  const reorderChildCategories = useReorderChildCategories();
 
   const handleCreate = () => {
     setEditingChildCategory(undefined);
@@ -57,6 +59,10 @@ export default function ChildCategoriesPage() {
     data: UpdateChildCategoryDto
   ) => {
     await updateChildCategory.mutateAsync({ id, data });
+  };
+
+  const handleReorder = (childCategoryIds: string[]) => {
+    reorderChildCategories.mutate({ childCategoryIds });
   };
 
   if (error) {
@@ -105,6 +111,8 @@ export default function ChildCategoriesPage() {
           childCategories={childCategories || []}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onReorder={handleReorder}
+          isReordering={reorderChildCategories.isPending}
         />
       )}
 

@@ -38,4 +38,5 @@ export { useCreateChildCategory } from "./hooks/useCreateChildCategory";
 export { useUpdateChildCategory } from "./hooks/useUpdateChildCategory";
 export { useDeleteChildCategory } from "./hooks/useDeleteChildCategory";
 export { useSetChildCategoryGroup } from "./hooks/useSetChildCategoryGroup";
+export { useReorderChildCategories } from "./hooks/useReorderChildCategories";
 

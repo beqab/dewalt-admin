@@ -13,6 +13,7 @@ import {
   SetChildCategoryGroupDto,
   ChildCategoryGroupResponse,
   ReorderCategoriesDto,
+  ReorderChildCategoriesDto,
 } from "../types";
 
 const categoriesClient = createApiClient(API_ROUTES.CATEGORIES);
@@ -128,5 +129,12 @@ export const categoriesService = {
   deleteChildCategory: {
     delete: (id: string) =>
       categoriesClient.delete<void>(`child-categories/${id}`),
+  },
+  reorderChildCategories: {
+    patch: (data: ReorderChildCategoriesDto) =>
+      categoriesClient.patchById<ReorderChildCategoriesDto, void>(
+        "child-categories/reorder",
+        data
+      ),
   },
 };
