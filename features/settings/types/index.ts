@@ -8,6 +8,9 @@ export interface Settings {
   contactEmail?: string;
   contactFacebook?: string;
   contactAddress?: { ka: string; en: string };
+  aboutTitle?: { ka: string; en: string };
+  aboutSubtitle?: { ka: string; en: string };
+  aboutContent?: { ka: string; en: string };
 
   freeDeliveryEnabled: boolean;
   deliveryTbilisiPrice: number;
@@ -17,4 +20,3 @@ export interface Settings {
 }
 
 export type UpdateSettingsDto = Partial<Settings>;
-

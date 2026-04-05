@@ -16,6 +16,7 @@ import {
   ShoppingCart,
   LogOut,
   Menu,
+  Info,
   Tags,
   ChevronDown,
   ChevronRight,
@@ -60,6 +61,11 @@ const navigationItems = [
     title: "შეკვეთები",
     href: "/dashboard/orders",
     icon: ShoppingCart,
+  },
+  {
+    title: "ჩვენ შესახებ",
+    href: "/dashboard/about",
+    icon: Info,
   },
   {
     title: "სიახლეები",
