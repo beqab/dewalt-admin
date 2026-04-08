@@ -22,6 +22,7 @@ import {
   ChevronRight,
   Tag,
   Settings,
+  FileText,
 } from "lucide-react";
 
 import {
@@ -86,6 +87,11 @@ const navigationItems = [
     title: "სეთინგები",
     href: "/dashboard/settings",
     icon: Settings,
+  },
+  {
+    title: "ტერმსები",
+    href: "/dashboard/terms",
+    icon: FileText,
   },
 ];
 

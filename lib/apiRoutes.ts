@@ -29,4 +29,7 @@ export const API_ROUTES = {
 
   // Settings
   SETTINGS: "/settings",
+
+  // Terms
+  TERMS: "/terms",
 };

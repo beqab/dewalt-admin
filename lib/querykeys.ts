@@ -107,6 +107,9 @@ const QUERY_KEYS = {
   SETTINGS: {
     ONE: ["settings"],
   },
+  TERMS: {
+    ONE: ["terms"],
+  },
 };
 
 export default QUERY_KEYS;
