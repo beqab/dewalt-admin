@@ -35,4 +35,7 @@ export const API_ROUTES = {
 
   // Brand content
   BRAND_CONTENT: "/brand-content",
+
+  // Service center
+  SERVICE_CENTER: "/service-center",
 };

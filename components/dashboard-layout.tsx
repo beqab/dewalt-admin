@@ -24,6 +24,7 @@ import {
   Settings,
   FileText,
   Building2,
+  Wrench,
 } from "lucide-react";
 
 import {
@@ -98,6 +99,11 @@ const navigationItems = [
     title: "ბრენდების ტექსტები",
     href: "/dashboard/brand-content",
     icon: Building2,
+  },
+  {
+    title: "სერვის ცენტრი",
+    href: "/dashboard/service-center",
+    icon: Wrench,
   },
 ];
 

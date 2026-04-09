@@ -113,6 +113,9 @@ const QUERY_KEYS = {
   BRAND_CONTENT: {
     ONE: ["brand-content"],
   },
+  SERVICE_CENTER: {
+    ONE: ["service-center"],
+  },
 };
 
 export default QUERY_KEYS;
