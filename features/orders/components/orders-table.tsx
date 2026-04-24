@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronDown, ChevronUp, Save } from "lucide-react";
-import type { Order, OrderStatus, OrderUser, ProductSummary } from "../types";
+import type { Order, OrderStatus, OrderUser } from "../types";
 import { useGetOrderById } from "../hooks/useGetOrderById";
 import { useUpdateOrderStatus } from "../hooks/useUpdateOrderStatus";
 import Image from "next/image";
@@ -71,9 +71,8 @@ function getCustomerId(order: Order) {
   return "არა ავტორიზებული";
 }
 
-function getProduct(itemProductId: string | ProductSummary) {
-  if (!itemProductId || typeof itemProductId === "string") return undefined;
-  return itemProductId;
+function isOfficePickup(order: Order) {
+  return order.deliveryType === "officePickup";
 }
 
 export function OrdersTable({
@@ -90,7 +89,6 @@ export function OrdersTable({
   const updateStatus = useUpdateOrderStatus();
 
   const expandedOrder = detailsQuery.data?.order;
-  const ordersCountForUser = detailsQuery.data?.ordersCountForUser ?? 0;
 
   const statusValue = useMemo(() => {
     if (!expandedOrder) return "";
@@ -145,9 +143,16 @@ export function OrdersTable({
                         ) : (
                           <ChevronDown className="h-4 w-4 text-muted-foreground" />
                         )}
-                        <span>
-                          {order.name} {order.surname}
-                        </span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span>
+                            {order.name} {order.surname}
+                          </span>
+                          {isOfficePickup(order) ? (
+                            <Badge className="border-amber-300 bg-amber-100 text-amber-900 hover:bg-amber-100">
+                              ოფისიდან გატანა
+                            </Badge>
+                          ) : null}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -211,6 +216,7 @@ export function OrdersTable({
                                     ({getUserEmail(expandedOrder)})
                                   </span>
                                 </div>
+
                                 {/* <div className="text-sm text-muted-foreground">
                                   შეკვეთების რაოდენობა ამ მომხმარებელზე:{" "}
                                   <span className="font-medium text-foreground">
@@ -298,6 +304,13 @@ export function OrdersTable({
                                 <div className="mt-1 text-sm">
                                   {expandedOrder.address}
                                 </div>
+                                {isOfficePickup(expandedOrder) ? (
+                                  <div className="mt-2">
+                                    <Badge className="border-amber-300 bg-amber-100 text-amber-900 hover:bg-amber-100">
+                                      მომხმარებელს არჩეული აქვს ოფისიდან გატანა
+                                    </Badge>
+                                  </div>
+                                ) : null}
                               </div>
                               <div className="rounded-md border bg-background p-3">
                                 <div className="text-xs text-muted-foreground">
@@ -330,7 +343,6 @@ export function OrdersTable({
                               <div className="divide-y">
                                 {(expandedOrder.items || []).map(
                                   (item, idx) => {
-                                    const p = getProduct(item.productId);
                                     return (
                                       <div
                                         key={`${expandedOrder._id}-${idx}`}

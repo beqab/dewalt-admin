@@ -5,7 +5,7 @@ export type OrderStatus =
   | "shipped"
   | "delivered";
 
-export type DeliveryType = "tbilisi" | "region";
+export type DeliveryType = "tbilisi" | "region" | "officePickup";
 
 export interface OrderUser {
   _id: string;

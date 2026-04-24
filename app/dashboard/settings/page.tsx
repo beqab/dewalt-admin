@@ -298,6 +298,24 @@ function SettingsForm({
                   : "უფასო მიწოდება გამორთულია."}
               </p>
             </div>
+
+            <div className="rounded-lg border p-4 space-y-4 lg:col-span-2">
+              <div className="font-medium">გატანა ოფისიდან</div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="deliveryOfficePickupPrice">ფასი (GEL)</Label>
+                  <Input
+                    id="deliveryOfficePickupPrice"
+                    value="0"
+                    disabled
+                    readOnly
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                ეს ოფშენი ფიქსირებულად 0 ლარია და სეთინგებიდან არ იცვლება.
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>
