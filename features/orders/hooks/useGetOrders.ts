@@ -10,6 +10,7 @@ export const useGetOrders = (params?: {
   uuid?: string;
   id?: string;
   email?: string;
+  paymentType?: 'regular' | 'tbcInstalment';
 }) => {
   return useQuery<OrdersListResponse>({
     queryKey: QUERY_KEYS.ORDERS.LIST(params?.page, params?.limit, {
@@ -17,6 +18,7 @@ export const useGetOrders = (params?: {
       uuid: params?.uuid,
       id: params?.id,
       email: params?.email,
+      paymentType: params?.paymentType,
     }),
     queryFn: () => ordersService.getOrders.get(params),
   });

@@ -13,6 +13,7 @@ export const ordersService = {
       uuid?: string;
       id?: string;
       email?: string;
+      paymentType?: 'regular' | 'tbcInstalment';
     }): Promise<OrdersListResponse> => {
       const queryParams: Record<string, string | number> = {};
       if (params?.page) queryParams.page = params.page;
@@ -21,6 +22,7 @@ export const ordersService = {
       if (params?.uuid) queryParams.uuid = params.uuid;
       if (params?.id) queryParams.id = params.id;
       if (params?.email) queryParams.userEmail = params.email;
+      if (params?.paymentType) queryParams.paymentType = params.paymentType;
 
       return ordersClient.get<OrdersListResponse>(
         Object.keys(queryParams).length > 0 ? queryParams : undefined,

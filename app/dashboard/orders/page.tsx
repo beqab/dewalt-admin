@@ -26,6 +26,8 @@ type OrdersTab =
   | "cancelled"
   | "on_delivery";
 
+type PaymentTypeFilter = "all" | "regular" | "tbcInstalment";
+
 function tabToStatus(tab: OrdersTab): string | undefined {
   switch (tab) {
     case "drafts":
@@ -47,6 +49,7 @@ function tabToStatus(tab: OrdersTab): string | undefined {
 export default function OrdersPage() {
   const [page, setPage] = useState(1);
   const [tab, setTab] = useState<OrdersTab>("all");
+  const [paymentType, setPaymentType] = useState<PaymentTypeFilter>("all");
   const [uuid, setUuid] = useState("");
   const [id, setId] = useState("");
   const [email, setEmail] = useState("");
@@ -60,13 +63,14 @@ export default function OrdersPage() {
     uuid: uuid || undefined,
     id: id || undefined,
     email: email || undefined,
+    paymentType: paymentType !== "all" ? paymentType : undefined,
   });
 
   const orders = data?.data || [];
 
   const hasActiveFilters = useMemo(() => {
-    return Boolean(status || uuid || id || email);
-  }, [status, uuid, id, email]);
+    return Boolean(status || uuid || id || email || paymentType !== "all");
+  }, [status, uuid, id, email, paymentType]);
 
   const handleFilterChange = () => {
     setPage(1);
@@ -74,6 +78,7 @@ export default function OrdersPage() {
 
   const handleClearFilters = () => {
     setTab("all");
+    setPaymentType("all");
     setUuid("");
     setId("");
     setEmail("");
@@ -105,6 +110,20 @@ export default function OrdersPage() {
 
         <CardContent>
           <div className="space-y-4 mb-6">
+            <Tabs
+              value={paymentType}
+              onValueChange={(v) => {
+                setPaymentType(v as PaymentTypeFilter);
+                handleFilterChange();
+              }}
+            >
+              <TabsList className="flex flex-wrap justify-start h-auto">
+                <TabsTrigger value="all">ყველა გადახდა</TabsTrigger>
+                <TabsTrigger value="regular">ჩვეულებრივი</TabsTrigger>
+                <TabsTrigger value="tbcInstalment">TBC განვადება</TabsTrigger>
+              </TabsList>
+            </Tabs>
+
             <Tabs
               value={tab}
               onValueChange={(v) => {

@@ -42,6 +42,13 @@ export interface ProductSummary {
   specs?: unknown[];
 }
 
+export type TbcInstalmentStatus =
+  | "initiated"
+  | "confirmed"
+  | "cancelled"
+  | "expired"
+  | "failed";
+
 export interface Order {
   _id: string;
   uuid: string;
@@ -60,6 +67,8 @@ export interface Order {
   userId?: OrderUser | string;
   createdAt: string;
   updatedAt: string;
+  tbcInstalmentStatus?: TbcInstalmentStatus;
+  tbcInstalmentSessionId?: string;
 }
 
 export interface OrdersListResponse {

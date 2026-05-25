@@ -91,7 +91,7 @@ const QUERY_KEYS = {
     LIST: (
       page?: number,
       limit?: number,
-      filters?: { status?: string; uuid?: string; id?: string; email?: string }
+      filters?: { status?: string; uuid?: string; id?: string; email?: string; paymentType?: string }
     ) => {
       const key: (string | number)[] = ["orders", "list"];
       if (page !== undefined) key.push("page", page);
@@ -100,6 +100,7 @@ const QUERY_KEYS = {
       if (filters?.uuid) key.push("uuid", filters.uuid);
       if (filters?.id) key.push("id", filters.id);
       if (filters?.email) key.push("email", filters.email);
+      if (filters?.paymentType) key.push("paymentType", filters.paymentType);
       return key;
     },
     BY_ID: (id: string) => ["orders", "byId", id],

@@ -42,6 +42,23 @@ function getStatusLabel(status: OrderStatus) {
   }
 }
 
+function getTbcInstalmentStatusLabel(status: string) {
+  switch (status) {
+    case "initiated":
+      return "განხილვაშია";
+    case "confirmed":
+      return "დადასტურებული";
+    case "cancelled":
+      return "გაუქმებული";
+    case "expired":
+      return "ვადაგასული";
+    case "failed":
+      return "შეცდომა";
+    default:
+      return status;
+  }
+}
+
 function getStatusVariant(status: OrderStatus) {
   switch (status) {
     case "failed":
@@ -152,6 +169,11 @@ export function OrdersTable({
                               ოფისიდან გატანა
                             </Badge>
                           ) : null}
+                          {order.tbcInstalmentStatus ? (
+                            <Badge variant="outline" className="border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-50">
+                              TBC განვადება
+                            </Badge>
+                          ) : null}
                         </div>
                       </div>
                     </TableCell>
@@ -216,6 +238,15 @@ export function OrdersTable({
                                     ({getUserEmail(expandedOrder)})
                                   </span>
                                 </div>
+
+                                {expandedOrder.tbcInstalmentStatus && (
+                                  <div className="text-sm text-muted-foreground">
+                                    TBC განვადების სტატუსი:{" "}
+                                    <span className="font-medium text-foreground">
+                                      {getTbcInstalmentStatusLabel(expandedOrder.tbcInstalmentStatus)}
+                                    </span>
+                                  </div>
+                                )}
 
                                 {/* <div className="text-sm text-muted-foreground">
                                   შეკვეთების რაოდენობა ამ მომხმარებელზე:{" "}
