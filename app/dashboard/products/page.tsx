@@ -60,21 +60,30 @@ export default function ProductsPage() {
   const debouncedSearch = useDebounce(search, 400);
   const debouncedMinPrice = useDebounce(minPrice, 400);
   const debouncedMaxPrice = useDebounce(maxPrice, 400);
-  const hasScopedReorderSelection =
+  const hasBrandAndCategory =
     brandId !== "all" &&
     categoryId !== "all" &&
-    childCategoryId !== "all" &&
     Boolean(brandId) &&
-    Boolean(categoryId) &&
-    Boolean(childCategoryId);
+    Boolean(categoryId);
 
-  const isProductReorderEnabled =
-    hasScopedReorderSelection &&
+  const hasChildCategory =
+    childCategoryId !== "all" && Boolean(childCategoryId);
+
+  const noConflictingFilters =
     search.trim() === "" &&
     inStockFilter === "all" &&
     minPrice.trim() === "" &&
     maxPrice.trim() === "" &&
     sort === "";
+
+  const isChildCategoryReorderEnabled =
+    hasBrandAndCategory && hasChildCategory && noConflictingFilters;
+
+  const isCategoryReorderEnabled =
+    hasBrandAndCategory && !hasChildCategory && noConflictingFilters;
+
+  const isProductReorderEnabled =
+    isChildCategoryReorderEnabled || isCategoryReorderEnabled;
   const effectivePage = isProductReorderEnabled ? 1 : page;
   const effectiveLimit = isProductReorderEnabled ? 1000 : limit;
 
@@ -167,12 +176,14 @@ export default function ProductsPage() {
   };
 
   const handleReorder = (productIds: string[]) => {
-    if (!childCategoryId || childCategoryId === "all") return;
+    if (isChildCategoryReorderEnabled) {
+      reorderProducts.mutate({ productIds, childCategoryId });
+      return;
+    }
 
-    reorderProducts.mutate({
-      productIds,
-      childCategoryId,
-    });
+    if (isCategoryReorderEnabled) {
+      reorderProducts.mutate({ productIds, categoryId });
+    }
   };
 
   const handleCreateProduct = async (data: CreateProductDto) => {
@@ -475,10 +486,11 @@ export default function ProductsPage() {
           </div>
 
           {/* Products Table */}
-          {hasScopedReorderSelection && !isProductReorderEnabled ? (
+          {hasBrandAndCategory && !isProductReorderEnabled ? (
             <div className="mb-4 rounded-md border border-dashed px-4 py-3 text-sm text-muted-foreground">
-              drag-and-drop რეორდერისთვის დატოვეთ მხოლოდ ბრენდი, კატეგორია და
-              ქვე-კატეგორია. სხვა ფილტრები და სორტირება უნდა იყოს გამორთული.
+              drag-and-drop რეორდერისთვის დატოვეთ მხოლოდ ბრენდი და კატეგორია
+              (სურვილისამებრ ქვე-კატეგორია). სხვა ფილტრები და სორტირება უნდა
+              იყოს გამორთული.
             </div>
           ) : null}
           <ProductsTable
