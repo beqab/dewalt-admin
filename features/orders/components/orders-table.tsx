@@ -19,10 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronDown, ChevronUp, Save } from "lucide-react";
+import { ChevronDown, ChevronUp, Download, Save } from "lucide-react";
 import type { Order, OrderStatus, OrderUser } from "../types";
 import { useGetOrderById } from "../hooks/useGetOrderById";
 import { useUpdateOrderStatus } from "../hooks/useUpdateOrderStatus";
+import { generateOrderInvoice } from "../utils/generateOrderInvoice";
+import { useGetSettings } from "@/features/settings";
 import Image from "next/image";
 
 function getStatusLabel(status: OrderStatus) {
@@ -92,6 +94,10 @@ function isOfficePickup(order: Order) {
   return order.deliveryType === "officePickup";
 }
 
+function canDownloadInvoice(status: OrderStatus) {
+  return status === "paid" || status === "shipped" || status === "delivered";
+}
+
 export function OrdersTable({
   orders,
   isLoading,
@@ -101,8 +107,12 @@ export function OrdersTable({
 }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [nextStatus, setNextStatus] = useState<string>("");
+  const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(
+    null,
+  );
 
   const detailsQuery = useGetOrderById(expandedId ?? undefined);
+  const settingsQuery = useGetSettings();
   const updateStatus = useUpdateOrderStatus();
 
   const expandedOrder = detailsQuery.data?.order;
@@ -305,6 +315,34 @@ export function OrdersTable({
                                     ? "ინახება..."
                                     : "სტატუსის შენახვა"}
                                 </Button>
+
+                                {canDownloadInvoice(expandedOrder.status) ? (
+                                  <Button
+                                    variant="outline"
+                                    onClick={async (e) => {
+                                      e.stopPropagation();
+                                      setDownloadingInvoiceId(expandedOrder._id);
+                                      try {
+                                        await generateOrderInvoice(
+                                          expandedOrder,
+                                          settingsQuery.data,
+                                        );
+                                      } catch {
+                                        // axios interceptor handles auth errors
+                                      } finally {
+                                        setDownloadingInvoiceId(null);
+                                      }
+                                    }}
+                                    disabled={
+                                      downloadingInvoiceId === expandedOrder._id
+                                    }
+                                  >
+                                    <Download className="mr-2 h-4 w-4" />
+                                    {downloadingInvoiceId === expandedOrder._id
+                                      ? "იტვირთება..."
+                                      : "ინვოისის ჩამოტვირთვა"}
+                                  </Button>
+                                ) : null}
                               </div>
                             </div>
 
